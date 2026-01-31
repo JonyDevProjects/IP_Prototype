@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import type { Course } from '../../../types/course';
 import { PlayerSidebar } from './PlayerSidebar';
+import { PlayerBlockWrapper } from './PlayerBlockWrapper';
 
 interface PlayerMainProps {
     courseData: Course;
@@ -85,48 +86,16 @@ export const PlayerMain: React.FC<PlayerMainProps> = ({ courseData }) => {
                                 </div>
                                 <h1 className="text-[#140d1b] dark:text-white text-3xl md:text-4xl font-extrabold leading-tight tracking-tight">{activeUnit.title}</h1>
                                 <p className="text-[#734c9a] dark:text-slate-300 text-lg font-normal leading-relaxed max-w-3xl">
-                                    {/* Description would typically be on Unit level, using Mock block content for now if text */}
-                                    {activeUnit.blocks.find(b => b.type === 'text')?.content || "Content description goes here."}
+                                    {/* Description now correctly pulls from the module description to match Editor */}
+                                    {activeModule.description || "Content description goes here."}
                                 </p>
                             </div>
 
                             {/* DYNAMIC BLOCKS RENDERING */}
                             <div className="flex flex-col gap-6 mt-4">
-                                {activeUnit.blocks.map(block => {
-                                    if (block.type === 'timeline') {
-                                        return (
-                                            <div key={block.id} className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                                {(block.content as any[]).map((step: any, idx: number) => (
-                                                    <div key={idx} className="group relative aspect-[4/5] overflow-hidden rounded-2xl shadow-lg cursor-pointer hover:shadow-2xl hover:shadow-[#7f13ec]/30 transition-all duration-300 transform hover:-translate-y-2 bg-[#1f1629]">
-                                                        {/* Background Image Placeholder */}
-                                                        <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/60 to-transparent"></div>
-                                                        <div className="absolute inset-0 border-2 border-transparent group-hover:border-[#7f13ec]/50 rounded-2xl transition-colors duration-300"></div>
-                                                        <div className="absolute inset-0 p-6 flex flex-col justify-end">
-                                                            <div className="size-12 rounded-xl bg-white/10 backdrop-blur-md flex items-center justify-center text-white mb-4 group-hover:bg-[#7f13ec] group-hover:text-white transition-all duration-300 shadow-inner border border-white/10">
-                                                                <span className="material-symbols-outlined">schedule</span>
-                                                            </div>
-                                                            <h3 className="text-white text-xl font-bold leading-tight mb-2 group-hover:text-[#bc9bf1] transition-colors">{step.title}</h3>
-                                                            <p className="text-white/70 text-sm line-clamp-3 leading-relaxed">{step.desc}</p>
-                                                            <div className="h-1 w-0 group-hover:w-full bg-[#7f13ec] mt-4 transition-all duration-500 rounded-full"></div>
-                                                        </div>
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        )
-                                    }
-                                    if (block.type === 'alert') {
-                                        return (
-                                            <div key={block.id} className="p-6 rounded-2xl bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-900/50 flex gap-4">
-                                                <span className="material-symbols-outlined text-blue-500 text-2xl">lightbulb</span>
-                                                <div>
-                                                    <h4 className="font-bold text-blue-900 dark:text-blue-100 mb-1">{block.content.title}</h4>
-                                                    <p className="text-blue-800 dark:text-blue-200 text-sm">{block.content.text}</p>
-                                                </div>
-                                            </div>
-                                        )
-                                    }
-                                    return null;
-                                })}
+                                {activeUnit.blocks.map(block => (
+                                    <PlayerBlockWrapper key={block.id} block={block} />
+                                ))}
                             </div>
                         </div>
                     </div>

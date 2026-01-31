@@ -1,5 +1,5 @@
 import { BlockDefinition } from './types';
-import { TimelineBlockDefinition } from './TimelineBlock';
+import { TimelineBlockDefinition } from './timeline';
 import { TextBlockDefinition } from './TextBlock';
 import { ImageBlockDefinition } from './ImageBlock';
 import { AlertBlockDefinition } from './AlertBlock';

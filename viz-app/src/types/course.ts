@@ -9,6 +9,7 @@ export interface ContentBlock {
   metadata?: {
     className?: string; // Para overrides de estilo
     interactive?: boolean;
+    [key: string]: any;
   };
 }
 

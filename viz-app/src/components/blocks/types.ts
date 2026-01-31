@@ -11,6 +11,7 @@ export interface BlockDefinition {
     Component: React.FC<{
         block: ContentBlock;
         isSelected: boolean;
+        isEditable?: boolean;
         onClick: (e: React.MouseEvent) => void;
         onUpdate: (updates: Partial<ContentBlock>) => void;
     }>;

@@ -37,3 +37,57 @@
         @apply bg-background text-text-main transition-colors duration-300;
     }
 }
+
+@layer components {
+
+    /* Manual Typography Styles (Mimicking @tailwindcss/typography) */
+    .prose h1 {
+        @apply text-4xl font-bold mb-4 mt-6 text-slate-900 dark:text-white leading-tight;
+    }
+
+    .prose h2 {
+        @apply text-2xl font-bold mb-3 mt-5 text-slate-900 dark:text-white leading-snug;
+    }
+
+    .prose h3 {
+        @apply text-xl font-bold mb-2 mt-4 text-slate-900 dark:text-white leading-snug;
+    }
+
+    .prose p {
+        @apply my-2 leading-relaxed;
+    }
+
+    .prose ul {
+        @apply list-disc list-outside ml-5 my-2;
+    }
+
+    .prose ol {
+        @apply list-decimal list-outside ml-5 my-2;
+    }
+
+    .prose li {
+        @apply my-0.5;
+    }
+
+    .prose strong,
+    .prose b {
+        @apply font-bold text-slate-900 dark:text-white;
+    }
+
+    .prose em,
+    .prose i {
+        @apply italic;
+    }
+
+    .prose pre {
+        @apply bg-slate-900 text-slate-50 p-4 rounded-lg overflow-x-auto my-4 font-mono text-sm;
+    }
+
+    .prose code {
+        @apply font-mono bg-slate-100 dark:bg-white/10 px-1 py-0.5 rounded text-sm;
+    }
+
+    .prose pre code {
+        @apply bg-transparent p-0 text-inherit;
+    }
+}

@@ -6,6 +6,21 @@ import { tema2CourseData } from './data/mocks/tema2Mock'
 function App() {
   const [viewMode, setViewMode] = useState<'player' | 'editor'>('player');
 
+  // Load initial state from LocalStorage or Fallback to Mock
+  const [courseData, setCourseData] = useState(() => {
+    const saved = localStorage.getItem('ip_course_data');
+    return saved ? JSON.parse(saved) : tema2CourseData;
+  });
+
+  // Save to LocalStorage whenever courseData changes (auto-save for now, or explicit save via Editor)
+  // For this prototype, we'll pass a dedicated 'onSave' handler to Editor to commit changes.
+  const handleSave = (updatedCourse: any) => {
+    setCourseData(updatedCourse);
+    localStorage.setItem('ip_course_data', JSON.stringify(updatedCourse));
+    // Optional: Visual feedback could go here
+    console.log('Course Saved!', updatedCourse);
+  };
+
   return (
     <div className="relative min-h-screen bg-white dark:bg-[#191022] transition-colors duration-300">
 
@@ -27,9 +42,9 @@ function App() {
 
       {/* Renderizado Condicional */}
       {viewMode === 'player' ? (
-        <PlayerMain courseData={tema2CourseData} />
+        <PlayerMain courseData={courseData} />
       ) : (
-        <EditorMain courseData={tema2CourseData} />
+        <EditorMain courseData={courseData} onSave={handleSave} />
       )}
 
     </div>

@@ -1,71 +1,57 @@
 
+# Estructura de Directorios - ExpertPath (Feature-Based Architecture)
+
+El proyecto sigue una arquitectura modular basada en "Features" para garantizar escalabilidad, mantenibilidad y una clara separación de responsabilidades.
+
+## Estructura del Código (`viz-app/src/`)
+
+```text
 src/
-├── assets/ # Imágenes estáticas, fuentes, iconos globales
-│ └── images/
-├── components/ # Componentes REUTILIZABLES y GENÉRICOS (Atomic Design)
-│ ├── ui/ # "Átomos" y "Moléculas": Botones, Inputs, Cards, Badges
-│ │ ├── Button.tsx
-│ │ ├── Card.tsx
-│ │ └── ThemeToggle.tsx
-│ ├── layout/ # Estructuras maestras (Shells)
-│ │ ├── EditorLayout.tsx
-│ │ ├── PlayerLayout.tsx
-│ │ └── Sidebar.tsx
-│ └── feedback/ # Modales, Toasts, Loaders, Alertas
-├── data/ # Zona del "Scribe" (Datos estáticos y Mocks)
-│ ├── mocks/ # Aquí vive el contenido del Tema 2 transformado a JSON
-│ │ └── tema2Mock.ts
-│ └── locales/ # Textos fijos (i18n) si aplicara
-├── features/ # Módulos de Negocio (El corazón de ExpertPath)
-│ ├── editor/ # Lógica específica del Creador
-│ │ ├── components/ # Componentes que solo usa el editor (ej. DraggableBlock)
-│ │ └── hooks/ # Lógica de estado del editor (undo/redo)
-│ ├── player/ # Lógica específica del Estudiante
-│ │ ├── components/ # Componentes de visualización (ej. ProgressBar, QuizRunner)
-│ │ └── hooks/ # Lógica de progreso y scoring
-│ ├── auth/ # Login, Registro, Recuperación (Futuro)
-│ └── dashboard/ # Vista principal de cursos (Futuro)
-├── hooks/ # Hooks globales y genéricos
-│ ├── useTheme.ts
-│ └── useDebounce.ts
-├── lib/ # Utilidades puras y configuraciones de terceros
-│ ├── utils.ts # Helpers de formateo, clases de Tailwind (cn)
-│ └── constants.ts # Constantes globales
-├── services/ # Comunicación con API (Patrón Repositorio)
-│ ├── api.ts # Cliente Axios/Fetch
-│ └── courseService.ts # Métodos: getCourse, saveProgress (Ahora usan mocks)
-├── types/ # Zona del "Arquitecto" (Contratos e Interfaces)
-│ ├── course.ts # Definiciones de Module, Unit, Block
-│ └── user.ts
-├── App.tsx # Router principal y selectores de vista
-└── main.tsx # Punto de entrada
+├── assets/           # Recursos estáticos (imágenes, fuentes, iconos globales)
+├── components/       # Componentes REUTILIZABLES y GENÉRICOS (UI Library)
+│   ├── ui/           # Átomos y Moléculas (Botones, Inputs, InlineText, Cards)
+│   ├── layout/       # (Vacío) - Los layouts ahora son parte de las Features
+│   └── blocks/       # Definiciones de bloques de contenido (Timeline, Info, etc.)
+│       └── registry.ts # Registro central de bloques para el Editor/Player
+├── data/             # Datos estáticos y Mocks
+│   └── mocks/        # Datos de ejemplo (JSON) para desarrollo y testing
+├── features/         # Módulos de Negocio (El corazón de la aplicación)
+│   ├── editor/       # Feature: Panel de Creación de Contenido
+│   │   ├── components/ # EditorMain, ToolButton, EditorBlockWrapper
+│   │   └── hooks/      # Lógica de estado, drag & drop, undo/redo
+│   └── player/       # Feature: Modo de Consumo (Estudiante)
+│       └── components/ # PlayerMain, PlayerSidebar, ProgressBar
+├── hooks/            # Custom hooks globales
+├── services/         # Capa de servicios (API, Fetching, Mock Services)
+├── types/            # Definiciones de tipos TypeScript e Interfaces (El Contrato)
+│   └── course.ts     # Tipos core: Course, Module, Unit, Block
+├── App.tsx           # Orquestador principal y router de vistas
+└── main.tsx          # Punto de entrada de la aplicación
+```
 
 ---
 
-### Justificación Técnica (El "Por qué" para la defensa)
+## Justificación de la Arquitectura
 
-#### 1. `components/ui` vs `features/`
-* **El problema:** En proyectos junior, todo se mezcla en una carpeta `components` gigante.
-* **La solución profesional:**
-    * Si un botón es genérico (azul, redondo), va en `components/ui`.
-    * Si un botón tiene lógica de negocio ("Guardar Curso y enviar notificación"), va en `features/editor`.
-    * **Beneficio:** Tu Agente *Artist* puede pulir la estética en `ui` sin romper la lógica del negocio en `features`.
+### 1. Features vs UI Components
+*   **`components/ui/`**: Contiene elementos visuales puros y genéricos (ej. un botón que solo recibe `onClick` y `label`). No conocen nada sobre el negocio o los cursos.
+*   **`features/`**: Contiene la lógica pesada. `EditorMain` sabe cómo manipular un objeto `Course`, cómo manejar el auto-guardado y cómo interactuar con el sistema de drag & drop. Separar esto permite que el diseño visual evolucione sin romper la lógica funcional.
 
-#### 2. La carpeta `types/` (El Contrato)
-Aquí es donde definimos el "lenguaje común". Antes de programar nada, definimos en `types/course.ts` qué demonios es una "Unidad".
-* **Beneficio:** Permite que el Backend (cuando exista) y el Frontend hablen el mismo idioma. Cumple con la definición de interfaces del **Diseño Detallado (DSI)**.
+### 2. El Registro de Bloques (`components/blocks/`)
+Usamos un **Patrón Registry** para evitar que el Editor o el Player se vuelvan monolitos gigantes. 
+*   Cada bloque (ej. `TimelineBlock`) define sus propios componentes de visualización y de propiedades.
+*   Añadir un nuevo tipo de contenido es tan simple como registrarlo en `registry.ts`.
 
-#### 3. La carpeta `services/` (Patrón de Abstracción)
-Aunque ahora uses datos falsos (`mocks`), tus componentes **nunca** deben importar el JSON directamente.
-* **Incorrecto:** `import data from '../mocks/data.json'`
-* **Correcto:** `courseService.getCourse('tema-2')`
-* **Por qué:** El día de mañana, cambias la función dentro de `courseService` para que llame a Supabase en vez de devolver el mock, y **no tienes que tocar ni una línea de tus componentes visuales**. Esto es oro puro para la mantenibilidad.
+### 3. La Capa de Tipos (`types/`) - El Contrato
+Definimos el "lenguaje común" aquí. Tanto el creador de contenido como el consumidor operan sobre las mismas interfaces (`Course`, `Module`, `Unit`). Esto facilita la futura integración con un Backend real (Supabase, Firebase, Node.js).
 
-### Siguientes Pasos Operativos
+### 4. Servicios y Abstracción de Datos
+Los componentes nunca importan JSONs directamente. Usan servicios que encapsulan la obtención de datos.
+*   *Beneficio:* El día que conectemos una base de datos real, solo cambiaremos la implementación del servicio, no los componentes.
 
-1.  **Refactorización:** Mueve tus componentes actuales de `viz-app` (grafos, tablas) a `features/player/components/visualizations`.
-2.  **Creación:** Crea la carpeta `types` y coloca ahí el archivo `course.ts` que generamos en el paso anterior.
-3.  **Configuración:** Asegúrate de que tu `tsconfig.json` tenga configurados los "paths" (alias) para importaciones limpias (opcional pero recomendado):
-    ```json
-    "@/components/*": ["src/components/*"],
-    "@/features/*": ["src/features/*"]
+---
+
+## Reglas de Oro del Proyecto
+1.  **No Cross-Feature Imports**: Un componente en `features/player` NUNCA debe importar nada de `features/editor`. Comparten tipos y componentes de UI, pero no lógica.
+2.  **Aesthetics First**: Cada cambio visual debe pasar por una revisión de UX para asegurar una sensación "Premium" tipo Brilliant.org.
+3.  **Semantic HTML**: Usar siempre etiquetas semánticas y ARIA para accesibilidad.
