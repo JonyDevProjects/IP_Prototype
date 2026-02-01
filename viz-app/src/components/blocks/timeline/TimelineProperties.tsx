@@ -16,15 +16,40 @@ export const TimelineProperties: React.FC<{
 
     const updateStep = (field: string, value: string) => {
         const newContent = [...steps];
+
         if (field.includes('.')) {
-            const [parent, child] = field.split('.');
-            newContent[activeIndex] = {
-                ...newContent[activeIndex],
-                [parent]: {
-                    ...newContent[activeIndex][parent],
+            const parts = field.split('.');
+
+            if (parts.length === 3) {
+                // Case: cards.0.title
+                const [parent, indexStr, child] = parts;
+                const index = parseInt(indexStr, 10);
+
+                // 1. Clone the parent array (e.g., cards)
+                const list = [...(newContent[activeIndex][parent] as any[])];
+
+                // 2. Clone the specific item (e.g., card object) and update its field
+                list[index] = {
+                    ...list[index],
                     [child]: value
-                }
-            };
+                };
+
+                // 3. Update the step with the new list
+                newContent[activeIndex] = {
+                    ...newContent[activeIndex],
+                    [parent]: list
+                };
+            } else {
+                // Case: detailTitle (legacy/simple nested) or fallback
+                const [parent, child] = parts;
+                newContent[activeIndex] = {
+                    ...newContent[activeIndex],
+                    [parent]: {
+                        ...newContent[activeIndex][parent],
+                        [child]: value
+                    }
+                };
+            }
         } else {
             newContent[activeIndex] = { ...newContent[activeIndex], [field]: value };
         }
