@@ -140,8 +140,10 @@ export const TimelineProperties: React.FC<{
                                         detailTitle: `New Step ${nextIndex + 1}`,
                                         detailSubtitle: 'Subtitle',
                                         detailIcon: 'circle',
-                                        card1: { title: 'Card 1', text: 'Text for card 1', icon: 'check_circle' },
-                                        card2: { title: 'Card 2', text: 'Text for card 2', icon: 'check_circle' },
+                                        cards: [
+                                            { title: 'Card 1', text: 'Text for card 1', icon: 'check_circle' },
+                                            { title: 'Card 2', text: 'Text for card 2', icon: 'check_circle' }
+                                        ],
                                         footerTip: 'Tip text',
                                         footerTipIcon: 'help'
                                     };
@@ -203,65 +205,75 @@ export const TimelineProperties: React.FC<{
                             </div>
                         </div>
 
-                        {/* Card 1 */}
+                        {/* Dynamic Cards Management */}
                         <div className="space-y-3 pt-2 border-t border-slate-100 dark:border-white/5">
                             <div className="flex items-center justify-between">
-                                <label className="text-xs font-bold text-slate-700 dark:text-slate-300">Left Card</label>
-                                <button className="text-[10px] text-blue-600 hover:underline flex items-center gap-1" onClick={() => setActiveIconPicker(activeIconPicker === 'card1' ? null : 'card1')}>
-                                    <span className="material-symbols-outlined text-[14px]">{activeStep.card1?.icon || 'add_circle'}</span> Icon
+                                <label className="text-xs font-bold text-slate-700 dark:text-slate-300">Detail Cards</label>
+                                <button
+                                    className="text-[10px] text-blue-600 hover:text-blue-800 font-medium flex items-center gap-1"
+                                    onClick={() => {
+                                        const currentCards = (activeStep.cards as any[]) || [];
+                                        updateStep('cards', [...currentCards, { title: 'New Card', text: 'Card description', icon: 'check_circle' }] as any);
+                                    }}
+                                >
+                                    <span className="material-symbols-outlined text-[14px]">add_circle</span> Add Card
                                 </button>
                             </div>
-                            {activeIconPicker === 'card1' && (
-                                <div className="grid grid-cols-6 gap-1 p-2 border border-slate-200 dark:border-white/10 rounded-lg bg-white dark:bg-[#1f1629] shadow-sm mb-2">
-                                    {AVAILABLE_ICONS.map(iconName => (
-                                        <button key={iconName} className="w-6 h-6 flex items-center justify-center rounded hover:bg-slate-100 dark:hover:bg-white/10 text-slate-600 dark:text-slate-400 hover:text-[#7f13ec]"
-                                            onClick={() => { updateStep('card1.icon', iconName); setActiveIconPicker(null); }}
-                                        >
-                                            <span className="material-symbols-outlined text-sm">{iconName}</span>
-                                        </button>
-                                    ))}
-                                </div>
-                            )}
-                            <div>
-                                <label className="block text-[10px] text-slate-500 mb-1">Title</label>
-                                <input type="text" className="w-full px-2 py-1.5 rounded bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-xs focus:border-[#7f13ec] outline-none"
-                                    value={activeStep.card1?.title || ''} onChange={(e) => updateStep('card1.title', e.target.value)} />
-                            </div>
-                            <div>
-                                <label className="block text-[10px] text-slate-500 mb-1">Text</label>
-                                <textarea className="w-full h-16 px-2 py-1.5 rounded bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-xs focus:border-[#7f13ec] outline-none resize-none"
-                                    value={activeStep.card1?.text || ''} onChange={(e) => updateStep('card1.text', e.target.value)} />
-                            </div>
-                        </div>
 
-                        {/* Card 2 */}
-                        <div className="space-y-3 pt-2 border-t border-slate-100 dark:border-white/5">
-                            <div className="flex items-center justify-between">
-                                <label className="text-xs font-bold text-slate-700 dark:text-slate-300">Right Card</label>
-                                <button className="text-[10px] text-blue-600 hover:underline flex items-center gap-1" onClick={() => setActiveIconPicker(activeIconPicker === 'card2' ? null : 'card2')}>
-                                    <span className="material-symbols-outlined text-[14px]">{activeStep.card2?.icon || 'add_circle'}</span> Icon
-                                </button>
-                            </div>
-                            {activeIconPicker === 'card2' && (
-                                <div className="grid grid-cols-6 gap-1 p-2 border border-slate-200 dark:border-white/10 rounded-lg bg-white dark:bg-[#1f1629] shadow-sm mb-2">
-                                    {AVAILABLE_ICONS.map(iconName => (
-                                        <button key={iconName} className="w-6 h-6 flex items-center justify-center rounded hover:bg-slate-100 dark:hover:bg-white/10 text-slate-600 dark:text-slate-400 hover:text-[#7f13ec]"
-                                            onClick={() => { updateStep('card2.icon', iconName); setActiveIconPicker(null); }}
+                            <div className="space-y-4">
+                                {((activeStep.cards as any[]) || []).map((card: any, idx: number) => (
+                                    <div key={idx} className="p-2 rounded bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 relative group">
+                                        {/* Delete Button */}
+                                        <button
+                                            className="absolute top-2 right-2 text-slate-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                                            onClick={() => {
+                                                const currentCards = [...((activeStep.cards as any[]) || [])];
+                                                currentCards.splice(idx, 1);
+                                                updateStep('cards', currentCards as any);
+                                            }}
                                         >
-                                            <span className="material-symbols-outlined text-sm">{iconName}</span>
+                                            <span className="material-symbols-outlined text-[16px]">close</span>
                                         </button>
-                                    ))}
-                                </div>
-                            )}
-                            <div>
-                                <label className="block text-[10px] text-slate-500 mb-1">Title</label>
-                                <input type="text" className="w-full px-2 py-1.5 rounded bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-xs focus:border-[#7f13ec] outline-none"
-                                    value={activeStep.card2?.title || ''} onChange={(e) => updateStep('card2.title', e.target.value)} />
-                            </div>
-                            <div>
-                                <label className="block text-[10px] text-slate-500 mb-1">Text</label>
-                                <textarea className="w-full h-16 px-2 py-1.5 rounded bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-xs focus:border-[#7f13ec] outline-none resize-none"
-                                    value={activeStep.card2?.text || ''} onChange={(e) => updateStep('card2.text', e.target.value)} />
+
+                                        <div className="flex items-center gap-2 mb-2">
+                                            <button
+                                                className="w-8 h-8 flex items-center justify-center rounded bg-white border border-slate-200 text-slate-500 hover:text-[#7f13ec]"
+                                                onClick={() => setActiveIconPicker(activeIconPicker === `card_${idx}` ? null : `card_${idx}`)}
+                                            >
+                                                <span className="material-symbols-outlined text-[18px]">{card.icon || 'check_circle'}</span>
+                                            </button>
+                                            <div className="flex-1">
+                                                <label className="block text-[9px] text-slate-400 uppercase font-bold">Title</label>
+                                                <input
+                                                    type="text"
+                                                    className="w-full bg-transparent border-b border-transparent hover:border-slate-300 focus:border-[#7f13ec] text-xs font-medium outline-none"
+                                                    value={card.title}
+                                                    onChange={(e) => updateStep(`cards.${idx}.title`, e.target.value)}
+                                                />
+                                            </div>
+                                        </div>
+
+                                        {activeIconPicker === `card_${idx}` && (
+                                            <div className="grid grid-cols-6 gap-1 p-2 border border-slate-200 dark:border-white/10 rounded-lg bg-white dark:bg-[#1f1629] shadow-sm mb-2 z-10 relative">
+                                                {AVAILABLE_ICONS.map(iconName => (
+                                                    <button key={iconName} className="w-6 h-6 flex items-center justify-center rounded hover:bg-slate-100 dark:hover:bg-white/10 text-slate-600 dark:text-slate-400 hover:text-[#7f13ec]"
+                                                        onClick={() => { updateStep(`cards.${idx}.icon`, iconName); setActiveIconPicker(null); }}
+                                                    >
+                                                        <span className="material-symbols-outlined text-sm">{iconName}</span>
+                                                    </button>
+                                                ))}
+                                            </div>
+                                        )}
+
+                                        <div>
+                                            <textarea
+                                                className="w-full h-16 px-2 py-1.5 rounded bg-white dark:bg-black/20 border border-slate-200 dark:border-white/10 text-xs focus:border-[#7f13ec] outline-none resize-none"
+                                                value={card.text}
+                                                onChange={(e) => updateStep(`cards.${idx}.text`, e.target.value)}
+                                            />
+                                        </div>
+                                    </div>
+                                ))}
                             </div>
                         </div>
 

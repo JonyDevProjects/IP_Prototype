@@ -9,34 +9,74 @@ export const TimelineBlockDefinition: BlockDefinition = {
     icon: 'view_timeline',
     createBlock: (id) => ({
         id,
-        type: 'timeline',
+        type: 'timeline', // Fixed: Added missing type property
         content: [
             {
-                title: 'Génesis', summary: 'Definición inicial', icon: 'lightbulb', theme: 'amber',
-                detailTitle: 'Génesis', detailSubtitle: 'Propósito y conceptos clave antes de iniciar.',
+                title: 'Génesis y Valoración', summary: '¿De dónde surge la necesidad?', icon: 'lightbulb', theme: 'amber',
+                detailTitle: 'Génesis y Valoración', detailSubtitle: '¿De dónde surge la necesidad?',
                 detailIcon: 'lightbulb',
-                card1: { title: 'Metric', text: 'Description text goes here.', icon: 'check_circle' },
-                card2: { title: 'Action', text: 'Description text goes here.', icon: 'check_circle' },
-                footerTip: 'Tip de PMP: This is a helpful tip about this process step.',
+                cards: [
+                    { title: 'Detonantes', text: 'Obsolescencia técnica, competencia, ideas de empleados u oportunidades de ahorro.', icon: 'check_circle' },
+                    { title: 'Acción Clave', text: 'Valorar si la idea se alinea con la estrategia y si es financieramente viable.', icon: 'check_circle' }
+                ],
+                footerTip: 'Tip de PMP: Este proceso culmina con el Project Charter. Sin él, no debes iniciar la planificación detallada.',
                 footerTipIcon: 'help'
             },
             {
-                title: 'Viabilidad', summary: 'Business Case', icon: 'settings', theme: 'blue',
-                detailTitle: 'Viabilidad', detailSubtitle: 'Evaluación financiera y estratégica.',
+                title: 'Solución Conceptual', summary: '¿Cómo lo vamos a resolver?', icon: 'settings', theme: 'blue',
+                detailTitle: 'Solución Conceptual', detailSubtitle: '¿Cómo lo vamos a resolver?',
                 detailIcon: 'settings',
-                card1: { title: 'Metric', text: 'ROI & NPV calculations', icon: 'calculate' },
-                card2: { title: 'Action', text: 'Approve Business Case', icon: 'thumb_up' },
-                footerTip: 'Tip: Always align with strategic objectives.',
-                footerTipIcon: 'info'
+                cards: [
+                    { title: 'Análisis de Alternativas', text: '¿Comprar software (COTS)? ¿Desarrollo a medida? ¿Adaptar sistema actual? ¿Externalizar?', icon: 'check_circle' },
+                    { title: 'Criterios', text: 'Decidir basándose en Tiempo, Coste, Riesgo y Conocimiento del equipo.', icon: 'check_circle' }
+                ],
+                footerTip: '',
+                footerTipIcon: ''
             },
             {
-                title: 'Project Charter', summary: 'Autorización', icon: 'rocket_launch', theme: 'purple',
-                detailTitle: 'Project Charter', detailSubtitle: 'Documento que formaliza el proyecto.',
+                title: 'Estudio de Negocio', summary: 'Justificando la inversión (Business Case)', icon: 'description', theme: 'indigo',
+                detailTitle: 'Estudio de Negocio', detailSubtitle: 'Justificando la inversión (Business Case)',
+                detailIcon: 'description',
+                cards: [
+                    { title: 'Propósito', text: 'Convencer a la Alta Dirección para aprobar el presupuesto.', icon: 'check_circle' },
+                    { title: 'Componentes', text: 'Visión estratégica, análisis financiero (ROI/VAN), análisis competitivo y riesgos iniciales.', icon: 'check_circle' }
+                ],
+                footerTip: '',
+                footerTipIcon: ''
+            },
+            {
+                title: 'Alcance Preliminar', summary: 'Dibujando la cancha', icon: 'track_changes', theme: 'red',
+                detailTitle: 'Alcance Preliminar', detailSubtitle: 'Dibujando la cancha',
+                detailIcon: 'track_changes',
+                cards: [
+                    { title: 'Límites', text: 'Definir claramente qué está DENTRO y qué está FUERA del proyecto.', icon: 'check_circle' },
+                    { title: 'Datos Clave', text: 'Criterios de aceptación, EDT inicial (WBS), Hitos principales y Costes ROM (Orden de Magnitud).', icon: 'check_circle' }
+                ],
+                footerTip: '',
+                footerTipIcon: ''
+            },
+            {
+                title: 'Interesados (Stakeholders)', summary: '¿A quién afecta?', icon: 'groups', theme: 'green',
+                detailTitle: 'Interesados (Stakeholders)', detailSubtitle: '¿A quién afecta?',
+                detailIcon: 'groups',
+                cards: [
+                    { title: 'Mapeo', text: 'Identificar a todos los actores relevantes desde el inicio.', icon: 'check_circle' },
+                    { title: 'Preguntas', text: '¿Quién recibe el beneficio? ¿Quién provee los datos? ¿Quién lo supervisa? ¿Quién sufre las repercusiones?', icon: 'check_circle' }
+                ],
+                footerTip: '',
+                footerTipIcon: ''
+            },
+            {
+                title: 'Lanzamiento (Project Charter)', summary: 'Luz verde oficial', icon: 'rocket_launch', theme: 'purple',
+                detailTitle: 'Lanzamiento (Project Charter)', detailSubtitle: 'Luz verde oficial',
                 detailIcon: 'rocket_launch',
-                card1: { title: 'Scope', text: 'High-level requirements', icon: 'list' },
-                card2: { title: 'Auth', text: 'Sign-off via sponsor', icon: 'signature' },
-                footerTip: 'Tip: The PM is assigned here.',
-                footerTipIcon: 'person'
+                cards: [
+                    { title: 'Oficialización', text: 'Firma del Acta de Constitución (Project Charter).', icon: 'check_circle' },
+                    { title: 'Equipo', text: 'Nombrar al Project Manager (PM) y formar el equipo núcleo.', icon: 'check_circle' },
+                    { title: 'Kick-off', text: 'Reunión de lanzamiento para alinear expectativas.', icon: 'check_circle' }
+                ],
+                footerTip: 'Tip de PMP: Este proceso culmina con el Project Charter. Sin él, no debes iniciar la planificación detallada.',
+                footerTipIcon: 'help'
             }
         ],
         metadata: { activeStepIndex: 0 }

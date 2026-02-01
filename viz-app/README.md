@@ -1,73 +1,29 @@
-# React + TypeScript + Vite
+# VizApp - ExpertPath Prototype
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Este proyecto es la evolución de un prototipo de infografía estática hacia una aplicación web profesional, escalable y mantenible (SaaS LMS).
 
-Currently, two official plugins are available:
+## 1. Historia y Evolución
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### Fase 1: El Monolito (Legacy)
+El proyecto nació como `Tema1_Infografic.tsx`, un archivo único de >500 líneas que mezclaba lógica, datos y presentación.
+-   **Problemas**: Difícil de mantener, sin tipos, sin reutilización.
 
-## React Compiler
+### Fase 2: Profesionalización (Enero 2026)
+Se migró a una arquitectura **Vite + React + TypeScript**.
+-   **Modularización**: Separación de `data`, `utils` y `components`.
+-   **Testing**: Introducción de Vitest y React Testing Library.
+-   **Internacionalización**: Extracción de textos a JSON.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Fase 3: Arquitectura Feature-Based y Agentes (Actualidad)
+Se reestructuró el proyecto para soportar un Editor SaaS complejo.
+-   **Registry Pattern**: El editor no conoce los bloques; los carga dinámicamente desde un registro (`src/components/blocks/registry.ts`).
+-   **Ecosistema de Agentes**: Se implementaron reglas estrictas (`.agent/rules/`) y workflows (`.agent/workflows/`) para que agentes de IA colaboren en el desarrollo (Arquitecto, QA, Supervisor).
 
-## Expanding the ESLint configuration
+## 2. Arquitectura Técnica
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+El proyecto sigue una estructura **Feature-Based**. Ver `estructura-directorios.md` para detalles completos.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+### Conceptos Clave
+1.  **Features vs UI**: La lógica de negocio (`src/features/editor`) está separada de los componentes visuales puros (`src/components/ui`).
+2.  **Bloques como Plugins**: Cada tipo de contenido (Timeline, Video, Quiz) es un módulo independiente con su propia Vista y Panel de Propiedades.
+3.  **Strict refactoring Standards**: Reglas automáticas para evitar deuda técnica (ej: modularizar archivos >300 líneas).

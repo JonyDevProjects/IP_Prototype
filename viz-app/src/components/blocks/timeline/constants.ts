@@ -8,7 +8,7 @@ export const AVAILABLE_ICONS = [
     'call_split', 'timeline', 'psychology', 'group_add'
 ];
 
-export type ThemeColor = 'amber' | 'blue' | 'purple' | 'green' | 'red' | 'slate';
+export type ThemeColor = 'amber' | 'blue' | 'purple' | 'green' | 'red' | 'slate' | 'indigo';
 
 export const STEP_THEMES: Record<ThemeColor, any> = {
     amber: {
@@ -40,5 +40,10 @@ export const STEP_THEMES: Record<ThemeColor, any> = {
         bg: 'bg-slate-50', text: 'text-slate-900', iconBg: 'bg-slate-200 text-slate-500',
         border: 'border-slate-300', hoverBorder: 'hover:border-slate-300',
         detail: { border: 'border-slate-200', iconColor: 'text-slate-400', activeBorder: 'border-slate-400 border-b-4' }
+    },
+    indigo: {
+        bg: 'bg-indigo-50', text: 'text-indigo-900', iconBg: 'bg-indigo-100 text-indigo-500',
+        border: 'border-indigo-400', hoverBorder: 'hover:border-indigo-200',
+        detail: { border: 'border-indigo-200', iconColor: 'text-indigo-500', activeBorder: 'border-indigo-400 border-b-4' }
     }
 };
