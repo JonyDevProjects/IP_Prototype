@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import type { Course, ContentBlock } from '../../../types/course';
 import { EditorHeader } from './EditorHeader';
-import { EditorToolbox } from './EditorToolbox';
+import { EditorSidebar } from './Sidebar/EditorSidebar';
 import { EditorPropertiesSidebar } from './EditorPropertiesSidebar';
 import { EditorCanvas } from './EditorCanvas';
 import { useEditorDragDrop } from '../hooks/useEditorDragDrop';
@@ -14,7 +14,7 @@ interface EditorMainProps {
 export const EditorMain: React.FC<EditorMainProps> = ({ courseData, onSave }) => {
     // Navigation State
     const [currentModuleIndex, setCurrentModuleIndex] = useState(0);
-    const [currentUnitIndex, setCurrentUnitIndex] = useState(1);
+    const [currentUnitIndex, setCurrentUnitIndex] = useState(0);
 
     // Derived State
     const activeModule = courseData?.modules?.[currentModuleIndex] || courseData?.modules?.[0];
@@ -88,7 +88,93 @@ export const EditorMain: React.FC<EditorMainProps> = ({ courseData, onSave }) =>
     return (
         <div className="flex h-screen overflow-hidden bg-white dark:bg-[#0B1120] font-display text-slate-900 dark:text-white transition-colors duration-300">
 
-            <EditorToolbox
+            <EditorSidebar
+                course={courseData}
+                currentModuleIndex={currentModuleIndex}
+                currentUnitIndex={currentUnitIndex}
+                onSelectUnit={(m, u) => {
+                    setCurrentModuleIndex(m);
+                    setCurrentUnitIndex(u);
+                    // Reset selection when changing units
+                    setSelectedBlockId(null);
+                }}
+                onAddModule={(title) => {
+                    const newModule: any = { // Typed as any to avoid complex mock creation inline
+                        id: `m-${Date.now()}`,
+                        order: courseData.modules.length + 1,
+                        title,
+                        description: '',
+                        units: []
+                    };
+                    onSave({
+                        ...courseData,
+                        modules: [...courseData.modules, newModule]
+                    });
+                }}
+                onAddUnit={(mIdx, title) => {
+                    const updatedModules = [...courseData.modules];
+                    const module = updatedModules[mIdx];
+                    const newUnit: any = {
+                        id: `u-${Date.now()}`,
+                        title,
+                        durationMin: 0,
+                        isCompleted: false,
+                        blocks: []
+                    };
+                    module.units = [...module.units, newUnit];
+                    updatedModules[mIdx] = module;
+                    onSave({ ...courseData, modules: updatedModules });
+
+                    // Auto select the new unit
+                    setCurrentModuleIndex(mIdx);
+                    setCurrentUnitIndex(module.units.length - 1);
+                }}
+                onDeleteModule={(mIdx) => {
+                    const updatedModules = courseData.modules.filter((_, i) => i !== mIdx);
+                    onSave({ ...courseData, modules: updatedModules });
+
+                    // Adjust selection
+                    if (currentModuleIndex === mIdx) {
+                        setCurrentModuleIndex(0);
+                        setCurrentUnitIndex(0);
+                    } else if (currentModuleIndex > mIdx) {
+                        setCurrentModuleIndex(currentModuleIndex - 1);
+                    }
+                }}
+                onDeleteUnit={(mIdx, uIdx) => {
+                    const updatedModules = [...courseData.modules];
+                    const module = updatedModules[mIdx];
+                    module.units = module.units.filter((_, i) => i !== uIdx);
+                    updatedModules[mIdx] = module;
+                    onSave({ ...courseData, modules: updatedModules });
+
+                    // Adjust selection if we deleted the current unit
+                    if (currentModuleIndex === mIdx) {
+                        if (currentUnitIndex === uIdx) {
+                            setCurrentUnitIndex(Math.max(0, uIdx - 1));
+                        } else if (currentUnitIndex > uIdx) {
+                            setCurrentUnitIndex(currentUnitIndex - 1);
+                        }
+                    }
+                }}
+                onUpdateModule={(mIdx, updates) => {
+                    const updatedModules = [...courseData.modules];
+                    updatedModules[mIdx] = { ...updatedModules[mIdx], ...updates };
+                    onSave({ ...courseData, modules: updatedModules });
+                }}
+                onMoveModule={(fromIdx, toIdx) => {
+                    const updatedModules = [...courseData.modules];
+                    const [movedModule] = updatedModules.splice(fromIdx, 1);
+                    updatedModules.splice(toIdx, 0, movedModule);
+
+                    // Update order property
+                    const reorderedModules = updatedModules.map((m, idx) => ({ ...m, order: idx + 1 }));
+
+                    onSave({ ...courseData, modules: reorderedModules });
+
+                    if (currentModuleIndex === fromIdx) setCurrentModuleIndex(toIdx);
+                    else if (currentModuleIndex === toIdx) setCurrentModuleIndex(fromIdx);
+                }}
                 onDragStart={handleDragStart}
                 onDragEnd={resetDragState}
             />
@@ -102,7 +188,7 @@ export const EditorMain: React.FC<EditorMainProps> = ({ courseData, onSave }) =>
 
                 <EditorCanvas
                     blocks={blocks}
-                    headerInfo={headerInfo}
+                    headerInfo={{ ...headerInfo, moduleTitle: activeModule?.title }}
                     selectedBlockId={selectedBlockId}
                     zoomLevel={zoomLevel}
                     dragState={dragState}

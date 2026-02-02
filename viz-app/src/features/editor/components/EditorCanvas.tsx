@@ -7,7 +7,7 @@ import { InlineText } from '../../../components/ui/InlineText';
 
 interface EditorCanvasProps {
     blocks: ContentBlock[];
-    headerInfo: { title: string; description: string };
+    headerInfo: { title: string; description: string; moduleTitle?: string };
     selectedBlockId: string | null;
     zoomLevel: number;
     dragState: {
@@ -15,7 +15,7 @@ interface EditorCanvasProps {
         dragOverBlockId: string | null;
         dropPosition: 'before' | 'after' | null;
     };
-    onUpdateHeader: (updates: Partial<{ title: string; description: string }>) => void;
+    onUpdateHeader: (updates: Partial<{ title: string; description: string; moduleTitle?: string }>) => void;
     onBlockClick: (e: React.MouseEvent, blockId: string) => void;
     onCanvasClick: () => void;
     onDeleteBlock: (blockId: string) => void;
@@ -146,7 +146,7 @@ export const EditorCanvas: React.FC<EditorCanvasProps> = ({
 
             {/* Zoom / Info Bar */}
             <div className="absolute bottom-6 left-12 right-72 px-8 pointer-events-none flex justify-between items-center text-slate-400 text-sm">
-                <span className="bg-white/80 dark:bg-black/50 backdrop-blur px-2 py-1 rounded">Module 2.1</span>
+                <span className="bg-white/80 dark:bg-black/50 backdrop-blur px-2 py-1 rounded">{headerInfo.moduleTitle || 'Unknown Module'}</span>
                 <div className="flex items-center gap-2 pointer-events-auto bg-white/80 dark:bg-black/50 backdrop-blur px-2 py-1 rounded shadow-sm border border-slate-200 dark:border-white/10">
                     <button onClick={() => setZoomLevel(prev => Math.max(50, prev - 10))}>-</button>
                     <span className="w-12 text-center">{zoomLevel}%</span>

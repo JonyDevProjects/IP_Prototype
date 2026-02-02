@@ -7,11 +7,13 @@ import type { ContentBlockType } from '../../../types/course';
 interface EditorToolboxProps {
     onDragStart: (e: React.DragEvent, type: ContentBlockType) => void;
     onDragEnd: () => void;
+    className?: string;
+    itemClassName?: string;
 }
 
-export const EditorToolbox: React.FC<EditorToolboxProps> = ({ onDragStart, onDragEnd }) => {
+export const EditorToolbox: React.FC<EditorToolboxProps> = ({ onDragStart, onDragEnd, className, itemClassName }) => {
     return (
-        <aside className="w-16 flex flex-col items-center py-4 bg-white dark:bg-[#1f1629] border-r border-slate-200 dark:border-white/10 shrink-0 z-20 gap-4">
+        <aside className={`w-16 flex flex-col items-center py-4 bg-white dark:bg-[#1f1629] border-r border-slate-200 dark:border-white/10 shrink-0 z-20 gap-4 ${className || ''}`}>
             <ToolButton icon="view_quilt" label="Layouts" />
 
             {/* Dynamically Render Tools from Registry */}
@@ -23,6 +25,7 @@ export const EditorToolbox: React.FC<EditorToolboxProps> = ({ onDragStart, onDra
                     draggable
                     onDragStart={(e) => onDragStart(e, def.type)}
                     onDragEnd={onDragEnd}
+                    className={itemClassName}
                 />
             ))}
 

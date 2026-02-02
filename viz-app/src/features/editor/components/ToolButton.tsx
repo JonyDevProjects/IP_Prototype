@@ -8,7 +8,7 @@ interface ToolButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> 
 
 export const ToolButton = ({ icon, label, isActive = false, ...props }: ToolButtonProps) => (
     <button
-        className={`w-10 h-10 rounded-lg flex items-center justify-center transition-colors group relative ${isActive ? 'text-[#7f13ec] bg-[#7f13ec]/10 border border-[#7f13ec]/20' : 'text-slate-500 hover:bg-slate-100 dark:hover:bg-white/5 hover:text-[#7f13ec]'} ${props.draggable ? 'cursor-grab active:cursor-grabbing' : ''}`}
+        className={`w-10 h-10 rounded-lg flex items-center justify-center transition-colors group relative ${isActive ? 'text-[#7f13ec] bg-[#7f13ec]/10 border border-[#7f13ec]/20' : 'text-slate-500 hover:bg-slate-100 dark:hover:bg-white/5 hover:text-[#7f13ec]'} ${props.draggable ? 'cursor-grab active:cursor-grabbing' : ''} ${props.className || ''}`}
         {...props}
     >
         <span className="material-symbols-outlined text-[20px]">{icon}</span>
