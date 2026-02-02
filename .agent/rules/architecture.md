@@ -23,5 +23,11 @@ Este proyecto sigue una estructura de directorios estricta para mantener la esca
 - **Flujo Unidireccional**: `Features` -> `Components`.
 - **Aislamiento**: Las `Features` no deben depender entre sí directamente. Si algo debe compartirse entre dos features, debe promoverse a `src/components/` o `src/services/`.
 
-## 3. Proceso de Verificación
+## 3. Arquitectura de Plugins (Registry Pattern)
+El editor está diseñado para ser extensible sin modificar el núcleo.
+-   **Nuevos Bloques**: NO modifiques `EditorLayout.tsx`.
+-   **Registro**: Añade tu bloque en `src/components/blocks/registry.ts`.
+-   **Carga Dinámica**: El editor itera sobre el registro para renderizar la Sidebar y el Canvas.
+
+## 4. Proceso de Verificación
 Antes de finalizar cualquier tarea, se debe verificar que ningún componente nuevo haya sido colocado en el lugar incorrecto.
