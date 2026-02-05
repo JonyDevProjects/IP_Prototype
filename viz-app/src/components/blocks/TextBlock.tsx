@@ -1,18 +1,83 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import type { ContentBlock } from '../../types/course';
 import type { BlockDefinition } from './types';
 import { PropertySection } from '../ui/PropertySection';
 import { RichTextEditor } from '../ui/RichTextEditor';
+import { getBestSpanishVoice } from '../../utils/ttsUtils';
 
 const TextComponent: React.FC<{
     block: ContentBlock;
     isSelected: boolean;
     onClick: (e: React.MouseEvent) => void;
     onUpdate: (updates: Partial<ContentBlock>) => void;
-}> = ({ block, isSelected, onClick, onUpdate }) => {
+    playMode?: 'auto' | 'manual';
+    onTTSComplete?: () => void;
+}> = ({ block, isSelected, onClick, onUpdate, playMode, onTTSComplete }) => {
+    const mountedRef = useRef(true);
+    const synth = window.speechSynthesis;
+
+    useEffect(() => {
+        mountedRef.current = true;
+        return () => {
+            mountedRef.current = false;
+        };
+    }, []);
+
+    useEffect(() => {
+        if (playMode === 'auto') {
+            // Extract plain text from HTML content
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = block.content as string;
+            const plainText = tempDiv.textContent || tempDiv.innerText || '';
+
+            if (plainText.trim()) {
+                synth.cancel();
+
+                // Load voices and play
+                const voices = synth.getVoices();
+                const selectedVoice = getBestSpanishVoice(voices);
+
+                const utterance = new SpeechSynthesisUtterance(plainText);
+                if (selectedVoice) {
+                    utterance.voice = selectedVoice;
+                    utterance.lang = selectedVoice.lang;
+                } else {
+                    utterance.lang = 'es-ES';
+                }
+                utterance.rate = 1.2;
+
+                utterance.onend = () => {
+                    if (mountedRef.current && onTTSComplete) {
+                        onTTSComplete();
+                    }
+                };
+
+                utterance.onerror = (e) => {
+                    console.error("Text Block TTS Error:", e);
+                    if (mountedRef.current && onTTSComplete) {
+                        onTTSComplete();
+                    }
+                };
+
+                synth.speak(utterance);
+            } else {
+                // If no text, immediately complete
+                if (onTTSComplete) {
+                    onTTSComplete();
+                }
+            }
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [playMode]);
+
     return (
         <div
-            className={`p-6 rounded-lg bg-white dark:bg-[#1f1629] border transition-all duration-200 ${isSelected ? 'border-[#7f13ec] ring-2 ring-[#7f13ec]/20 shadow-md' : 'border-slate-200 dark:border-white/5 hover:border-slate-300'}`}
+            className={`p-6 rounded-lg bg-white dark:bg-[#1f1629] border transition-all duration-200 ${playMode === 'auto'
+                    ? 'border-[#7f13ec] ring-2 ring-[#7f13ec]/40 shadow-md'
+                    : isSelected
+                        ? 'border-[#7f13ec] ring-2 ring-[#7f13ec]/20 shadow-md'
+                        : 'border-slate-200 dark:border-white/5 hover:border-slate-300'
+                }`}
             onClick={onClick}
         >
             <RichTextEditor

@@ -1,11 +1,12 @@
 // Definición de la estructura de datos para el LMS (ExpertPath)
 
-export type ContentBlockType = 'text' | 'image' | 'quiz' | 'timeline' | 'alert' | 'mermaid';
+export type ContentBlockType = 'text' | 'image' | 'quiz' | 'timeline' | 'step' | 'alert' | 'mermaid';
 
 export interface ContentBlock {
   id: string;
   type: ContentBlockType;
   content: any; // Puede ser string, objeto de quiz, etc.
+  ttsEnabled?: boolean; // Controls if this block is included in unit-level TTS
   metadata?: {
     className?: string; // Para overrides de estilo
     interactive?: boolean;

@@ -6,15 +6,16 @@ interface EditorBlockWrapperProps {
     isSelected: boolean;
     onClick: (e: React.MouseEvent) => void;
     onDelete?: () => void;
+    onUpdate?: (updates: Partial<ContentBlock>) => void;
     onDragStart?: (e: React.DragEvent) => void;
     children: React.ReactNode;
 }
 
-export const EditorBlockWrapper = ({ block, isSelected, onClick, onDelete, onDragStart, children }: EditorBlockWrapperProps) => {
+export const EditorBlockWrapper = ({ block, isSelected, onClick, onDelete, onUpdate, onDragStart, children }: EditorBlockWrapperProps) => {
     return (
         <div
-            className={`relative group rounded-xl transition-all duration-200 ${isSelected
-                ? 'ring-2 ring-[#7f13ec] ring-offset-4 ring-offset-slate-50 dark:ring-offset-[#150a1f] z-10'
+            className={`relative group rounded-3xl transition-all duration-200 ${isSelected
+                ? 'ring-2 ring-[#7f13ec] z-10'
                 : 'hover:ring-1 hover:ring-slate-300 dark:hover:ring-white/20'
                 }`}
             onClick={onClick}
@@ -49,6 +50,25 @@ export const EditorBlockWrapper = ({ block, isSelected, onClick, onDelete, onDra
                 >
                     <span className="material-symbols-outlined text-[18px]">settings</span>
                 </button>
+
+                {/* TTS Toggle */}
+                {onUpdate && (
+                    <button
+                        className={`w-8 h-8 flex items-center justify-center rounded-full transition-colors ${block.ttsEnabled === false
+                            ? 'text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-900/20'
+                            : 'text-slate-400 hover:text-slate-600 hover:bg-slate-100 dark:hover:text-slate-200 dark:hover:bg-white/5'
+                            }`}
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            onUpdate({ ttsEnabled: block.ttsEnabled === false ? true : false });
+                        }}
+                        title={block.ttsEnabled === false ? "Enable TTS" : "Disable TTS"}
+                    >
+                        <span className="material-symbols-outlined text-[18px]">
+                            {block.ttsEnabled === false ? 'volume_off' : 'volume_up'}
+                        </span>
+                    </button>
+                )}
 
                 {/* Delete */}
                 {onDelete && (

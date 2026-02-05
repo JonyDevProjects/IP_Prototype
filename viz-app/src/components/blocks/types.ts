@@ -12,6 +12,9 @@ export interface BlockDefinition {
         block: ContentBlock;
         isSelected: boolean;
         isEditable?: boolean;
+        highlightItemId?: string | null;
+        playMode?: 'auto' | 'manual';
+        onTTSComplete?: () => void;
         onClick: (e: React.MouseEvent) => void;
         onUpdate: (updates: Partial<ContentBlock>) => void;
     }>;

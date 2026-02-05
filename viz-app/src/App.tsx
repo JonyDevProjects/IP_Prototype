@@ -21,23 +21,39 @@ function App() {
     console.log('Course Saved!', updatedCourse);
   };
 
+  const handleReset = () => {
+    if (window.confirm('¿Estás seguro de que quieres resetear todos los datos? Se perderán los cambios guardados en el Editor.')) {
+      localStorage.removeItem('ip_course_data');
+      setCourseData(tema2CourseData);
+      console.log('Course Reset to Defaults!');
+    }
+  };
+
   return (
     <div className="relative min-h-screen bg-white dark:bg-[#191022] transition-colors duration-300">
 
       {/* Development Toggle */}
-      <div className="fixed bottom-4 right-4 z-50 flex gap-2 bg-black/80 p-2 rounded-full backdrop-blur-sm border border-white/10">
+      <div className="fixed bottom-4 right-4 z-50 flex flex-col gap-2 items-end">
         <button
-          onClick={() => setViewMode('player')}
-          className={`px-3 py-1 rounded-full text-xs font-bold transition-colors ${viewMode === 'player' ? 'bg-[#7f13ec] text-white' : 'text-gray-400 hover:text-white'}`}
+          onClick={handleReset}
+          className="px-3 py-1.5 rounded-full text-[10px] font-bold bg-red-500/10 text-red-500 border border-red-500/20 hover:bg-red-500/20 transition-colors backdrop-blur-sm mb-1"
         >
-          Player View
+          Reset Data
         </button>
-        <button
-          onClick={() => setViewMode('editor')}
-          className={`px-3 py-1 rounded-full text-xs font-bold transition-colors ${viewMode === 'editor' ? 'bg-[#7f13ec] text-white' : 'text-gray-400 hover:text-white'}`}
-        >
-          Editor View
-        </button>
+        <div className="flex gap-2 bg-black/80 p-2 rounded-full backdrop-blur-sm border border-white/10">
+          <button
+            onClick={() => setViewMode('player')}
+            className={`px-3 py-1 rounded-full text-xs font-bold transition-colors ${viewMode === 'player' ? 'bg-[#7f13ec] text-white' : 'text-gray-400 hover:text-white'}`}
+          >
+            Player View
+          </button>
+          <button
+            onClick={() => setViewMode('editor')}
+            className={`px-3 py-1 rounded-full text-xs font-bold transition-colors ${viewMode === 'editor' ? 'bg-[#7f13ec] text-white' : 'text-gray-400 hover:text-white'}`}
+          >
+            Editor View
+          </button>
+        </div>
       </div>
 
       {/* Renderizado Condicional */}

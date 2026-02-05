@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
-import { ContentBlock } from '../../../types/course';
+import type { ContentBlock } from '../../../types/course';
 import { getBlockDefinition } from '../../../components/blocks/registry';
 
 interface PlayerBlockWrapperProps {
     block: ContentBlock;
+    highlightItemId?: string | null;
+    playMode?: 'auto' | 'manual';
+    onTTSComplete?: () => void;
 }
 
-export const PlayerBlockWrapper: React.FC<PlayerBlockWrapperProps> = ({ block: initialBlock }) => {
+export const PlayerBlockWrapper: React.FC<PlayerBlockWrapperProps> = ({ block: initialBlock, highlightItemId, playMode, onTTSComplete }) => {
     // We maintain a local version of the block state to allow for interactivity 
     // (e.g., changing tabs, checking boxes) without modifying the actual course source.
     const [block, setBlock] = useState<ContentBlock>(initialBlock);
@@ -30,6 +33,9 @@ export const PlayerBlockWrapper: React.FC<PlayerBlockWrapperProps> = ({ block: i
                 block={block}
                 isSelected={false}
                 isEditable={false}
+                highlightItemId={highlightItemId}
+                playMode={playMode}
+                onTTSComplete={onTTSComplete}
                 onClick={() => { }} // No-op for selection
                 onUpdate={handleUpdate}
             />

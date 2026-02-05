@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Volume2, Square } from 'lucide-react';
+import { getBestSpanishVoice } from '../../utils/ttsUtils';
 
 interface TTSStep {
     id: string;
@@ -77,30 +78,6 @@ const TextToSpeechButton: React.FC<TextToSpeechProps> = ({
         }
     };
 
-    // Helper to get the best Spanish voice
-    const getBestVoice = (): SpeechSynthesisVoice | null => {
-        if (availableVoices.length === 0) return null;
-
-        // Rankings: 
-        // 1. Google Español (Chrome)
-        // 2. Microsoft Natural (Edge)
-        // 3. Paulina (Mexico) or Monica (Spain) - Common high quality
-        // 4. Any es-ES
-        // 5. Any es-*
-
-        const isGoogle = (v: SpeechSynthesisVoice) => v.name.includes('Google') && v.lang.includes('es');
-        const isMicrosoftNatural = (v: SpeechSynthesisVoice) => v.name.includes('Microsoft') && v.name.includes('Natural') && v.lang.includes('es');
-        const isPremiumEs = (v: SpeechSynthesisVoice) => (v.name.includes('Paulina') || v.name.includes('Monica')) && v.lang.includes('es');
-
-        const best = availableVoices.find(isGoogle)
-            || availableVoices.find(isMicrosoftNatural)
-            || availableVoices.find(isPremiumEs)
-            || availableVoices.find(v => v.lang === 'es-ES')
-            || availableVoices.find(v => v.lang.startsWith('es'));
-
-        return best || null; // Fallback to default if no Spanish voice found (unlikely)
-    };
-
     const handlePlay = () => {
         if (isPlaying) {
             stopAll();
@@ -110,10 +87,7 @@ const TextToSpeechButton: React.FC<TextToSpeechProps> = ({
         setIsPlaying(true);
         window.speechSynthesis.cancel(); // Safety clear
 
-        const selectedVoice = getBestVoice();
-
-        // Debug
-        // console.log("Selected Voice:", selectedVoice?.name);
+        const selectedVoice = getBestSpanishVoice(availableVoices);
 
         if (steps && steps.length > 0) {
             // Sequence Mode
@@ -122,9 +96,11 @@ const TextToSpeechButton: React.FC<TextToSpeechProps> = ({
 
                 if (selectedVoice) {
                     utterance.voice = selectedVoice;
+                    utterance.lang = selectedVoice.lang;
+                } else {
+                    utterance.lang = 'es-ES';
                 }
-                // Fallback lang if no voice (though voice usually sets lang)
-                utterance.lang = selectedVoice ? selectedVoice.lang : 'es-ES';
+
                 utterance.rate = rate;
 
                 // Event: Start of this specific step
@@ -156,8 +132,10 @@ const TextToSpeechButton: React.FC<TextToSpeechProps> = ({
             const utterance = new SpeechSynthesisUtterance(text);
             if (selectedVoice) {
                 utterance.voice = selectedVoice;
+                utterance.lang = selectedVoice.lang;
+            } else {
+                utterance.lang = 'es-ES';
             }
-            utterance.lang = selectedVoice ? selectedVoice.lang : 'es-ES';
             utterance.rate = rate;
 
             utterance.onend = () => {
@@ -182,8 +160,6 @@ const TextToSpeechButton: React.FC<TextToSpeechProps> = ({
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [autoPlay, isSupported, availableVoices]);
-    // Added availableVoices to dependency: if voices load late, we might want to restart? 
-    // Actually, purely creating the utterance later is better, but this is simple enough.
 
     if (!isSupported) return null;
 

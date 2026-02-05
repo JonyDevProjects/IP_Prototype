@@ -117,6 +117,7 @@ export const EditorCanvas: React.FC<EditorCanvasProps> = ({
                                         isSelected={selectedBlockId === block.id}
                                         onClick={(e) => onBlockClick(e, block.id)}
                                         onDelete={() => onDeleteBlock(block.id)}
+                                        onUpdate={(updates) => onUpdateBlock(block.id, updates)}
                                         onDragStart={(e) => onBlockDragStart(e, block.id)}
                                     >
                                         <def.Component

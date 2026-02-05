@@ -1,0 +1,86 @@
+
+import React from 'react';
+import type { ContentBlock } from '../../../types/course';
+import { StepDetailView } from '../timeline/StepDetailView';
+import type { TimelineStep } from '../timeline/types';
+import TextToSpeechButton from '../../shared/TextToSpeechButton';
+import { useStepTTS } from './hooks/useStepTTS';
+
+export const StepBlockView: React.FC<{
+    block: ContentBlock;
+    isSelected: boolean;
+    isEditable?: boolean;
+    highlightItemId?: string | null;
+    playMode?: 'auto' | 'manual';
+    onTTSComplete?: () => void;
+    onClick: (e: React.MouseEvent) => void;
+    onUpdate: (updates: Partial<ContentBlock>) => void;
+}> = ({ block, highlightItemId, playMode, onTTSComplete, isEditable = true, onClick, onUpdate }) => {
+
+    const step = block.content as unknown as TimelineStep;
+
+    const { ttsSteps, activeReadingId, handleTTSStepChange } = useStepTTS({
+        step,
+        autoPlay: playMode === 'auto',
+        onComplete: onTTSComplete
+    });
+
+    // Use global highlight if provided, otherwise local TTS
+    const activeHighlightId = highlightItemId || activeReadingId;
+
+    const getEffectiveHighlightClass = (targetId: string) => {
+        if (!activeHighlightId) return "";
+        return activeHighlightId === targetId
+            ? "ring-2 ring-indigo-400 scale-[1.01] shadow-lg z-20 bg-white dark:bg-black/20 relative transition-all duration-300"
+            : "opacity-30 blur-[1px] grayscale transition-all duration-300";
+    };
+
+    const handleUpdate = (field: string, val: string) => {
+        const newStep = { ...step };
+
+        // Similar logic to properties, but usually updates come from InlineText which sends flat updates usually?
+        // Actually InlineText sends what onChange expects.
+        // In StepDetailView, it calls `onUpdate('detailTitle', val)` or `onUpdate('cards.0.title', val)`.
+
+        if (field.includes('.')) {
+            const parts = field.split('.');
+            if (parts.length === 3 && parts[0] === 'cards') {
+                // cards.0.title
+                const [_, indexStr, child] = parts;
+                const index = parseInt(indexStr, 10);
+                const cards = [...(newStep.cards || [])];
+                cards[index] = { ...cards[index], [child]: val };
+                newStep.cards = cards;
+            }
+        } else {
+            (newStep as any)[field] = val;
+        }
+
+        onUpdate({ content: newStep });
+    };
+
+    return (
+        <div
+            className="relative group transition-all duration-200"
+            onClick={onClick}
+        >
+            {/* Header with TTS DO NOT REMOVE -> This is new */}
+            <div className="absolute top-4 right-4 z-20 flex gap-2">
+                <TextToSpeechButton
+                    steps={ttsSteps}
+                    onStepChange={handleTTSStepChange}
+                    className="shadow-sm"
+                />
+            </div>
+
+            <StepDetailView
+                step={step}
+                stepNumber={1}
+                showNumber={false}
+                isEditable={isEditable}
+                onUpdate={handleUpdate}
+                getHighlightClass={getEffectiveHighlightClass}
+            />
+        </div>
+    );
+};

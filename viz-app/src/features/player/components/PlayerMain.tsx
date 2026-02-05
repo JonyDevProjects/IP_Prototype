@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import type { Course } from '../../../types/course';
 import { PlayerSidebar } from './PlayerSidebar';
 import { PlayerBlockWrapper } from './PlayerBlockWrapper';
+import { useUnitAudio } from '../hooks/useUnitAudio';
+import { useTextSequence } from '../hooks/useTextSequence';
 
 interface PlayerMainProps {
     courseData: Course;
@@ -14,11 +16,43 @@ export const PlayerMain: React.FC<PlayerMainProps> = ({ courseData }) => {
     const activeModule = courseData.modules[currentModuleIndex] || courseData.modules[0];
     const activeUnit = activeModule?.units[currentUnitIndex] || activeModule?.units[0];
 
+    // Global Audio Hook
+    const { isPlaying, play, pause, activeBlockId, nextBlock, hasAudio } = useUnitAudio(activeUnit);
+
+    // Intro TTS Sequence (Title + Description)
+    const introItems = React.useMemo(() => [
+        { id: 'intro-title', text: activeUnit.title },
+        { id: 'intro-desc', text: activeModule.description || "Content description goes here." }
+    ], [activeUnit.title, activeModule.description]);
+
+    const { activeItemId: activeIntroId, cancel: cancelIntro } = useTextSequence({
+        items: introItems,
+        autoPlay: activeBlockId === 'intro',
+        onComplete: nextBlock
+    });
+
+    // Stop intro if global pause
+    if (!isPlaying && activeBlockId === 'intro') {
+        cancelIntro();
+    }
+
+    // Header Highlight logic
+    const isIntroActive = activeBlockId === 'intro';
+    const introHighlightClass = isIntroActive
+        ? "ring-2 ring-indigo-400 scale-[1.01] shadow-lg sticky top-4 z-30 transition-all duration-300 bg-white dark:bg-[#1f1629] rounded-xl p-4 -m-4"
+        : "transition-all duration-300";
+
+    // ... (render) ...
+
     // Calculate simple progress
     const progressPercent = courseData.totalProgress;
 
     return (
         <div className="flex flex-col h-screen overflow-hidden bg-white dark:bg-[#191022] font-display text-[#140d1b] dark:text-white transition-colors duration-300">
+            {/* Header ... */}
+
+            {/* ... skipping unchanged parts ... */}
+
 
             {/* Top Navigation */}
             <header className="flex-none flex items-center justify-between whitespace-nowrap border-b border-solid border-[#ede7f3] dark:border-white/10 px-6 py-3 bg-white dark:bg-[#1f1629] z-20 shadow-sm transition-colors duration-300">
@@ -32,6 +66,16 @@ export const PlayerMain: React.FC<PlayerMainProps> = ({ courseData }) => {
                     </div>
                 </div>
                 <div className="flex items-center gap-6">
+                    {/* Global Play Button (Header version, optional vs Footer) */}
+                    <button
+                        className={`hidden md:flex items-center gap-2 cursor-pointer transition-colors text-sm font-bold bg-[#faf8fc] dark:bg-white/5 px-4 py-2 rounded-full border border-transparent hover:border-[#7f13ec]/20 ${isPlaying ? 'text-[#7f13ec]' : 'text-[#734c9a]'}`}
+                        onClick={isPlaying ? pause : play}
+                        disabled={!hasAudio}
+                    >
+                        <span className="material-symbols-outlined text-[20px]">{isPlaying ? 'pause_circle' : 'play_circle'}</span>
+                        <span>{isPlaying ? 'Pause Lesson' : 'Play Lesson'}</span>
+                    </button>
+
                     <button className="hidden md:flex items-center gap-2 cursor-pointer text-[#734c9a] hover:text-[#7f13ec] transition-colors text-sm font-bold bg-[#faf8fc] dark:bg-white/5 px-4 py-2 rounded-full border border-transparent hover:border-[#7f13ec]/20">
                         <span className="material-symbols-outlined text-[20px]">dashboard</span>
                         <span>Dashboard</span>
@@ -79,13 +123,15 @@ export const PlayerMain: React.FC<PlayerMainProps> = ({ courseData }) => {
                     <div className="flex-1 overflow-y-auto p-6 lg:p-12 scroll-smooth">
                         <div className="max-w-5xl mx-auto flex flex-col gap-8 pb-24">
                             {/* Unit Content */}
-                            <div className="flex flex-col gap-4">
+                            <div className={`flex flex-col gap-4 ${introHighlightClass}`}>
                                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#7f13ec]/10 w-fit text-[#7f13ec] text-xs font-bold uppercase tracking-wider border border-[#7f13ec]/20">
                                     <span className="w-2 h-2 rounded-full bg-[#7f13ec] animate-pulse"></span>
                                     Interactive Activity
                                 </div>
-                                <h1 className="text-[#140d1b] dark:text-white text-3xl md:text-4xl font-extrabold leading-tight tracking-tight">{activeUnit.title}</h1>
-                                <p className="text-[#734c9a] dark:text-slate-300 text-lg font-normal leading-relaxed max-w-3xl">
+                                <h1 className={`text-[#140d1b] dark:text-white text-3xl md:text-4xl font-extrabold leading-tight tracking-tight ${activeIntroId === 'intro-title' ? 'text-[#7f13ec] dark:text-[#a855f7]' : ''}`}>
+                                    {activeUnit.title}
+                                </h1>
+                                <p className={`text-[#734c9a] dark:text-slate-300 text-lg font-normal leading-relaxed max-w-3xl ${activeIntroId === 'intro-desc' ? 'text-[#140d1b] dark:text-white font-medium' : ''}`}>
                                     {/* Description now correctly pulls from the module description to match Editor */}
                                     {activeModule.description || "Content description goes here."}
                                 </p>
@@ -94,7 +140,13 @@ export const PlayerMain: React.FC<PlayerMainProps> = ({ courseData }) => {
                             {/* DYNAMIC BLOCKS RENDERING */}
                             <div className="flex flex-col gap-6 mt-4">
                                 {activeUnit.blocks.map(block => (
-                                    <PlayerBlockWrapper key={block.id} block={block} />
+                                    <PlayerBlockWrapper
+                                        key={block.id}
+                                        block={block}
+                                        playMode={activeBlockId === block.id ? 'auto' : 'manual'}
+                                        onTTSComplete={activeBlockId === block.id ? nextBlock : undefined}
+                                        highlightItemId={null}
+                                    />
                                 ))}
                             </div>
                         </div>
@@ -104,8 +156,12 @@ export const PlayerMain: React.FC<PlayerMainProps> = ({ courseData }) => {
                     <footer className="flex-none bg-white dark:bg-[#1f1629] border-t border-[#ede7f3] dark:border-white/10 px-6 py-4 z-20 shadow-[0_-5px_15px_rgba(0,0,0,0.05)] transition-colors duration-300">
                         <div className="max-w-7xl mx-auto flex items-center justify-between">
                             <div className="flex items-center gap-4 w-1/4">
-                                <button className="text-[#734c9a] hover:text-[#7f13ec] transition-colors p-2 rounded-full hover:bg-[#f7f6f8] dark:hover:bg-white/5">
-                                    <span className="material-symbols-outlined">volume_up</span>
+                                <button
+                                    className={`transition-colors p-2 rounded-full hover:bg-[#f7f6f8] dark:hover:bg-white/5 ${isPlaying ? 'text-[#7f13ec]' : 'text-[#734c9a] hover:text-[#7f13ec]'}`}
+                                    onClick={isPlaying ? pause : play}
+                                    title={isPlaying ? "Pause" : "Play"}
+                                >
+                                    <span className="material-symbols-outlined">{isPlaying ? 'volume_off' : 'volume_up'}</span>
                                 </button>
                             </div>
                             <div className="flex items-center gap-4 justify-center w-2/4">
