@@ -15,6 +15,8 @@ interface TextToSpeechProps {
     rate?: number;
     onPlayStateChange?: (isPlaying: boolean) => void;
     onStepChange?: (stepId: string | null) => void;
+    playLabel?: string;
+    stopLabel?: string;
 }
 
 const TextToSpeechButton: React.FC<TextToSpeechProps> = ({
@@ -22,7 +24,9 @@ const TextToSpeechButton: React.FC<TextToSpeechProps> = ({
     steps,
     className = '',
     autoPlay = false,
-    rate = 1.5,
+    rate = 1.2,
+    playLabel = 'Escuchar Lección',
+    stopLabel = 'Detener',
     onPlayStateChange,
     onStepChange
 }) => {
@@ -200,7 +204,7 @@ const TextToSpeechButton: React.FC<TextToSpeechProps> = ({
             ) : (
                 <Volume2 size={14} />
             )}
-            <span>{isPlaying ? 'Detener' : 'Escuchar Lección'}</span>
+            <span>{isPlaying ? stopLabel : playLabel}</span>
         </button>
     );
 };

@@ -138,4 +138,22 @@ Se abordó la complejidad ciclomática de `SlideTripleConstraint`.
 - **Resultado**: `SlideTripleConstraint.tsx` redujo su tamaño y complejidad drásticamente, convirtiéndose en un componente puramente presentacional (Dumb Component) que recibe datos y handlers de su "cerebro" (Smart Hook).
 
 ### Conclusión del Ciclo
-El proyecto ha pasado de ser un prototipo frágil a una aplicación con infraestructura de tests, separación clara de conceptos (Datos/Lógica/Vista) y una arquitectura preparada para escalar al Tema 2 y más allá.
+El proyecto ha pasado de ser un prototipo frágil a una aplicación con infraestructura de tests, separación clara de conceptos (Datos/Lógica/Vista) y una arquitectura preparada para escalar.
+
+## 8. Narración Sincronizada (TTS) en Línea de Tiempo (Febrero 2026)
+
+Se integró una característica de **Text-to-Speech (TTS)** avanzada en el bloque de **Línea de Tiempo (Timeline)**, elevando la interactividad y accesibilidad del componente.
+
+### A. Generación Dinámica de Pasos
+A diferencia de implementaciones previas con textos estáticos, el audio para el Timeline se genera dinámicamente desde el `block.content`:
+- **Estructura**: Se mapean jerárquicamente títulos, subtítulos, tarjetas de detalle y tips de pie de página.
+- **IDs Únicos**: Cada fragmento de texto recibe un ID (ej. `step-0-title`, `step-0-card-1`) que permite el seguimiento en tiempo real.
+
+### B. "Efecto Karaoke" y Navegación Automática
+- **Sincronización de Vista**: Al cambiar de paso en la narración, el componente dispara automáticamente un `onUpdate` para cambiar el `activeStepIndex`. Esto asegura que el usuario siempre vea lo que está escuchando.
+- **Foco Visual**: Se implementó la utilidad `getHighlightClass` que aplica estilos de escala (`scale-[1.01]`), anillos de luz (`ring-indigo-400`) y desenfoque de fondo (`blur-[1px] grayscale`) a los elementos inactivos durante la lectura.
+
+### C. Refinamiento de UX
+- **Velocidad de Voz**: Se ajustó el `rate` global a **1.2** en `TextToSpeechButton.tsx` para mejorar la cadencia natural del aprendizaje.
+- **Interfaz Limpia**: El control de audio se ubicó en la cabecera del bloque, respetando el diseño minimalista de la plataforma.
+
