@@ -8,8 +8,10 @@ function App() {
 
   // Load initial state from LocalStorage or Fallback to Mock
   const [courseData, setCourseData] = useState(() => {
-    const saved = localStorage.getItem('ip_course_data');
-    return saved ? JSON.parse(saved) : tema2CourseData;
+    // Priority to the mock file for development as requested
+    return tema2CourseData;
+    // const saved = localStorage.getItem('ip_course_data');
+    // return saved ? JSON.parse(saved) : tema2CourseData;
   });
 
   // Save to LocalStorage whenever courseData changes (auto-save for now, or explicit save via Editor)
