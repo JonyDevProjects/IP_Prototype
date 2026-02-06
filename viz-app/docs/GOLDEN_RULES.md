@@ -28,6 +28,8 @@ This document serves as the **SINGLE SOURCE OF TRUTH** for architectural decisio
         *   `onTTSComplete?: () => void`
         *   `highlightItemId?: string | null`
     *   **Rule:** If a block contains text (like paragraphs), it MUST implement logic to extract that text and speak it when `playMode === 'auto'`, then call `onTTSComplete`.
+    *   **Rule (Parity):** When adding a global feature (e.g., `rate`, `volume`), verification MUST be done across ALL block types in the registry.
+    *   **Rule (Real-Time Audio):** Audio settings (volume, speed) must apply instantly without restarting the block. Implement "Resume-on-Change" logic using character tracking.
 
 ## 3. Data Structure (Mocks & State)
 *   **Hierarchy:** `Chapter` -> `Module` -> `Unit` -> `Block`.
@@ -46,3 +48,6 @@ This document serves as the **SINGLE SOURCE OF TRUTH** for architectural decisio
 ## 5. Agent Workflow
 *   **Before Coding:** ALWAYS check `viz-app/src/data/mocks` to understand the data structure you are working with.
 *   **Before Modifying TTS:** Review `useTextSequence.ts` to understand the queue/cancellation logic. Avoid introducing race conditions.
+*   **Testing:**
+    *   **Rule:** Tests for TTS features MUST use mock objects for `SpeechSynthesisEvent` (`{ charIndex: 5, name: 'word' }`) to avoid environment errors in Vitest.
+    *   **Rule:** Tests MUST verify that audio is NOT cancelled indiscriminately on unmount unless clearly intended.

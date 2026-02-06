@@ -1,9 +1,13 @@
+
 import React, { useState } from 'react';
 import { CourseStructurePanel } from './CourseStructurePanel';
 import { EditorToolbox } from '../EditorToolbox';
 import type { ContentBlockType } from '../../../../types/course';
 import type { Course } from '../../../../types/course';
 import { ModuleSettingsPanel } from './ModuleSettingsPanel';
+import { Sidebar, SidebarBody, SidebarLink, useSidebar } from '@/components/ui/sidebar';
+import { LayoutDashboard, Cuboid } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 interface EditorSidebarProps {
     course: Course;
@@ -20,7 +24,18 @@ interface EditorSidebarProps {
     onDragEnd: () => void;
 }
 
-export const EditorSidebar: React.FC<EditorSidebarProps> = ({
+export const EditorSidebar: React.FC<EditorSidebarProps> = (props) => {
+    const [open, setOpen] = useState(false);
+    return (
+        <div className="h-full flex flex-col bg-gray-100 dark:bg-neutral-800 border-r border-neutral-200 dark:border-neutral-700 overflow-hidden">
+            <Sidebar open={open} setOpen={setOpen}>
+                <EditorSidebarContent {...props} />
+            </Sidebar>
+        </div>
+    );
+};
+
+const EditorSidebarContent = ({
     course,
     currentModuleIndex,
     currentUnitIndex,
@@ -33,97 +48,98 @@ export const EditorSidebar: React.FC<EditorSidebarProps> = ({
     onMoveModule,
     onDragStart,
     onDragEnd
-}) => {
+}: EditorSidebarProps) => {
+    const { open } = useSidebar();
     const [activeTab, setActiveTab] = useState<'structure' | 'blocks'>('structure');
     const [editingModuleIndex, setEditingModuleIndex] = useState<number | null>(null);
 
-    // If we have an editing module, we render the settings panel instead of the structure
-    // But only if we are in the 'structure' tab (though conceptually it replaces the whole view, 
-    // keeping it within the tab context feels safer for navigation flow).
+    const links = [
+        {
+            label: "Structure",
+            href: "#",
+            icon: <LayoutDashboard className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />,
+            onClick: () => setActiveTab('structure'),
+            active: activeTab === 'structure'
+        },
+        {
+            label: "Blocks",
+            href: "#",
+            icon: <Cuboid className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />,
+            onClick: () => setActiveTab('blocks'),
+            active: activeTab === 'blocks'
+        }
+    ];
 
     return (
-        <aside className="w-64 flex flex-col bg-white dark:bg-[#1f1629] border-r border-slate-200 dark:border-white/10 shrink-0 z-20 h-full">
-            {/* Tabs (Hidden if editing a module) */}
-            {editingModuleIndex === null && (
-                <div className="flex border-b border-slate-200 dark:border-white/10">
-                    <button
-                        onClick={() => setActiveTab('structure')}
-                        className={`flex-1 py-3 text-xs font-bold uppercase tracking-wide transition-colors ${activeTab === 'structure'
-                            ? 'text-[#7f13ec] border-b-2 border-[#7f13ec]'
-                            : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-300'
-                            }`}
-                    >
-                        Structure
-                    </button>
-                    <button
-                        onClick={() => setActiveTab('blocks')}
-                        className={`flex-1 py-3 text-xs font-bold uppercase tracking-wide transition-colors ${activeTab === 'blocks'
-                            ? 'text-[#7f13ec] border-b-2 border-[#7f13ec]'
-                            : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-300'
-                            }`}
-                    >
-                        Blocks
-                    </button>
-                </div>
-            )}
-
-            {/* Content */}
-            <div className="flex-1 overflow-hidden relative">
-                {editingModuleIndex !== null ? (
-                    <ModuleSettingsPanel
-                        module={course.modules[editingModuleIndex]}
-                        isFirst={editingModuleIndex === 0}
-                        isLast={editingModuleIndex === course.modules.length - 1}
-                        onUpdate={(updates) => onUpdateModule(editingModuleIndex, updates)}
-                        onDelete={() => {
-                            if (confirm('Delete this module?')) {
-                                onDeleteModule(editingModuleIndex);
-                                setEditingModuleIndex(null);
-                            }
-                        }}
-                        onMoveUp={() => {
-                            if (editingModuleIndex > 0) {
-                                onMoveModule(editingModuleIndex, editingModuleIndex - 1);
-                                setEditingModuleIndex(editingModuleIndex - 1);
-                            }
-                        }}
-                        onMoveDown={() => {
-                            if (editingModuleIndex < course.modules.length - 1) {
-                                onMoveModule(editingModuleIndex, editingModuleIndex + 1);
-                                setEditingModuleIndex(editingModuleIndex + 1);
-                            }
-                        }}
-                        onBack={() => setEditingModuleIndex(null)}
-                    />
-                ) : activeTab === 'structure' ? (
-                    <CourseStructurePanel
-                        course={course}
-                        currentModuleIndex={currentModuleIndex}
-                        currentUnitIndex={currentUnitIndex}
-                        onSelectUnit={(m, u) => {
-                            onSelectUnit(m, u);
-                        }}
-                        onAddModule={onAddModule}
-                        onAddUnit={onAddUnit}
-                        onDeleteModule={onDeleteModule}
-                        onDeleteUnit={onDeleteUnit}
-                        onUpdateModule={onUpdateModule} // Still passed for compatibility/cleanup later
-                        onEditModule={(mIdx) => setEditingModuleIndex(mIdx)} // New Handler
-                    />
-                ) : (
-                    <div className="h-full overflow-y-auto">
-                        <div className="p-4 grid grid-cols-2 gap-2">
-                            <p className="col-span-2 text-xs text-slate-400 mb-2">Drag blocks to canvas</p>
-                            <EditorToolbox
-                                onDragStart={onDragStart}
-                                onDragEnd={onDragEnd}
-                                className="w-full border-none !items-stretch !py-0 !bg-transparent"
-                                itemClassName="w-full h-auto aspect-square flex-col gap-2 p-2"
-                            />
+        <SidebarBody className="justify-between gap-10 bg-white dark:bg-[#1f1629]">
+            <div className="flex flex-col flex-1 overflow-hidden h-full">
+                {/* Navigation Links (Tabs) */}
+                <div className="flex flex-col gap-2 mb-4">
+                    {links.map((link, idx) => (
+                        <div key={idx} onClick={(e) => { e.preventDefault(); link.onClick(); }}>
+                            <SidebarLink link={link} className={cn(link.active && "bg-gray-100 dark:bg-gray-800 rounded-lg")} />
                         </div>
+                    ))}
+                </div>
+
+                {/* Main Content Area - Only visible when open */}
+                {open && (
+                    <div className="flex-1 overflow-hidden relative animate-in fade-in duration-300">
+                        {editingModuleIndex !== null ? (
+                            <ModuleSettingsPanel
+                                module={course.modules[editingModuleIndex]}
+                                isFirst={editingModuleIndex === 0}
+                                isLast={editingModuleIndex === course.modules.length - 1}
+                                onUpdate={(updates) => onUpdateModule(editingModuleIndex, updates)}
+                                onDelete={() => {
+                                    if (confirm('Delete this module?')) {
+                                        onDeleteModule(editingModuleIndex);
+                                        setEditingModuleIndex(null);
+                                    }
+                                }}
+                                onMoveUp={() => {
+                                    if (editingModuleIndex > 0) {
+                                        onMoveModule(editingModuleIndex, editingModuleIndex - 1);
+                                        setEditingModuleIndex(editingModuleIndex - 1);
+                                    }
+                                }}
+                                onMoveDown={() => {
+                                    if (editingModuleIndex < course.modules.length - 1) {
+                                        onMoveModule(editingModuleIndex, editingModuleIndex + 1);
+                                        setEditingModuleIndex(editingModuleIndex + 1);
+                                    }
+                                }}
+                                onBack={() => setEditingModuleIndex(null)}
+                            />
+                        ) : activeTab === 'structure' ? (
+                            <CourseStructurePanel
+                                course={course}
+                                currentModuleIndex={currentModuleIndex}
+                                currentUnitIndex={currentUnitIndex}
+                                onSelectUnit={onSelectUnit}
+                                onAddModule={onAddModule}
+                                onAddUnit={onAddUnit}
+                                onDeleteModule={onDeleteModule}
+                                onDeleteUnit={onDeleteUnit}
+                                onUpdateModule={onUpdateModule}
+                                onEditModule={(mIdx) => setEditingModuleIndex(mIdx)}
+                            />
+                        ) : (
+                            <div className="h-full overflow-y-auto">
+                                <div className="p-4 grid grid-cols-2 gap-2">
+                                    <p className="col-span-2 text-xs text-slate-400 mb-2">Drag blocks to canvas</p>
+                                    <EditorToolbox
+                                        onDragStart={onDragStart}
+                                        onDragEnd={onDragEnd}
+                                        className="w-full border-none !items-stretch !py-0 !bg-transparent"
+                                        itemClassName="w-full h-auto aspect-square flex-col gap-2 p-2"
+                                    />
+                                </div>
+                            </div>
+                        )}
                     </div>
                 )}
             </div>
-        </aside>
+        </SidebarBody>
     );
 };

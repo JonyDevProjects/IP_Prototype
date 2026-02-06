@@ -63,15 +63,6 @@ export const tema2CourseData: Course = {
                 footerTip: '',
                 footerTipIcon: ''
               }
-            },
-            {
-              id: 'b2',
-              type: 'alert',
-              content: {
-                title: 'Objetivo Final',
-                text: 'Su objetivo final es obtener la aprobación formal para guiar la ejecución.',
-                icon: 'lightbulb'
-              }
             }
           ]
         },
@@ -97,8 +88,8 @@ export const tema2CourseData: Course = {
                   { title: 'Detonantes', text: 'Obsolescencia técnica, competencia, ideas de empleados u oportunidades de ahorro.', icon: 'check_circle' },
                   { title: 'Acción Clave', text: 'Valorar si la idea se alinea con la estrategia y si es financieramente viable.', icon: 'check_circle' }
                 ],
-                footerTip: 'Tip de PMP: Este proceso culmina con el Project Charter. Sin él, no debes iniciar la planificación detallada.',
-                footerTipIcon: 'help'
+                footerTip: '',
+                footerTipIcon: ''
               }
             },
             {

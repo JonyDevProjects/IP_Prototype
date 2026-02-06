@@ -47,23 +47,22 @@ export const EditorCanvas: React.FC<EditorCanvasProps> = ({
     setZoomLevel
 }) => {
     return (
-        <main className="flex-1 flex flex-col min-w-0 bg-slate-50 dark:bg-[#150a1f] relative overflow-hidden">
+        <div
+            className="flex-1 h-full flex flex-col overflow-hidden relative bg-slate-50 dark:bg-[#150a1f] transition-colors duration-300"
+            onDragOver={onCanvasDragOver}
+            onDrop={onCanvasDrop}
+            onClick={onCanvasClick}
+            style={{
+                backgroundImage: 'radial-gradient(#cbd5e1 1px, transparent 1px)',
+                backgroundSize: '20px 20px'
+            }}
+        >
+
             {/* Canvas Area */}
             <div
                 className="flex-1 relative overflow-auto flex justify-center items-start p-8 transition-colors duration-300"
-                onClick={onCanvasClick}
-                onDragOver={onCanvasDragOver}
-                onDrop={onCanvasDrop}
             >
-                {/* Rulers (Mock) */}
-                <div className="absolute top-0 left-0 w-full h-6 bg-slate-100 dark:bg-[#0B1120] border-b border-slate-200 dark:border-white/5 flex items-end px-2 text-[10px] text-slate-400 font-mono select-none overflow-hidden z-0">
-                    <div className="flex space-x-12 w-full opacity-50">
-                        <span>0</span><span>100</span><span>200</span><span>300</span><span>400</span><span>500</span><span>600</span><span>800</span>
-                    </div>
-                </div>
-                <div className="absolute top-0 left-0 w-6 h-full bg-slate-100 dark:bg-[#0B1120] border-r border-slate-200 dark:border-white/5 flex flex-col pt-8 items-center gap-12 text-[10px] text-slate-400 font-mono select-none overflow-hidden z-0">
-                    <span>0</span><span>100</span><span>200</span><span>300</span><span>400</span>
-                </div>
+
 
                 {/* The Page */}
                 <div
@@ -89,9 +88,7 @@ export const EditorCanvas: React.FC<EditorCanvasProps> = ({
                             placeholder="Add a description..."
                             multiline
                         />
-                        <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                            <span className="material-symbols-outlined text-slate-300">edit</span>
-                        </div>
+
                     </div>
 
                     {/* Blocks Renderer */}
@@ -146,14 +143,31 @@ export const EditorCanvas: React.FC<EditorCanvasProps> = ({
             </div>
 
             {/* Zoom / Info Bar */}
-            <div className="absolute bottom-6 left-12 right-72 px-8 pointer-events-none flex justify-between items-center text-slate-400 text-sm">
-                <span className="bg-white/80 dark:bg-black/50 backdrop-blur px-2 py-1 rounded">{headerInfo.moduleTitle || 'Unknown Module'}</span>
-                <div className="flex items-center gap-2 pointer-events-auto bg-white/80 dark:bg-black/50 backdrop-blur px-2 py-1 rounded shadow-sm border border-slate-200 dark:border-white/10">
-                    <button onClick={() => setZoomLevel(prev => Math.max(50, prev - 10))}>-</button>
-                    <span className="w-12 text-center">{zoomLevel}%</span>
-                    <button onClick={() => setZoomLevel(prev => Math.min(150, prev + 10))}>+</button>
+            {/* Module Info (Bottom Left) */}
+            <div className="absolute bottom-4 left-4 pointer-events-none z-10">
+                <span className="bg-white/90 dark:bg-black/80 backdrop-blur px-3 py-1.5 rounded-full text-xs font-medium text-slate-500 border border-slate-200 dark:border-white/10 shadow-sm">
+                    {headerInfo.moduleTitle || 'Unknown Module'}
+                </span>
+            </div>
+
+            {/* Zoom Controls (Bottom Right) */}
+            <div className="absolute bottom-4 right-4 pointer-events-auto z-10">
+                <div className="flex items-center gap-1 bg-white/90 dark:bg-black/80 backdrop-blur px-1 py-1 rounded-full shadow-sm border border-slate-200 dark:border-white/10 text-xs font-medium text-slate-500">
+                    <button
+                        onClick={() => setZoomLevel(prev => Math.max(50, prev - 10))}
+                        className="w-7 h-7 flex items-center justify-center hover:bg-slate-100 dark:hover:bg-white/10 rounded-full transition-colors"
+                    >
+                        -
+                    </button>
+                    <span className="w-10 text-center select-none">{zoomLevel}%</span>
+                    <button
+                        onClick={() => setZoomLevel(prev => Math.min(150, prev + 10))}
+                        className="w-7 h-7 flex items-center justify-center hover:bg-slate-100 dark:hover:bg-white/10 rounded-full transition-colors"
+                    >
+                        +
+                    </button>
                 </div>
             </div>
-        </main>
+        </div>
     );
 };

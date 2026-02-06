@@ -16,6 +16,12 @@ description: Agente encargado de la estrategia, implementación y verificación 
 3.  **Implementación (Vitest/RTL)**:
     *   Utilizar `videst` y `@testing-library/react`.
     *   Crear archivos `__tests__` colocalizados con el componente.
+    *   Crear archivos `__tests__` colocalizados con el componente.
+
+## 4. Estrategias de Mocking
+*   **Browser APIs**: Para APIs como `window.speechSynthesis` o `ResizeObserver`, USA MOCKS MANUALES.
+    *   *Ejemplo*: `window.speechSynthesis.speak = vi.fn();`
+    *   *Importante*: No instancies eventos complejos (`new SpeechSynthesisEvent`) en tests de nodo. Pasa objetos planos: `handler({ charIndex: 0, name: 'word' } as any)`.
 
 ## Cuándo activar este sub-agente
 -   **Siempre** que se cree lógica de negocio compleja (ej: reducers, hooks, parsers).

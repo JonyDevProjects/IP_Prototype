@@ -17,7 +17,7 @@ export const PlayerMain: React.FC<PlayerMainProps> = ({ courseData }) => {
     const activeUnit = activeModule?.units[currentUnitIndex] || activeModule?.units[0];
 
     // Global Audio Hook
-    const { isPlaying, play, pause, activeBlockId, nextBlock, hasAudio } = useUnitAudio(activeUnit);
+    const { isPlaying, play, pause, stop, activeBlockId, nextBlock, hasAudio, rate, setRate, volume, setVolume } = useUnitAudio(activeUnit);
 
     // Intro TTS Sequence (Title + Description)
     const introItems = React.useMemo(() => [
@@ -25,16 +25,13 @@ export const PlayerMain: React.FC<PlayerMainProps> = ({ courseData }) => {
         { id: 'intro-desc', text: activeModule.description || "Content description goes here." }
     ], [activeUnit.title, activeModule.description]);
 
-    const { activeItemId: activeIntroId, cancel: cancelIntro } = useTextSequence({
+    const { activeItemId: activeIntroId } = useTextSequence({
         items: introItems,
-        autoPlay: activeBlockId === 'intro',
-        onComplete: nextBlock
+        autoPlay: isPlaying && activeBlockId === 'intro',
+        onComplete: nextBlock,
+        rate,
+        volume
     });
-
-    // Stop intro if global pause
-    if (!isPlaying && activeBlockId === 'intro') {
-        cancelIntro();
-    }
 
     // Header Highlight logic
     const isIntroActive = activeBlockId === 'intro';
@@ -42,19 +39,12 @@ export const PlayerMain: React.FC<PlayerMainProps> = ({ courseData }) => {
         ? "ring-2 ring-indigo-400 scale-[1.01] shadow-lg sticky top-4 z-30 transition-all duration-300 bg-white dark:bg-[#1f1629] rounded-xl p-4 -m-4"
         : "transition-all duration-300";
 
-    // ... (render) ...
-
     // Calculate simple progress
     const progressPercent = courseData.totalProgress;
 
     return (
         <div className="flex flex-col h-screen overflow-hidden bg-white dark:bg-[#191022] font-display text-[#140d1b] dark:text-white transition-colors duration-300">
-            {/* Header ... */}
-
-            {/* ... skipping unchanged parts ... */}
-
-
-            {/* Top Navigation */}
+            {/* Header */}
             <header className="flex-none flex items-center justify-between whitespace-nowrap border-b border-solid border-[#ede7f3] dark:border-white/10 px-6 py-3 bg-white dark:bg-[#1f1629] z-20 shadow-sm transition-colors duration-300">
                 <div className="flex items-center gap-4">
                     <div className="size-9 flex items-center justify-center rounded-lg bg-[#7f13ec] text-white shadow-md shadow-[#7f13ec]/30">
@@ -66,30 +56,7 @@ export const PlayerMain: React.FC<PlayerMainProps> = ({ courseData }) => {
                     </div>
                 </div>
                 <div className="flex items-center gap-6">
-                    {/* Global Play Button (Header version, optional vs Footer) */}
-                    <button
-                        className={`hidden md:flex items-center gap-2 cursor-pointer transition-colors text-sm font-bold bg-[#faf8fc] dark:bg-white/5 px-4 py-2 rounded-full border border-transparent hover:border-[#7f13ec]/20 ${isPlaying ? 'text-[#7f13ec]' : 'text-[#734c9a]'}`}
-                        onClick={isPlaying ? pause : play}
-                        disabled={!hasAudio}
-                    >
-                        <span className="material-symbols-outlined text-[20px]">{isPlaying ? 'pause_circle' : 'play_circle'}</span>
-                        <span>{isPlaying ? 'Pause Lesson' : 'Play Lesson'}</span>
-                    </button>
-
-                    <button className="hidden md:flex items-center gap-2 cursor-pointer text-[#734c9a] hover:text-[#7f13ec] transition-colors text-sm font-bold bg-[#faf8fc] dark:bg-white/5 px-4 py-2 rounded-full border border-transparent hover:border-[#7f13ec]/20">
-                        <span className="material-symbols-outlined text-[20px]">dashboard</span>
-                        <span>Dashboard</span>
-                    </button>
-                    <div className="h-8 w-[1px] bg-[#ede7f3] dark:bg-white/10 hidden sm:block"></div>
-                    <div className="flex items-center gap-3">
-                        <div className="text-right hidden sm:block">
-                            <p className="text-sm font-bold text-[#140d1b] dark:text-white">Isabella R.</p>
-                            <p className="text-xs text-[#734c9a]">Student</p>
-                        </div>
-                        <div className="bg-center bg-no-repeat bg-cover rounded-full size-10 ring-2 ring-white dark:ring-white/10 shadow-sm cursor-pointer hover:ring-[#7f13ec] transition-all"
-                            style={{ backgroundImage: 'url("https://lh3.googleusercontent.com/aida-public/AB6AXuALvUAPmhpc5dDM5KTToFh_AGCB7-L7sFB26VUIqi4lOMfiBl2MXNHLKJ4ZFb-QXOAj4yypaaLbBWDaCPJcMwLtjoKdkn-PZwmskAaS-3tM-OubW5OgTEhlmB2gb21YS3Ay9f11vRYBcAnrnnt7g0EZ6xuSysFOUsOcMfSVtK13ySKmEkSXh3mW5v3uAK2yajxmIScwD1q3-88MznTqntUzS5BWsYdxF8NJLQTXCEdnEiWAIkSVENy6NMvuZonV-hZkoC1TbNOrKF22")' }}>
-                        </div>
-                    </div>
+                    {/* Controls moved to footer */}
                 </div>
             </header>
 
@@ -132,7 +99,6 @@ export const PlayerMain: React.FC<PlayerMainProps> = ({ courseData }) => {
                                     {activeUnit.title}
                                 </h1>
                                 <p className={`text-[#734c9a] dark:text-slate-300 text-lg font-normal leading-relaxed max-w-3xl ${activeIntroId === 'intro-desc' ? 'text-[#140d1b] dark:text-white font-medium' : ''}`}>
-                                    {/* Description now correctly pulls from the module description to match Editor */}
                                     {activeModule.description || "Content description goes here."}
                                 </p>
                             </div>
@@ -143,9 +109,11 @@ export const PlayerMain: React.FC<PlayerMainProps> = ({ courseData }) => {
                                     <PlayerBlockWrapper
                                         key={block.id}
                                         block={block}
-                                        playMode={activeBlockId === block.id ? 'auto' : 'manual'}
+                                        playMode={isPlaying && activeBlockId === block.id ? 'auto' : 'manual'}
                                         onTTSComplete={activeBlockId === block.id ? nextBlock : undefined}
                                         highlightItemId={null}
+                                        rate={rate}
+                                        volume={volume}
                                     />
                                 ))}
                             </div>
@@ -155,23 +123,57 @@ export const PlayerMain: React.FC<PlayerMainProps> = ({ courseData }) => {
                     {/* Player Control Footer */}
                     <footer className="flex-none bg-white dark:bg-[#1f1629] border-t border-[#ede7f3] dark:border-white/10 px-6 py-4 z-20 shadow-[0_-5px_15px_rgba(0,0,0,0.05)] transition-colors duration-300">
                         <div className="max-w-7xl mx-auto flex items-center justify-between">
-                            <div className="flex items-center gap-4 w-1/4">
+                            <div className="flex items-center gap-2 w-1/4">
                                 <button
-                                    className={`transition-colors p-2 rounded-full hover:bg-[#f7f6f8] dark:hover:bg-white/5 ${isPlaying ? 'text-[#7f13ec]' : 'text-[#734c9a] hover:text-[#7f13ec]'}`}
+                                    className="transition-all rounded-full text-[#734c9a] hover:text-[#fa3e3e] hover:bg-red-50 dark:hover:bg-red-900/10 active:scale-95"
+                                    onClick={stop}
+                                    title="Stop and Reset"
+                                    disabled={!hasAudio}
+                                >
+                                    <span className="material-symbols-outlined text-[40px]">stop_circle</span>
+                                </button>
+                                <button
+                                    className={`transition-all rounded-full active:scale-95 ${isPlaying ? 'text-[#7f13ec]' : 'text-[#734c9a] hover:text-[#7f13ec] hover:bg-[#f3e8ff] dark:hover:bg-[#7f13ec]/10'}`}
                                     onClick={isPlaying ? pause : play}
                                     title={isPlaying ? "Pause" : "Play"}
                                 >
-                                    <span className="material-symbols-outlined">{isPlaying ? 'volume_off' : 'volume_up'}</span>
+                                    <span className="material-symbols-outlined text-[48px]">{isPlaying ? 'pause_circle' : 'play_circle'}</span>
+                                </button>
+
+                                {/* Volume Slider */}
+                                <div className="flex items-center gap-2 group w-24">
+                                    <span className="material-symbols-outlined text-xs text-[#734c9a]">volume_down</span>
+                                    <input
+                                        type="range"
+                                        min="0"
+                                        max="1"
+                                        step="0.1"
+                                        value={volume}
+                                        onChange={(e) => setVolume(parseFloat(e.target.value))}
+                                        className="w-full h-1 bg-[#ede7f3] rounded-lg appearance-none cursor-pointer accent-[#7f13ec]"
+                                        title={`Volume: ${Math.round(volume * 100)}%`}
+                                    />
+                                </div>
+
+                                {/* Speed Toggle */}
+                                <button
+                                    className="flex items-center justify-center w-8 h-8 rounded-full bg-[#f7f6f8] hover:bg-[#ede7f3] text-[#7f13ec] text-xs font-bold transition-colors"
+                                    onClick={() => {
+                                        const rates = [1, 1.25, 1.5];
+                                        const nextIdx = (rates.indexOf(rate) + 1) % rates.length;
+                                        setRate(rates[nextIdx]);
+                                    }}
+                                    title={`Playback Speed: ${rate}x`}
+                                >
+                                    {rate}x
                                 </button>
                             </div>
                             <div className="flex items-center gap-4 justify-center w-2/4">
                                 <button className="flex items-center gap-2 px-6 py-3 rounded-lg border border-[#ede7f3] dark:border-white/20 text-[#140d1b] dark:text-white font-bold text-sm hover:bg-[#faf8fc] dark:hover:bg-white/5 transition-all focus:ring-2 focus:ring-[#7f13ec]/20"
                                     onClick={() => {
-                                        // Previous Logic
                                         if (currentUnitIndex > 0) setCurrentUnitIndex(prev => prev - 1);
                                         else if (currentModuleIndex > 0) {
                                             setCurrentModuleIndex(prev => prev - 1);
-                                            // Set to last unit of previous module - simpler for now just 0
                                             setCurrentUnitIndex(0);
                                         }
                                     }}>
@@ -180,7 +182,6 @@ export const PlayerMain: React.FC<PlayerMainProps> = ({ courseData }) => {
                                 </button>
                                 <button className="flex items-center gap-2 px-8 py-3 rounded-lg bg-[#7f13ec] text-white font-bold text-sm hover:bg-[#690fc4] shadow-lg shadow-[#7f13ec]/30 transition-all hover:translate-y-[-2px] active:translate-y-[0px] focus:ring-2 focus:ring-offset-2 focus:ring-[#7f13ec]"
                                     onClick={() => {
-                                        // Next Logic
                                         if (currentUnitIndex < activeModule.units.length - 1) setCurrentUnitIndex(prev => prev + 1);
                                         else if (currentModuleIndex < courseData.modules.length - 1) {
                                             setCurrentModuleIndex(prev => prev + 1);

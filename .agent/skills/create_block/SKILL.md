@@ -1,6 +1,14 @@
 ---
 name: Create New Editor Block
-description: Instructions for adding a new content block type (e.g., Video, Quiz) to the Editor using the Registry Architecture.
+description: Instructions for
+## Checklist de Compliance para Player (CRÍTICO)
+Antes de dar por finalizado un nuevo bloque, verifica:
+1.  [ ] **Props**: Acepta `playMode` ('auto'|'manual'), `rate`, `volume`, `onTTSComplete`.
+2.  [ ] **TTS**: Implementa lógica para leer su contenido usando `window.speechSynthesis`.
+3.  [ ] **UX**: Soporta cambio de velocidad/volumen en tiempo real (sin reiniciar desde cero).
+4.  [ ] **Eventos**: Llama a `onTTSComplete()` cuando termina de leer.
+
+## Pasos para crear un nuevo bloque
 ---
 
 # Create New Editor Block

@@ -17,6 +17,8 @@ export interface BlockDefinition {
         onTTSComplete?: () => void;
         onClick: (e: React.MouseEvent) => void;
         onUpdate: (updates: Partial<ContentBlock>) => void;
+        rate?: number;
+        volume?: number;
     }>;
     /** Component to render the properties panel */
     Properties: React.FC<{

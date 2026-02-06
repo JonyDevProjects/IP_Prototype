@@ -22,7 +22,8 @@ description: Standard workflow for implementing and integrating new features saf
 22. **Turbo Check**: If automated tests exist, run them.
 23. **Unit Check**: Activate `/sub-agente-tester` for complex logic or new blocks.
 24. **Arch Check**: Activate `/sub-agente-arquitecto-verificador` to ensure structure compliance.
-24. **UX Check**: Activate `/sub-agente-ux-expert` to review interaction quality (animations, feedback, ease of use).
+25. **Side-Effects Check**: Verify lifecycle management of external APIs (TTS, Video, WebSockets). Ensure cleanup functions (!isCompleteRef) and prevent race conditions. Reference `docs/GOLDEN_RULES.md`.
+26. **UX Check**: Activate `/sub-agente-ux-expert` to review interaction quality (animations, feedback, ease of use).
 25. **Browser Check**: Use the `browser_subagent` to visually verify:
     -   Does it render?
     -   Is it interactive?

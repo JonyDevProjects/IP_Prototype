@@ -1,0 +1,84 @@
+import React from 'react';
+import { render } from '@testing-library/react';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { TextBlockDefinition } from '../TextBlock';
+
+// Mock RichTextEditor since it might be complex
+vi.mock('../../ui/RichTextEditor', () => ({
+    RichTextEditor: () => <div data-testid="rich-text-editor">Editor Mock</div>
+}));
+
+describe('TextBlock Component', () => {
+    const TextComponent = TextBlockDefinition.Component;
+    const mockBlock = {
+        id: 'test-id',
+        type: 'text',
+        content: '<p>Hello <strong>World</strong></p>'
+    };
+
+    beforeEach(() => {
+        vi.spyOn(window.speechSynthesis, 'speak');
+        vi.spyOn(window.speechSynthesis, 'cancel');
+    });
+
+    afterEach(() => {
+        vi.clearAllMocks();
+    });
+
+    it('renders without crashing', () => {
+        const { getByTestId } = render(
+            <TextComponent
+                block={mockBlock}
+                isSelected={false}
+                onClick={() => { }}
+                onUpdate={() => { }}
+            />
+        );
+        expect(getByTestId('rich-text-editor')).toBeDefined();
+    });
+
+    it('plays audio when playMode is auto', () => {
+        render(
+            <TextComponent
+                block={mockBlock}
+                isSelected={false}
+                onClick={() => { }}
+                onUpdate={() => { }}
+                playMode="auto"
+            />
+        );
+
+        expect(window.speechSynthesis.cancel).toHaveBeenCalled();
+        expect(window.speechSynthesis.speak).toHaveBeenCalled();
+
+        // Verify text extraction
+        const connectMock = window.speechSynthesis.speak as any;
+        const utterance = connectMock.mock.calls[0][0];
+        // Note: Creating a div and setting innerHTML in JSDOM might behave slightly differently 
+        // regarding whitespace, but "Hello World" should be present.
+        expect(utterance.text).toContain('Hello');
+        expect(utterance.text).toContain('World');
+    });
+
+    it('calls onTTSComplete when audio finishes', () => {
+        const onTTSComplete = vi.fn();
+        render(
+            <TextComponent
+                block={mockBlock}
+                isSelected={false}
+                onClick={() => { }}
+                onUpdate={() => { }}
+                playMode="auto"
+                onTTSComplete={onTTSComplete}
+            />
+        );
+
+        const connectMock = window.speechSynthesis.speak as any;
+        const utterance = connectMock.mock.calls[0][0];
+
+        // Simulate finish
+        utterance.onend();
+
+        expect(onTTSComplete).toHaveBeenCalled();
+    });
+});

@@ -8,13 +8,25 @@ interface UseStepTTSProps {
     stepIndex?: number; // Optional, defaults to 0
     autoPlay?: boolean;
     onComplete?: () => void;
+    rate?: number;
+    volume?: number;
 }
 
-export const useStepTTS = ({ step, stepIndex = 0, autoPlay = false, onComplete }: UseStepTTSProps) => {
+export const useStepTTS = ({ step, stepIndex = 0, autoPlay = false, onComplete, rate = 1, volume = 1 }: UseStepTTSProps) => {
     const [activeReadingId, setActiveReadingId] = useState<string | null>(null);
     const [availableVoices, setAvailableVoices] = useState<SpeechSynthesisVoice[]>([]);
     const synth = window.speechSynthesis;
     const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
+    const currentIndexRef = useRef(0);
+    const lastCharIndexRef = useRef(0);
+    const mountedRef = useRef(true);
+
+    useEffect(() => {
+        mountedRef.current = true;
+        return () => {
+            mountedRef.current = false;
+        };
+    }, []);
 
     useEffect(() => {
         const loadVoices = () => {
@@ -76,28 +88,50 @@ export const useStepTTS = ({ step, stepIndex = 0, autoPlay = false, onComplete }
 
     useEffect(() => {
         if (autoPlay && ttsSteps.length > 0) {
-            playSequence(0);
+            // Check if we are resuming
+            const startIndex = currentIndexRef.current;
+            const startOffset = lastCharIndexRef.current;
+
+            // If we are already past the end, reset?
+            if (startIndex >= ttsSteps.length) {
+                currentIndexRef.current = 0;
+                lastCharIndexRef.current = 0;
+                playSequence(0, 0);
+            } else {
+                playSequence(startIndex, startOffset);
+            }
+        } else {
+            cancel();
         }
         // Cleanup on unmount or if autoPlay stops? 
         return () => {
             if (autoPlay) cancel();
         };
-    }, [autoPlay, ttsSteps]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [autoPlay, ttsSteps, rate, volume]);
 
 
-    const playSequence = (index: number) => {
+    const playSequence = (index: number, charOffset = 0) => {
+        if (!mountedRef.current) return;
+
         if (index >= ttsSteps.length) {
             setActiveReadingId(null);
+            currentIndexRef.current = 0; // Reset for next time
+            lastCharIndexRef.current = 0;
             if (onComplete) onComplete();
             return;
         }
 
+        currentIndexRef.current = index;
         const item = ttsSteps[index];
         setActiveReadingId(item.id);
 
         cancel(); // Stop current
 
-        const utterance = new SpeechSynthesisUtterance(item.text);
+        const plainText = item.text;
+        const textSegment = plainText.slice(charOffset);
+
+        const utterance = new SpeechSynthesisUtterance(textSegment);
         const selectedVoice = getBestSpanishVoice(availableVoices);
 
         if (selectedVoice) {
@@ -107,15 +141,27 @@ export const useStepTTS = ({ step, stepIndex = 0, autoPlay = false, onComplete }
             utterance.lang = 'es-ES';
         }
 
-        utterance.rate = 1.2; // Match the manual button speed
+        utterance.rate = rate;
+        utterance.volume = volume;
+
+        utterance.onboundary = (e) => {
+            if (e.name === 'word' || e.name === 'sentence') {
+                lastCharIndexRef.current = charOffset + e.charIndex;
+            }
+        };
 
         utterance.onend = () => {
-            playSequence(index + 1);
+            if (mountedRef.current) {
+                lastCharIndexRef.current = 0; // Reset char index for NEXT item
+                playSequence(index + 1, 0);
+            }
         };
 
         utterance.onerror = () => {
             // Skip to next if error
-            playSequence(index + 1);
+            if (mountedRef.current) {
+                playSequence(index + 1, 0);
+            }
         };
 
         utteranceRef.current = utterance;

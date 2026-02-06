@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { motion } from 'framer-motion';
 import type { ContentBlock } from '../../../types/course';
 import { getBlockDefinition } from '../../../components/blocks/registry';
 
@@ -7,9 +8,11 @@ interface PlayerBlockWrapperProps {
     highlightItemId?: string | null;
     playMode?: 'auto' | 'manual';
     onTTSComplete?: () => void;
+    rate?: number;
+    volume?: number;
 }
 
-export const PlayerBlockWrapper: React.FC<PlayerBlockWrapperProps> = ({ block: initialBlock, highlightItemId, playMode, onTTSComplete }) => {
+export const PlayerBlockWrapper: React.FC<PlayerBlockWrapperProps> = ({ block: initialBlock, highlightItemId, playMode, onTTSComplete, rate, volume }) => {
     // We maintain a local version of the block state to allow for interactivity 
     // (e.g., changing tabs, checking boxes) without modifying the actual course source.
     const [block, setBlock] = useState<ContentBlock>(initialBlock);
@@ -28,7 +31,13 @@ export const PlayerBlockWrapper: React.FC<PlayerBlockWrapperProps> = ({ block: i
     // We pass `isSelected={false}` since we are in Player mode.
     // We pass our local `handleUpdate` so interactions (like tab switching) work visually.
     return (
-        <div className="mb-8">
+        <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-50px" }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+            className="mb-8"
+        >
             <def.Component
                 block={block}
                 isSelected={false}
@@ -38,7 +47,9 @@ export const PlayerBlockWrapper: React.FC<PlayerBlockWrapperProps> = ({ block: i
                 onTTSComplete={onTTSComplete}
                 onClick={() => { }} // No-op for selection
                 onUpdate={handleUpdate}
+                rate={rate}
+                volume={volume}
             />
-        </div>
+        </motion.div>
     );
 };

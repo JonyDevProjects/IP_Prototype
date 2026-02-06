@@ -6,13 +6,15 @@ export interface TextSequenceItem {
     text: string;
 }
 
-interface UseTextSequenceProps {
+export interface UseTextSequenceProps {
     items: TextSequenceItem[];
     autoPlay?: boolean;
     onComplete?: () => void;
+    rate?: number;
+    volume?: number;
 }
 
-export const useTextSequence = ({ items, autoPlay = false, onComplete }: UseTextSequenceProps) => {
+export const useTextSequence = ({ items, autoPlay = false, onComplete, rate = 1, volume = 1 }: UseTextSequenceProps) => {
     const [activeItemId, setActiveItemId] = useState<string | null>(null);
     const [availableVoices, setAvailableVoices] = useState<SpeechSynthesisVoice[]>([]);
     const synth = window.speechSynthesis;
@@ -54,7 +56,7 @@ export const useTextSequence = ({ items, autoPlay = false, onComplete }: UseText
             }
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [autoPlay, items]);
+    }, [autoPlay, items, rate, volume]);
 
     const playSequence = (startIndex: number) => {
         if (!mountedRef.current) return;
@@ -82,7 +84,8 @@ export const useTextSequence = ({ items, autoPlay = false, onComplete }: UseText
                 utterance.lang = 'es-ES';
             }
 
-            utterance.rate = 1.2;
+            utterance.rate = rate;
+            utterance.volume = volume;
 
             utterance.onstart = () => {
                 if (mountedRef.current) {

@@ -5,12 +5,19 @@ export const useUnitAudio = (unit: Unit | null) => {
     const [isPlaying, setIsPlaying] = useState(false);
     const [activeBlockId, setActiveBlockId] = useState<string | null>(null);
     const [currentIndex, setCurrentIndex] = useState<number>(-1);
+    const [rate, setRate] = useState(1);
+    const [volume, setVolume] = useState(1);
 
-    // Reset when unit changes
+    // Reset when unit changes and cleanup on unmount
     useEffect(() => {
         setIsPlaying(false);
         setActiveBlockId(null);
         setCurrentIndex(-1);
+        window.speechSynthesis.cancel();
+
+        return () => {
+            window.speechSynthesis.cancel();
+        };
     }, [unit?.id]);
 
     // We prepend a virtual 'intro' block to the sequence so the Player can read Title/Description first
@@ -33,6 +40,13 @@ export const useUnitAudio = (unit: Unit | null) => {
         window.speechSynthesis.cancel(); // Hard stop for now
     };
 
+    const stop = () => {
+        setIsPlaying(false);
+        setActiveBlockId(null);
+        setCurrentIndex(-1);
+        window.speechSynthesis.cancel();
+    };
+
     const nextBlock = useCallback(() => {
         if (!isPlaying) return;
 
@@ -52,8 +66,13 @@ export const useUnitAudio = (unit: Unit | null) => {
         isPlaying,
         play,
         pause,
+        stop,
         activeBlockId,
         nextBlock,
-        hasAudio: sequence.length > 0 // Any blocks OR just title/desc counts as audio
+        hasAudio: sequence.length > 0, // Any blocks OR just title/desc counts as audio
+        rate,
+        setRate,
+        volume,
+        setVolume
     };
 };

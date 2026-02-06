@@ -12,7 +12,9 @@ const TextComponent: React.FC<{
     onUpdate: (updates: Partial<ContentBlock>) => void;
     playMode?: 'auto' | 'manual';
     onTTSComplete?: () => void;
-}> = ({ block, isSelected, onClick, onUpdate, playMode, onTTSComplete }) => {
+    rate?: number;
+    volume?: number;
+}> = ({ block, isSelected, onClick, onUpdate, playMode, onTTSComplete, rate = 1, volume = 1 }) => {
     const mountedRef = useRef(true);
     const synth = window.speechSynthesis;
 
@@ -31,6 +33,7 @@ const TextComponent: React.FC<{
             const plainText = tempDiv.textContent || tempDiv.innerText || '';
 
             if (plainText.trim()) {
+                console.log(`[TextBlock] Playing TTS. Rate: ${rate}, Volume: ${volume}`);
                 synth.cancel();
 
                 // Load voices and play
@@ -44,13 +47,18 @@ const TextComponent: React.FC<{
                 } else {
                     utterance.lang = 'es-ES';
                 }
-                utterance.rate = 1.2;
+
+                // Ensure rate is applied
+                utterance.rate = rate;
+                utterance.volume = volume;
 
                 utterance.onend = () => {
                     if (mountedRef.current && onTTSComplete) {
                         onTTSComplete();
                     }
                 };
+
+                // ... error handling ...
 
                 utterance.onerror = (e) => {
                     console.error("Text Block TTS Error:", e);
@@ -68,15 +76,15 @@ const TextComponent: React.FC<{
             }
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [playMode]);
+    }, [playMode, rate, volume]);
 
     return (
         <div
             className={`p-6 rounded-lg bg-white dark:bg-[#1f1629] border transition-all duration-200 ${playMode === 'auto'
-                    ? 'border-[#7f13ec] ring-2 ring-[#7f13ec]/40 shadow-md'
-                    : isSelected
-                        ? 'border-[#7f13ec] ring-2 ring-[#7f13ec]/20 shadow-md'
-                        : 'border-slate-200 dark:border-white/5 hover:border-slate-300'
+                ? 'border-[#7f13ec] ring-2 ring-[#7f13ec]/40 shadow-md'
+                : isSelected
+                    ? 'border-[#7f13ec] ring-2 ring-[#7f13ec]/20 shadow-md'
+                    : 'border-slate-200 dark:border-white/5 hover:border-slate-300'
                 }`}
             onClick={onClick}
         >

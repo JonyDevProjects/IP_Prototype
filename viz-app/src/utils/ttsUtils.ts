@@ -105,7 +105,7 @@ export const getAlertTTSItems = (content: any, blockId: string): TTSItem[] => {
  * Helper to find the best available Spanish voice across different browsers
  */
 export const getBestSpanishVoice = (voices: SpeechSynthesisVoice[]): SpeechSynthesisVoice | null => {
-    if (voices.length === 0) return null;
+    if (!voices || voices.length === 0) return null;
 
     // Rankings: 
     // 1. Google Español (Chrome)

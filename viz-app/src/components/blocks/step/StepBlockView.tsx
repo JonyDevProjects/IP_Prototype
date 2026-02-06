@@ -15,14 +15,18 @@ export const StepBlockView: React.FC<{
     onTTSComplete?: () => void;
     onClick: (e: React.MouseEvent) => void;
     onUpdate: (updates: Partial<ContentBlock>) => void;
-}> = ({ block, highlightItemId, playMode, onTTSComplete, isEditable = true, onClick, onUpdate }) => {
+    rate?: number;
+    volume?: number;
+}> = ({ block, highlightItemId, playMode, onTTSComplete, isEditable = true, onClick, onUpdate, rate, volume }) => {
 
     const step = block.content as unknown as TimelineStep;
 
     const { ttsSteps, activeReadingId, handleTTSStepChange } = useStepTTS({
         step,
         autoPlay: playMode === 'auto',
-        onComplete: onTTSComplete
+        onComplete: onTTSComplete,
+        rate,
+        volume
     });
 
     // Use global highlight if provided, otherwise local TTS
