@@ -1,18 +1,19 @@
-
 import { useMemo, useState, useEffect, useRef } from 'react';
 import type { TimelineStep } from '../../timeline/types';
 import { getBestSpanishVoice } from '../../../../utils/ttsUtils';
 
 interface UseStepTTSProps {
     step: TimelineStep;
-    stepIndex?: number; // Optional, defaults to 0
+    stepIndex?: number; // Legacy
+    stepId?: string; // New unique ID
     autoPlay?: boolean;
+    isActive?: boolean; // New prop to track
     onComplete?: () => void;
     rate?: number;
     volume?: number;
 }
 
-export const useStepTTS = ({ step, stepIndex = 0, autoPlay = false, onComplete, rate = 1, volume = 1 }: UseStepTTSProps) => {
+export const useStepTTS = ({ step, stepIndex = 0, stepId, autoPlay = false, isActive = false, onComplete, rate = 1, volume = 1 }: UseStepTTSProps) => {
     const [activeReadingId, setActiveReadingId] = useState<string | null>(null);
     const [availableVoices, setAvailableVoices] = useState<SpeechSynthesisVoice[]>([]);
     const synth = window.speechSynthesis;
@@ -20,6 +21,21 @@ export const useStepTTS = ({ step, stepIndex = 0, autoPlay = false, onComplete, 
     const currentIndexRef = useRef(0);
     const lastCharIndexRef = useRef(0);
     const mountedRef = useRef(true);
+    const autoPlayRef = useRef(autoPlay);
+
+    useEffect(() => {
+        autoPlayRef.current = autoPlay;
+    }, [autoPlay]);
+
+    // Reset state when block is no longer active (Stopped or switched away)
+    useEffect(() => {
+        if (!isActive) {
+            currentIndexRef.current = 0;
+            lastCharIndexRef.current = 0;
+            setActiveReadingId(null);
+            cancel();
+        }
+    }, [isActive]);
 
     useEffect(() => {
         mountedRef.current = true;
@@ -42,7 +58,7 @@ export const useStepTTS = ({ step, stepIndex = 0, autoPlay = false, onComplete, 
 
     // Generate TTS Steps for a single step
     const ttsSteps = useMemo(() => {
-        const stepPrefix = `step-${stepIndex}`;
+        const stepPrefix = stepId || `step-${stepIndex}`;
         const stepItems = [];
 
         // Title & Subtitle logic
@@ -151,15 +167,21 @@ export const useStepTTS = ({ step, stepIndex = 0, autoPlay = false, onComplete, 
         };
 
         utterance.onend = () => {
-            if (mountedRef.current) {
+            if (mountedRef.current && autoPlayRef.current) {
                 lastCharIndexRef.current = 0; // Reset char index for NEXT item
                 playSequence(index + 1, 0);
             }
         };
 
-        utterance.onerror = () => {
-            // Skip to next if error
+        utterance.onerror = (e) => {
+            // Check if error is due to cancel or interruption, which is expected during Pause/Stop
+            if (e.error === 'canceled' || e.error === 'interrupted') {
+                return;
+            }
+
+            // Skip to next if genuine error
             if (mountedRef.current) {
+                console.warn("TTS Error, skipping to next:", e);
                 playSequence(index + 1, 0);
             }
         };

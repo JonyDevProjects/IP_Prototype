@@ -69,7 +69,7 @@ describe('useTextSequence', () => {
         // We need to simulate onend for the last item
         // Since we mocked speak, we need to grab the utterance passed to it
         const lastCall = mockSpeak.mock.lastCall;
-        const lastUtterance = lastCall[0];
+        const lastUtterance = lastCall?.[0];
 
         expect(lastUtterance.text).toBe('World');
 

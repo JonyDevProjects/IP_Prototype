@@ -15,7 +15,7 @@ export const EditorBlockWrapper = ({ block, isSelected, onClick, onDelete, onUpd
     return (
         <div
             className={`relative group rounded-3xl transition-all duration-200 ${isSelected
-                ? 'ring-2 ring-[#7f13ec] z-10'
+                ? 'ring-2 ring-brand-purple z-10'
                 : 'hover:ring-1 hover:ring-slate-300 dark:hover:ring-white/20'
                 }`}
             onClick={onClick}
@@ -40,7 +40,7 @@ export const EditorBlockWrapper = ({ block, isSelected, onClick, onDelete, onUpd
                 {/* Settings / Select */}
                 <button
                     className={`w-8 h-8 flex items-center justify-center rounded-full transition-colors ${isSelected
-                        ? 'bg-[#7f13ec]/10 text-[#7f13ec]'
+                        ? 'bg-brand-purple/10 text-brand-purple'
                         : 'text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-white/5'}`}
                     onClick={(e) => {
                         e.stopPropagation();

@@ -15,7 +15,10 @@ description: Activates the Architect Agent role to review architecture, scalabil
 1.  **Analyze**: Understand the root cause, not just the symptom.
 2.  **Design Patterns**: Propose standard patterns (Registry, Factory, Observer, etc.) over ad-hoc logic.
 3.  **Scalability Check**: Ask "What happens if we add 10 more of these?".
-4.  **Separation of Concerns**: Ensure logic, UI, and state are properly decoupled.
+    *   **Separation of Concerns**: Ensure logic, UI, and state are properly decoupled.
+5.  **State Management**:
+    *   For complex interactive components (Players, Games), prefer **Explicit State Machines** (using `status: 'idle' | 'loading' | 'active'`) over derived boolean flags (`isLoading && !isError`).
+    *   Refer to `skills/explicit_state_machine/SKILL.md` for patterns.
 
 ## Workflow
 1.  **Audit**: Read the relevant files. Identify "God Objects" or tight coupling. Use `.agent/rules/architecture.md` as the gold standard.

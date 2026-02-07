@@ -22,7 +22,7 @@ export const CourseStructurePanel: React.FC<CourseStructurePanelProps> = ({
     onSelectUnit,
     onAddModule,
     onAddUnit,
-    onDeleteModule,
+
     onDeleteUnit,
     onEditModule
 }) => {

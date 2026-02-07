@@ -12,22 +12,35 @@ export const StepBlockView: React.FC<{
     isEditable?: boolean;
     highlightItemId?: string | null;
     playMode?: 'auto' | 'manual';
+    isActiveBlock?: boolean;
     onTTSComplete?: () => void;
     onClick: (e: React.MouseEvent) => void;
     onUpdate: (updates: Partial<ContentBlock>) => void;
     rate?: number;
     volume?: number;
-}> = ({ block, highlightItemId, playMode, onTTSComplete, isEditable = true, onClick, onUpdate, rate, volume }) => {
+}> = ({ block, highlightItemId, playMode, isActiveBlock, onTTSComplete, isEditable = true, onClick, onUpdate, rate, volume }) => {
 
     const step = block.content as unknown as TimelineStep;
 
     const { ttsSteps, activeReadingId, handleTTSStepChange } = useStepTTS({
         step,
+        stepId: block.id,
         autoPlay: playMode === 'auto',
+        isActive: isActiveBlock, // Use the specific block active state, not just autoPlay
         onComplete: onTTSComplete,
         rate,
         volume
     });
+
+    // Auto-scroll to active item
+    React.useEffect(() => {
+        if (playMode === 'auto' && activeReadingId) {
+            const el = document.getElementById(activeReadingId);
+            if (el) {
+                el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+    }, [playMode, activeReadingId]);
 
     // Use global highlight if provided, otherwise local TTS
     const activeHighlightId = highlightItemId || activeReadingId;
@@ -80,6 +93,7 @@ export const StepBlockView: React.FC<{
             <StepDetailView
                 step={step}
                 stepNumber={1}
+                stepId={block.id}
                 showNumber={false}
                 isEditable={isEditable}
                 onUpdate={handleUpdate}

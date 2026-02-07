@@ -50,7 +50,7 @@ export const EditorMain: React.FC<EditorMainProps> = ({ courseData, onSave }) =>
         handleCanvasDrop,
         handleCanvasDragOver,
         resetDragState
-    } = useEditorDragDrop(blocks, setBlocks, setSelectedBlockId);
+    } = useEditorDragDrop(setBlocks, setSelectedBlockId);
 
 
     if (!activeModule || !initialActiveUnit) {

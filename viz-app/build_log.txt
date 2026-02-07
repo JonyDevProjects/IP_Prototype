@@ -1,0 +1,27 @@
+
+> viz-app@0.0.0 build
+> tsc -b && vite build
+
+src/components/blocks/__tests__/TextBlock.test.tsx(1,1): error TS6133: 'React' is declared but its value is never read.
+src/components/blocks/__tests__/TextBlock.test.tsx(31,17): error TS2322: Type '{ id: string; type: string; content: string; }' is not assignable to type 'ContentBlock'.
+  Types of property 'type' are incompatible.
+    Type 'string' is not assignable to type 'ContentBlockType'.
+src/components/blocks/__tests__/TextBlock.test.tsx(43,17): error TS2322: Type '{ id: string; type: string; content: string; }' is not assignable to type 'ContentBlock'.
+  Types of property 'type' are incompatible.
+    Type 'string' is not assignable to type 'ContentBlockType'.
+src/components/blocks/__tests__/TextBlock.test.tsx(67,17): error TS2322: Type '{ id: string; type: string; content: string; }' is not assignable to type 'ContentBlock'.
+  Types of property 'type' are incompatible.
+    Type 'string' is not assignable to type 'ContentBlockType'.
+src/components/blocks/AlertBlock.tsx(2,10): error TS1484: 'ContentBlock' is a type and must be imported using a type-only import when 'verbatimModuleSyntax' is enabled.
+src/components/blocks/AlertBlock.tsx(3,10): error TS1484: 'BlockDefinition' is a type and must be imported using a type-only import when 'verbatimModuleSyntax' is enabled.
+src/components/blocks/ImageBlock.tsx(2,10): error TS1484: 'ContentBlock' is a type and must be imported using a type-only import when 'verbatimModuleSyntax' is enabled.
+src/components/blocks/ImageBlock.tsx(3,10): error TS1484: 'BlockDefinition' is a type and must be imported using a type-only import when 'verbatimModuleSyntax' is enabled.
+src/features/editor/components/__tests__/EditorMain.test.tsx(1,37): error TS6133: 'waitFor' is declared but its value is never read.
+src/features/editor/components/__tests__/EditorMain.test.tsx(4,10): error TS1484: 'Course' is a type and must be imported using a type-only import when 'verbatimModuleSyntax' is enabled.
+src/features/editor/components/__tests__/EditorMain.test.tsx(5,1): error TS6133: 'userEvent' is declared but its value is never read.
+src/features/editor/components/__tests__/EditorMain.test.tsx(5,23): error TS2307: Cannot find module '@testing-library/user-event' or its corresponding type declarations.
+src/features/editor/components/__tests__/EditorMain.test.tsx(58,9): error TS2739: Type '{ id: string; title: string; description: string; modules: { id: string; order: number; title: string; description: string; units: { id: string; title: string; durationMin: number; isCompleted: false; blocks: never[]; }[]; }[]; }' is missing the following properties from type 'Course': author, totalProgress
+src/features/editor/components/Sidebar/CourseStructurePanel.tsx(25,5): error TS6133: 'onDeleteModule' is declared but its value is never read.
+src/features/editor/hooks/useEditorDragDrop.ts(7,5): error TS6133: 'blocks' is declared but its value is never read.
+src/features/player/hooks/useTextSequence.test.ts(72,31): error TS18048: 'lastCall' is possibly 'undefined'.
+src/features/player/hooks/useUnitAudio.test.ts(259,25): error TS6133: 'unmount' is declared but its value is never read.

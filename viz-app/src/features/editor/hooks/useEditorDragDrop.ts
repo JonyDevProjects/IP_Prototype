@@ -4,7 +4,7 @@ import type { ContentBlock, ContentBlockType } from '../../../types/course';
 import { getBlockDefinition } from '../../../components/blocks/registry';
 
 export const useEditorDragDrop = (
-    blocks: ContentBlock[],
+
     setBlocks: React.Dispatch<React.SetStateAction<ContentBlock[]>>,
     setSelectedBlockId: (id: string | null) => void
 ) => {

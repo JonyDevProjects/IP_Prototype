@@ -7,12 +7,13 @@ interface PlayerBlockWrapperProps {
     block: ContentBlock;
     highlightItemId?: string | null;
     playMode?: 'auto' | 'manual';
+    isActiveBlock?: boolean;
     onTTSComplete?: () => void;
     rate?: number;
     volume?: number;
 }
 
-export const PlayerBlockWrapper: React.FC<PlayerBlockWrapperProps> = ({ block: initialBlock, highlightItemId, playMode, onTTSComplete, rate, volume }) => {
+export const PlayerBlockWrapper: React.FC<PlayerBlockWrapperProps> = ({ block: initialBlock, highlightItemId, playMode, isActiveBlock, onTTSComplete, rate, volume }) => {
     // We maintain a local version of the block state to allow for interactivity 
     // (e.g., changing tabs, checking boxes) without modifying the actual course source.
     const [block, setBlock] = useState<ContentBlock>(initialBlock);
@@ -30,6 +31,10 @@ export const PlayerBlockWrapper: React.FC<PlayerBlockWrapperProps> = ({ block: i
 
     // We pass `isSelected={false}` since we are in Player mode.
     // We pass our local `handleUpdate` so interactions (like tab switching) work visually.
+
+    // We pass `isSelected={false}` since we are in Player mode.
+    // We pass our local `handleUpdate` so interactions (like tab switching) work visually.
+
     return (
         <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -44,6 +49,7 @@ export const PlayerBlockWrapper: React.FC<PlayerBlockWrapperProps> = ({ block: i
                 isEditable={false}
                 highlightItemId={highlightItemId}
                 playMode={playMode}
+                isActiveBlock={isActiveBlock}
                 onTTSComplete={onTTSComplete}
                 onClick={() => { }} // No-op for selection
                 onUpdate={handleUpdate}

@@ -20,6 +20,11 @@ export const useTextSequence = ({ items, autoPlay = false, onComplete, rate = 1,
     const synth = window.speechSynthesis;
     const mountedRef = useRef(true);
     const isCompleteRef = useRef(false);
+    const autoPlayRef = useRef(autoPlay);
+
+    useEffect(() => {
+        autoPlayRef.current = autoPlay;
+    }, [autoPlay]);
 
     useEffect(() => {
         mountedRef.current = true;
@@ -95,7 +100,7 @@ export const useTextSequence = ({ items, autoPlay = false, onComplete, rate = 1,
 
             if (isLast) {
                 utterance.onend = () => {
-                    if (mountedRef.current) {
+                    if (mountedRef.current && autoPlayRef.current) {
                         isCompleteRef.current = true; // Mark as naturally finished
                         setActiveItemId(null);
                         onComplete?.();
@@ -104,6 +109,11 @@ export const useTextSequence = ({ items, autoPlay = false, onComplete, rate = 1,
             }
 
             utterance.onerror = (e) => {
+                // Check if error is due to cancel or interruption (expected during Pause/Stop)
+                if (e.error === 'canceled' || e.error === 'interrupted') {
+                    return;
+                }
+
                 console.error("TTS Error:", e);
                 // If it's the last one and it errors, ensure we finish
                 if (isLast && mountedRef.current) {

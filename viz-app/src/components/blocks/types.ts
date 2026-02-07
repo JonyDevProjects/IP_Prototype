@@ -14,6 +14,7 @@ export interface BlockDefinition {
         isEditable?: boolean;
         highlightItemId?: string | null;
         playMode?: 'auto' | 'manual';
+        isActiveBlock?: boolean; // New prop to track if block is the current active one in Player
         onTTSComplete?: () => void;
         onClick: (e: React.MouseEvent) => void;
         onUpdate: (updates: Partial<ContentBlock>) => void;

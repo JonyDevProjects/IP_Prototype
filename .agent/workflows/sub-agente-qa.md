@@ -9,7 +9,11 @@ description: Agente de Aseguramiento de Calidad (QA) para verificar flujos de us
 ## Responsabilidades
 1.  **Simulación de Escenarios**: Ejecutar flujos completos (ej: "Crear un curso desde cero", "Completar un examen").
 2.  **Verificación Funcional**: Confirmar que los botones funcionan, los inputs guardan datos, y la navegación es correcta.
-3.  **Smoke Testing**: Verificar que los cambios recientes no rompieron funcionalidades críticas existentes.
+    *   **Smoke Testing**: Verificar que los cambios recientes no rompieron funcionalidades críticas existentes.
+4.  **Integration State Testing**:
+    *   Al probar interactividad (Media/Formularios), NO detenerse en "Funciona".
+    *   Forzar transiciones de ida y vuelta (Toggle Play/Pause 5 veces, Cambiar de Tab y volver).
+    *   Objetivo: Encontrar regresiones de memoria o estado visual desincronizado.
 
 ## Cuándo activar este sub-agente
 -   Al finalizar una funcionalidad compleja (ej: Nuevo bloque en el editor).

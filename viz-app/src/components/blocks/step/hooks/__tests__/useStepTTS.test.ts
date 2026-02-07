@@ -117,4 +117,101 @@ describe('useStepTTS', () => {
 
         expect(onComplete).toHaveBeenCalled();
     });
+    it('should NOT play next item if autoPlay becomes false (Stop Button)', () => {
+        const { rerender } = renderHook(({ autoPlay }) => useStepTTS({ step: mockStep, autoPlay }), {
+            initialProps: { autoPlay: true }
+        });
+
+        // 1. Started playing
+        expect(mockSpeak).toHaveBeenCalledTimes(1);
+        const firstUtterance = mockSpeak.mock.calls[0][0] as SpeechSynthesisUtterance;
+
+        // 2. STOP! (Simulate Stop button: prop changes to false)
+        // This triggers the useEffect cleanup -> cancel()
+        rerender({ autoPlay: false });
+        expect(mockCancel).toHaveBeenCalled();
+
+        // 3. Simulate "Zombie" onend event firing immediately after cancel
+        act(() => {
+            if (firstUtterance.onend) {
+                firstUtterance.onend(new Event('end') as any);
+            }
+        });
+
+        // 4. Assert: Should NOT have called speak again for the 2nd item
+        // THIS SHOULD FAIL currently because onend only checks mountedRef
+        expect(mockSpeak).toHaveBeenCalledTimes(1);
+    });
+    it('should handle rapid autoPlay toggling (Play/Stop/Play mash)', () => {
+        const { rerender, result } = renderHook(({ autoPlay }) => useStepTTS({ step: mockStep, autoPlay }), {
+            initialProps: { autoPlay: true }
+        });
+
+        // Mash toggle
+        rerender({ autoPlay: false });
+        rerender({ autoPlay: true });
+        rerender({ autoPlay: false });
+        rerender({ autoPlay: true });
+
+        // Final state should be playing
+        expect(mockSpeak).toHaveBeenCalled();
+        expect(result.current.activeReadingId).not.toBeNull();
+    });
+    it('should resume from where it left off (Pause/Resume)', () => {
+        const { rerender } = renderHook(({ autoPlay }) => useStepTTS({ step: mockStep, autoPlay }), {
+            initialProps: { autoPlay: true }
+        });
+
+        // 1. Start Playing
+        expect(mockSpeak).toHaveBeenCalledTimes(1);
+        const firstUtterance = mockSpeak.mock.calls[0][0] as SpeechSynthesisUtterance;
+
+        // Simulate reading progress (boundary event)
+        act(() => {
+            if (firstUtterance.onboundary) {
+                firstUtterance.onboundary({ name: 'word', charIndex: 10, charLength: 5 } as any);
+            }
+        });
+
+        // 2. Pause (autoPlay -> false)
+        // Current behavior suspicion: This calls cancel() and resets charIndexRef if not handled carefully
+        rerender({ autoPlay: false });
+        expect(mockCancel).toHaveBeenCalled();
+
+        // 3. Resume (autoPlay -> true)
+        rerender({ autoPlay: true });
+
+        // Expectations for correct behavior:
+        // - It should speak again
+        // - The NEW utterance should start from index 10 (or close to it)
+        expect(mockSpeak).toHaveBeenCalledTimes(2);
+        const secondUtterance = mockSpeak.mock.calls[1][0] as SpeechSynthesisUtterance;
+
+        // This assertion checks if the resume logic works. 
+        // If it starts from "Step Title" (length 10) and we skipped 10 chars, it should be shorter.
+        // If logic is broken, it might be full length or just "Step Title" again.
+        expect(secondUtterance.text.length).toBeLessThan(firstUtterance.text.length);
+    });
+
+    it('should NOT advance to next step on "canceled" or "interrupted" error', () => {
+        const { result } = renderHook(({ autoPlay }) => useStepTTS({ step: mockStep, autoPlay }), {
+            initialProps: { autoPlay: true }
+        });
+
+        // 1. Start Playing
+        expect(mockSpeak).toHaveBeenCalledTimes(1);
+        const utterance = mockSpeak.mock.calls[0][0] as SpeechSynthesisUtterance;
+        const onError = utterance.onerror;
+
+        // 2. Simulate "canceled" error (common during Pause)
+        act(() => {
+            if (onError) {
+                // @ts-ignore - simulating error event
+                onError({ error: 'canceled' } as SpeechSynthesisErrorEvent);
+            }
+        });
+
+        // With the fix, it should ignore the error and stay on 1 call
+        expect(mockSpeak).toHaveBeenCalledTimes(1);
+    });
 });

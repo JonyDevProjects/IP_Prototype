@@ -256,7 +256,7 @@ describe('useUnitAudio', () => {
     });
 
     it('should cancel audio when element unmounts', () => {
-        const { result, unmount } = renderHook(() => useUnitAudio(mockUnit));
+        const { result } = renderHook(() => useUnitAudio(mockUnit));
         act(() => result.current.play());
 
         // Mock cancel being called by effect cleanup?
@@ -280,5 +280,32 @@ describe('useUnitAudio', () => {
 
         expect(result.current.rate).toBe(1.5);
         expect(result.current.volume).toBe(0.5);
+    });
+    it('should handle rapid nextBlock calls without getting stuck', () => {
+        const { result } = renderHook(() => useUnitAudio(mockUnit));
+        act(() => result.current.play());
+
+        for (let i = 0; i < 5; i++) {
+            act(() => result.current.nextBlock());
+        }
+
+        // After 5 nexts: intro(0), b1(1), b2(2), end(3), null, null...
+        expect(result.current.isPlaying).toBe(false);
+        expect(result.current.activeBlockId).toBeNull();
+    });
+
+    it('should properly cancel audio when pausing then playing then pausing', () => {
+        const { result } = renderHook(() => useUnitAudio(mockUnit));
+        vi.clearAllMocks(); // Clear initial cancel on mount
+
+        act(() => result.current.play());
+        expect(window.speechSynthesis.cancel).toHaveBeenCalledTimes(0); // Play doesn't cancel in orchestrator
+
+        act(() => result.current.pause());
+        expect(window.speechSynthesis.cancel).toHaveBeenCalledTimes(1);
+
+        act(() => result.current.play());
+        act(() => result.current.pause());
+        expect(window.speechSynthesis.cancel).toHaveBeenCalledTimes(2);
     });
 });

@@ -1,6 +1,6 @@
 import React from 'react';
-import { ContentBlock } from '../../types/course';
-import { BlockDefinition } from './types';
+import type { ContentBlock } from '../../types/course';
+import type { BlockDefinition } from './types';
 import { PropertySection } from '../ui/PropertySection';
 
 const ImageComponent: React.FC<{

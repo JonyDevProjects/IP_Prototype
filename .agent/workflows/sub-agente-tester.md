@@ -13,7 +13,11 @@ description: Agente encargado de la estrategia, implementación y verificación 
 2.  **Diseño de Casos de Prueba**:
     *   Definir casos para el "Happy Path" (camino feliz).
     *   Definir casos para "Edge Cases" (errores, límites, nulos).
-3.  **Implementación (Vitest/RTL)**:
+    *   Definir casos para "Edge Cases" (errores, límites, nulos).
+3.  **Clean Room State Testing (Golden Rule)**:
+    *   Para componentes con estado complejo (Audio, Video, Formularios), NUNCA probar solo un camino.
+    *   **Obligatorio**: Probar transiciones `A -> B -> A` (ej: Play -> Pause -> Play, Play -> Stop -> Play) para detectar "zombie states".
+4.  **Implementación (Vitest/RTL)**:
     *   Utilizar `videst` y `@testing-library/react`.
     *   Crear archivos `__tests__` colocalizados con el componente.
     *   Crear archivos `__tests__` colocalizados con el componente.

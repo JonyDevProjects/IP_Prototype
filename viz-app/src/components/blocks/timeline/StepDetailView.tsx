@@ -7,6 +7,7 @@ import type { TimelineStep } from './types';
 interface StepDetailViewProps {
     step: TimelineStep;
     stepNumber: number;
+    stepId?: string; // New prop for unique DOM IDs
     showNumber?: boolean;
     isEditable?: boolean;
     onUpdate: (field: string, val: string) => void;
@@ -16,6 +17,7 @@ interface StepDetailViewProps {
 export const StepDetailView: React.FC<StepDetailViewProps> = ({
     step,
     stepNumber,
+    stepId,
     showNumber = true,
     isEditable = true,
     onUpdate,
@@ -24,21 +26,10 @@ export const StepDetailView: React.FC<StepDetailViewProps> = ({
     const themeKey: ThemeColor = step.theme || 'amber';
     const theme = STEP_THEMES[themeKey];
     const stepNumberStr = stepNumber.toString().padStart(2, '0');
-    // Use a simpler ID generation strategy if one isn't passed, or rely on the parent to manage IDs context if needed.
-    // For TTS highlighting, we usually need a stable ID. 
-    // We'll trust the parent uses consistent indexing or IDs.
-    // In this extracted view, we'll assume the highlight IDs are constructed as "step-{index}-..." 
-    // but here we just need a prefix. Let's assume the passed `getHighlightClass` handles the full ID resolution or we reconstruct it.
-    // Actually, in TimelineView it was: `const currentStepId = \`step-${activeIndex}\`;` and passed to `getHighlightClass`.
-    // We should probably pass the `currentStepId` prefix or similar.
-    // For now, let's keep it simple: The caller passes a `getHighlightClass` that expects suffixes like "-title", "-subtitle", etc.
-    // BUT `getHighlightClass` in `useTimelineTTS` expects the FULL ID (e.g. "step-0-title").
-    // So we need to know the "step ID" or prefix.
 
-    // Actually, let's just use the `stepNumber` prop which is 1-based (activeIndex + 1).
-    // so activeIndex = stepNumber - 1.
+    // Use provided stepId or fallback to index-based for backward compatibility
     const activeIndex = stepNumber - 1;
-    const currentStepId = `step-${activeIndex}`;
+    const currentStepId = stepId || `step-${activeIndex}`;
 
     return (
         <div className={`p-8 rounded-3xl border ${theme.detail.border} ${theme.bg} relative overflow-hidden transition-all duration-500`}>
@@ -56,7 +47,10 @@ export const StepDetailView: React.FC<StepDetailViewProps> = ({
                         <span className="material-symbols-outlined text-5xl">{step.detailIcon || 'lightbulb'}</span>
                     </div>
                     <div className="pt-2 flex-1">
-                        <div className={`flex items-center gap-3 mb-1 p-2 rounded-lg ${getHighlightClass(`${currentStepId}-title`)}`}>
+                        <div
+                            id={`${currentStepId}-title`}
+                            className={`flex items-center gap-3 mb-1 p-2 rounded-lg ${getHighlightClass(`${currentStepId}-title`)}`}
+                        >
                             {showNumber && <span className="text-3xl font-bold text-slate-800">{stepNumber}.</span>}
                             <InlineText
                                 tagName="h3"
@@ -66,7 +60,10 @@ export const StepDetailView: React.FC<StepDetailViewProps> = ({
                                 onChange={(val) => onUpdate('detailTitle', val)}
                             />
                         </div>
-                        <div className={`p-2 rounded-lg ${getHighlightClass(`${currentStepId}-subtitle`)}`}>
+                        <div
+                            id={`${currentStepId}-subtitle`}
+                            className={`p-2 rounded-lg ${getHighlightClass(`${currentStepId}-subtitle`)}`}
+                        >
                             <InlineText
                                 tagName="p"
                                 className="text-lg text-slate-700"
@@ -84,6 +81,7 @@ export const StepDetailView: React.FC<StepDetailViewProps> = ({
                         return (
                             <div
                                 key={idx}
+                                id={`${currentStepId}-card-${idx}`}
                                 className={`bg-white rounded-xl p-6 border border-slate-100 shadow-sm hover:shadow-md transition-shadow ${getHighlightClass(`${currentStepId}-card-${idx}`)}`}
                             >
                                 <div className="flex items-center gap-2 mb-3">
@@ -111,7 +109,10 @@ export const StepDetailView: React.FC<StepDetailViewProps> = ({
 
                 {/* Footer Tip (Pill Shape) */}
                 {step.footerTip && (
-                    <div className={`relative ${getHighlightClass(`${currentStepId}-footer`)}`}>
+                    <div
+                        id={`${currentStepId}-footer`}
+                        className={`relative ${getHighlightClass(`${currentStepId}-footer`)}`}
+                    >
                         <div className="absolute inset-0 bg-white rounded-full border border-slate-200 -z-10 shadow-sm" />
                         <div className="flex items-start md:items-center gap-4 p-4 pl-6">
                             <div className="flex-shrink-0 w-6 h-6 rounded-full border border-slate-300 flex items-center justify-center text-slate-500 bg-slate-50 mt-0.5 md:mt-0">

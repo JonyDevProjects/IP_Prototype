@@ -24,6 +24,16 @@ export const tema2CourseData: Course = {
           isCompleted: false,
           blocks: [
             {
+              id: 'b-intro-text1',
+              type: 'text',
+              content: 'La planificación no es un trámite burocrático, es la creación de la fuente de información básica necesaria para controlar el proyecto.'
+            },
+            {
+              id: 'b-intro-text2',
+              type: 'text',
+              content: 'Su objetivo final es obtener la aprobación formal para guiar la ejecución.'
+            },
+            {
               id: 'b1',
               type: 'step',
               content: {

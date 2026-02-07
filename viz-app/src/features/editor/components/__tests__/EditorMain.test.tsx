@@ -1,8 +1,7 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { EditorMain } from '../EditorMain';
-import { Course } from '../../../../types/course';
-import userEvent from '@testing-library/user-event';
+import type { Course } from '../../../../types/course';
 
 // Mocks
 // We mock child components to focus on EditorMain's logic and avoid deep rendering issues
@@ -82,7 +81,9 @@ describe('EditorMain Module Management', () => {
                     description: 'Desc 2',
                     units: []
                 }
-            ]
+            ],
+            author: { name: 'Test Author', avatar: '', role: 'instructor' },
+            totalProgress: 0
         };
     });
 

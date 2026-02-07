@@ -14,6 +14,11 @@ export default {
                 "text-main": "rgb(var(--color-text-main) / <alpha-value>)",
                 "text-muted": "rgb(var(--color-text-muted) / <alpha-value>)",
                 border: "rgb(var(--color-border) / <alpha-value>)",
+                "brand-purple": "#7f13ec",
+                "app-bg": {
+                    light: "#f7f6f8",
+                    dark: "#191022"
+                }
             },
         },
     },

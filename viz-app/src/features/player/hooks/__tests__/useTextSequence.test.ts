@@ -63,4 +63,24 @@ describe('useTextSequence', () => {
         // If the bug existed, it would be called again (2).
         expect(window.speechSynthesis.cancel).toHaveBeenCalledTimes(1);
     });
+
+    it('should NOT call onComplete if sequence is canceled or interrupted', () => {
+        const onComplete = vi.fn();
+        renderHook(() => useTextSequence({ items, autoPlay: true, onComplete }));
+
+        // Get the last utterance (which has the onComplete logic attached to onend/onerror)
+        const connectMock = window.speechSynthesis.speak as any;
+        const lastUtterance = connectMock.mock.calls[items.length - 1][0] as SpeechSynthesisUtterance;
+
+        // Simulate cancellation error on the last item
+        const onError = lastUtterance.onerror;
+        if (onError) {
+            // @ts-ignore
+            onError({ error: 'canceled' } as SpeechSynthesisErrorEvent);
+        }
+
+        // Bug: currently calls onComplete
+        // Fix: should NOT call onComplete
+        expect(onComplete).not.toHaveBeenCalled();
+    });
 });

@@ -5,7 +5,7 @@ Este tema abarca el ciclo integral de la planificación, comenzando desde la **G
 ## 1. Propósito de la planificación
 
 **¿Por qué es crítica la planificación?**
-La planificación no es un trámite burocrático; es la creación de la fuente de información básica necesaria para controlar el proyecto. Su objetivo final es obtener la aprobación formal para guiar la ejecución.
+La planificación no es un trámite burocrático, es la creación de la fuente de información básica necesaria para controlar el proyecto. Su objetivo final es obtener la aprobación formal para guiar la ejecución.
 
 Sus propósitos principales incluyen:
 

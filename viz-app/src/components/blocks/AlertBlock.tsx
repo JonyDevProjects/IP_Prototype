@@ -1,6 +1,6 @@
 import React from 'react';
-import { ContentBlock } from '../../types/course';
-import { BlockDefinition } from './types';
+import type { ContentBlock } from '../../types/course';
+import type { BlockDefinition } from './types';
 import { PropertySection } from '../ui/PropertySection';
 
 const AlertComponent: React.FC<{
@@ -82,8 +82,8 @@ const AlertComponent: React.FC<{
     return (
         <div
             className={`p-4 rounded-lg bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-500/30 flex gap-3 transition-all duration-200 ${playMode === 'auto'
-                    ? 'ring-2 ring-indigo-400 shadow-md transform scale-[1.01]'
-                    : isSelected ? 'ring-2 ring-[#7f13ec] ring-offset-2 ring-offset-white dark:ring-offset-[#150a1f]' : ''
+                ? 'ring-2 ring-indigo-400 shadow-md transform scale-[1.01]'
+                : isSelected ? 'ring-2 ring-[#7f13ec] ring-offset-2 ring-offset-white dark:ring-offset-[#150a1f]' : ''
                 }`}
             onClick={onClick}
         >

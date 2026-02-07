@@ -61,6 +61,11 @@ const TextComponent: React.FC<{
                 // ... error handling ...
 
                 utterance.onerror = (e) => {
+                    // Check if error is due to cancel or interruption (expected during Pause/Stop)
+                    if (e.error === 'canceled' || e.error === 'interrupted') {
+                        return;
+                    }
+
                     console.error("Text Block TTS Error:", e);
                     if (mountedRef.current && onTTSComplete) {
                         onTTSComplete();
@@ -78,8 +83,17 @@ const TextComponent: React.FC<{
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [playMode, rate, volume]);
 
+    const containerRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        if (playMode === 'auto' && containerRef.current) {
+            containerRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    }, [playMode]);
+
     return (
         <div
+            ref={containerRef}
             className={`p-6 rounded-lg bg-white dark:bg-[#1f1629] border transition-all duration-200 ${playMode === 'auto'
                 ? 'border-[#7f13ec] ring-2 ring-[#7f13ec]/40 shadow-md'
                 : isSelected

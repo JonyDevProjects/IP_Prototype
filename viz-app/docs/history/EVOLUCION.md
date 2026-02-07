@@ -157,3 +157,29 @@ A diferencia de implementaciones previas con textos estáticos, el audio para el
 - **Velocidad de Voz**: Se ajustó el `rate` global a **1.2** en `TextToSpeechButton.tsx` para mejorar la cadencia natural del aprendizaje.
 - **Interfaz Limpia**: El control de audio se ubicó en la cabecera del bloque, respetando el diseño minimalista de la plataforma.
 
+
+## 9. Refinamiento de UX y Robustez TTS (Febrero 2026 - Sesión Actual)
+
+Se realizó una sesión intensiva de "Hardening" (Endurecimiento) del sistema de reproducción de audio y navegación, abordando casos borde críticos para la experiencia de usuario.
+
+### A. Corrección de Bugs Críticos de Estado
+1.  **"Stop Zombie" Bug**: El audio continuaba o saltaba al siguiente bloque tras pulsar Stop.
+    *   **Solución**: Implementación de `autoPlayRef` en los hooks `useStepTTS` y `useTextSequence` para verificar el estado *actual* antes de procesar callbacks asíncronos (`onend`).
+2.  **"Resume Skip" Bug**: Al pausar, el navegador emitía errores `canceled` que se interpretaban falsamente como fallos, saltando al siguiente bloque.
+    *   **Solución**: Filtrado explícito de errores `canceled` e `interrupted` en los manejadores `onerror`.
+3.  **"Step Block Regression"**: El bloque interactivo perdía su progreso al pausar o no se reseteaba al detenerse.
+    *   **Solución**: Introducción de la prop `isActiveBlock`. Esto permite distinguir tres estados:
+        *   **Playing**: `isActiveBlock=true` (Avanza).
+        *   **Paused**: `isActiveBlock=true` (Mantiene posición).
+        *   **Stopped**: `isActiveBlock=false` (Resetea índices).
+
+### B. Mejora del Flujo de Trabajo con Agentes
+Se demostró la eficacia del **Sub-Agente de Navegador** para detectar:
+*   Regresiones visuales (saltos de scroll).
+*   Errores de estado (reinicio incorrecto tras Pause).
+*   Crashes en tiempo de ejecución (pantalla blanca por import faltante).
+
+### C. Lecciones Aprendidas
+*   **Gestión de Estado**: No confiar en variables derivadas (`playMode === 'auto'`) para estados críticos de ciclo de vida. Es preferible pasar props de estado explícitas (`isActiveBlock`).
+*   **Verificación en Capas**: Los tests unitarios pasaban, pero la integración fallaba. La verificación visual/navegador es indispensable para componentes dependientes de APIs del navegador (`window.speechSynthesis`).
+
