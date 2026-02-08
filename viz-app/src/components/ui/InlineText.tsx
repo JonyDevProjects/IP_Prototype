@@ -21,7 +21,7 @@ export const InlineText: React.FC<InlineTextProps> = ({
 }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [editValue, setEditValue] = useState(value);
-    const inputRef = useRef<HTMLElement>(null);
+    const inputRef = useRef<HTMLTextAreaElement & HTMLInputElement>(null);
 
     useEffect(() => {
         setEditValue(value);
@@ -64,7 +64,7 @@ export const InlineText: React.FC<InlineTextProps> = ({
         if (multiline) {
             return (
                 <textarea
-                    ref={inputRef as any}
+                    ref={inputRef as React.RefObject<HTMLTextAreaElement>}
                     className={`${className} outline-none bg-transparent resize-none overflow-hidden m-0 p-0 align-baseline border-b border-[#7f13ec] border-dashed`}
                     value={editValue}
                     onChange={(e) => setEditValue(e.target.value)}
@@ -77,7 +77,7 @@ export const InlineText: React.FC<InlineTextProps> = ({
         }
         return (
             <input
-                ref={inputRef as any}
+                ref={inputRef as React.RefObject<HTMLInputElement>}
                 className={`${className} outline-none bg-transparent m-0 p-0 align-baseline border-b border-[#7f13ec] border-dashed`}
                 value={editValue}
                 onChange={(e) => setEditValue(e.target.value)}
@@ -87,7 +87,7 @@ export const InlineText: React.FC<InlineTextProps> = ({
         );
     }
 
-    const Tag = tagName as any;
+    const Tag = tagName as React.ElementType;
 
     return (
         <Tag

@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import type { ContentBlock } from '../../../../types/course';
-import type { TimelineStep } from '../types';
+
 
 interface UseTimelineTTSProps {
     block: ContentBlock;
@@ -10,8 +10,9 @@ interface UseTimelineTTSProps {
 export const useTimelineTTS = ({ block, onUpdate }: UseTimelineTTSProps) => {
     const [activeReadingId, setActiveReadingId] = useState<string | null>(null);
 
-    const activeIndex = (block.metadata as any)?.activeStepIndex ?? 0;
-    const steps = (block.content as unknown as TimelineStep[]);
+    // Default empty if wrong type, though View should handle it
+    const activeIndex = block.type === 'timeline' ? (block.metadata?.activeStepIndex ?? 0) : 0;
+    const steps = block.type === 'timeline' ? block.content : [];
 
     // Generate TTS Steps
     const ttsSteps = useMemo(() => {

@@ -43,13 +43,14 @@ describe('useTextSequence', () => {
         });
 
         // Get the last utterance spoken
-        const connectMock = window.speechSynthesis.speak as any;
+        const connectMock = window.speechSynthesis.speak as unknown as { mock: { calls: unknown[][] } };
         const lastCall = connectMock.mock.calls[connectMock.mock.calls.length - 1];
-        const utterance = lastCall[0];
+        const utterance = lastCall[0] as SpeechSynthesisUtterance;
 
         // Simulate natural completion of the last item
         act(() => {
-            utterance.onend();
+            const event = { type: 'end', utterance } as unknown as SpeechSynthesisEvent;
+            utterance.onend?.(event);
         });
 
         expect(onComplete).toHaveBeenCalled();
@@ -69,15 +70,12 @@ describe('useTextSequence', () => {
         renderHook(() => useTextSequence({ items, autoPlay: true, onComplete }));
 
         // Get the last utterance (which has the onComplete logic attached to onend/onerror)
-        const connectMock = window.speechSynthesis.speak as any;
+        const connectMock = window.speechSynthesis.speak as unknown as { mock: { calls: unknown[][] } };
         const lastUtterance = connectMock.mock.calls[items.length - 1][0] as SpeechSynthesisUtterance;
 
         // Simulate cancellation error on the last item
-        const onError = lastUtterance.onerror;
-        if (onError) {
-            // @ts-ignore
-            onError({ error: 'canceled' } as SpeechSynthesisErrorEvent);
-        }
+        const errorEvent = { error: 'canceled', utterance: lastUtterance } as unknown as SpeechSynthesisErrorEvent;
+        lastUtterance.onerror?.(errorEvent);
 
         // Bug: currently calls onComplete
         // Fix: should NOT call onComplete

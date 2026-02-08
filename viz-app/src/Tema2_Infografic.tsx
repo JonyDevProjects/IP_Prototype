@@ -1,9 +1,7 @@
 import { useState } from 'react';
-import {
-    Lightbulb,
-    Settings,
-    Book
-} from 'lucide-react';
+import Lightbulb from 'lucide-react/dist/esm/icons/lightbulb';
+import Settings from 'lucide-react/dist/esm/icons/settings';
+import Book from 'lucide-react/dist/esm/icons/book';
 
 import SlidePrePlanning from './components/slides/Tema2/SlidePrePlanning';
 import SlidePlanning from './components/slides/Tema2/SlidePlanning';

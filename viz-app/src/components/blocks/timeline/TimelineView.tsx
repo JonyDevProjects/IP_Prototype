@@ -1,7 +1,7 @@
 import React from 'react';
-import type { ContentBlock } from '../../../types/course';
+import type { ContentBlock, ThemeColor } from '../../../types/course';
 import { InlineText } from '../../ui/InlineText';
-import { STEP_THEMES, type ThemeColor } from './constants';
+import { STEP_THEMES } from './constants';
 import type { TimelineStep } from './types';
 import TextToSpeechButton from '../../shared/TextToSpeechButton';
 import { useTimelineTTS } from './hooks/useTimelineTTS';
@@ -16,15 +16,20 @@ export const TimelineComponent: React.FC<{
     onUpdate: (updates: Partial<ContentBlock>) => void;
 }> = ({ block, isSelected, isEditable = true, onClick, onUpdate }) => {
 
+    // Type Guard / Narrowing
+    if (block.type !== 'timeline') {
+        return <div className="p-4 text-red-500">Invalid Block Type</div>;
+    }
+
     const handleStepClick = (i: number) => {
-        const metadata = block.metadata as any;
+        const metadata = block.metadata;
         const isSequential = metadata?.sequential;
         const maxUnlocked = metadata?.maxUnlockedIndex ?? 0;
         const isLocked = isSequential && i > maxUnlocked;
 
         if (isLocked) return;
 
-        const newMaxUnlocked = isSequential ? Math.max((block.metadata as any)?.maxUnlockedIndex ?? 0, i + 1) : undefined;
+        const newMaxUnlocked = isSequential ? Math.max(block.metadata?.maxUnlockedIndex ?? 0, i + 1) : undefined;
 
         onUpdate({
             metadata: {
@@ -35,8 +40,8 @@ export const TimelineComponent: React.FC<{
         });
     };
 
-    const activeIndex = (block.metadata as any)?.activeStepIndex ?? 0;
-    const steps = (block.content as unknown as TimelineStep[]);
+    const activeIndex = block.metadata?.activeStepIndex ?? 0;
+    const steps = block.content;
     const activeStep = steps[activeIndex];
 
     // Use Custom Hook for TTS Logic
@@ -48,15 +53,24 @@ export const TimelineComponent: React.FC<{
     const updateActiveStep = (field: string, val: string) => {
         if (!activeStep) return;
         const newContent = [...steps];
+
         if (field.includes('.')) {
-            const [p, c] = field.split('.') as [keyof TimelineStep, keyof TimelineStep];
-            // Note: Simplification for demo, strict typing nested dynamic keys is complex in TS
-            if (p === 'cards') return; // handle cards separately
-            (newContent[activeIndex] as any)[p][c] = val;
+            const [p, c] = field.split('.') as [string, string];
+            // Simple nested update logic (safe-ish for now)
+            if (p === 'cards') return;
+
+            // We know p is keyof TimelineStep, but TS doesn't know 'c' is keyof TimelineStep[p]
+            // We'll use a safer cast than 'any' -> Record<string, unknown>
+            if (newContent[activeIndex]) {
+                const parent = newContent[activeIndex][p as keyof TimelineStep];
+                if (typeof parent === 'object' && parent !== null) {
+                    (parent as unknown as Record<string, unknown>)[c] = val;
+                }
+            }
         } else {
-            (newContent[activeIndex] as any)[field] = val;
+            (newContent[activeIndex] as unknown as Record<string, unknown>)[field] = val;
         }
-        onUpdate({ content: newContent as any });
+        onUpdate({ content: newContent });
     };
 
     return (
@@ -80,7 +94,7 @@ export const TimelineComponent: React.FC<{
                     {steps.map((step: TimelineStep, i: number) => {
                         let themeKey: ThemeColor = step.theme || 'slate';
 
-                        const metadata = block.metadata as any;
+                        const metadata = block.metadata;
                         const isSequential = metadata?.sequential;
                         const maxUnlocked = metadata?.maxUnlockedIndex ?? 0;
                         const isLocked = isSequential && i > maxUnlocked;

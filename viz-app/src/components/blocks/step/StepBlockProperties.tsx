@@ -12,7 +12,7 @@ export const StepBlockProperties: React.FC<{
     // treating it as unknown -> TimelineStep for type safety
     const step = block.content as unknown as TimelineStep;
 
-    const handleChange = (field: string, value: any) => {
+    const handleChange = (field: string, value: unknown) => {
         const newStep = { ...step };
 
         if (field.includes('.')) {
@@ -23,11 +23,13 @@ export const StepBlockProperties: React.FC<{
                 const index = parseInt(indexStr, 10);
                 const cards = [...(newStep.cards || [])];
 
-                cards[index] = {
-                    ...cards[index],
-                    [child]: value
-                };
-                newStep.cards = cards;
+                if (cards[index]) {
+                    cards[index] = {
+                        ...cards[index],
+                        [child]: value
+                    };
+                    newStep.cards = cards;
+                }
             } else {
                 // warning: simple path handling only for now
                 // In TimelineProperties we had specialized handling
@@ -38,7 +40,8 @@ export const StepBlockProperties: React.FC<{
             }
         } else {
             // direct property
-            (newStep as any)[field] = value;
+            // We trust the field name matches a key in TimelineStep because it comes from StepProperties
+            (newStep as Record<string, unknown>)[field] = value;
         }
 
         onUpdate({ content: newStep });

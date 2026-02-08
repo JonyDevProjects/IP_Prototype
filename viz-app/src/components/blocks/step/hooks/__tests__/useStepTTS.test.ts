@@ -194,7 +194,7 @@ describe('useStepTTS', () => {
     });
 
     it('should NOT advance to next step on "canceled" or "interrupted" error', () => {
-        const { result } = renderHook(({ autoPlay }) => useStepTTS({ step: mockStep, autoPlay }), {
+        renderHook(({ autoPlay }) => useStepTTS({ step: mockStep, autoPlay }), {
             initialProps: { autoPlay: true }
         });
 

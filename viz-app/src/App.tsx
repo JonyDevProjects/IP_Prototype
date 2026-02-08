@@ -1,22 +1,29 @@
-import { useState } from 'react'
+import { useState, Suspense, lazy } from 'react'
 import { PlayerMain } from './features/player/components/PlayerMain'
-import { EditorMain } from './features/editor/components/EditorMain'
+// Lazy load EditorMain since it's heavy and not needed for Player view
+const EditorMain = lazy(() => import('./features/editor/components/EditorMain').then(module => ({ default: module.EditorMain })));
 import { tema2CourseData } from './data/mocks/tema2Mock'
+import type { Course } from './types/course'
 
 function App() {
   const [viewMode, setViewMode] = useState<'player' | 'editor'>('player');
 
   // Load initial state from LocalStorage or Fallback to Mock
-  const [courseData, setCourseData] = useState(() => {
-    // Priority to the mock file for development as requested
-    return tema2CourseData;
-    // const saved = localStorage.getItem('ip_course_data');
-    // return saved ? JSON.parse(saved) : tema2CourseData;
+  // Load initial state from LocalStorage or Fallback to Mock
+  const [courseData, setCourseData] = useState<Course>(() => {
+    // Try to load from local storage first
+    try {
+      const saved = localStorage.getItem('ip_course_data');
+      return saved ? JSON.parse(saved) : tema2CourseData;
+    } catch (e) {
+      console.error("Failed to load course data", e);
+      return tema2CourseData;
+    }
   });
 
   // Save to LocalStorage whenever courseData changes (auto-save for now, or explicit save via Editor)
   // For this prototype, we'll pass a dedicated 'onSave' handler to Editor to commit changes.
-  const handleSave = (updatedCourse: any) => {
+  const handleSave = (updatedCourse: Course) => {
     setCourseData(updatedCourse);
     localStorage.setItem('ip_course_data', JSON.stringify(updatedCourse));
     // Optional: Visual feedback could go here
@@ -62,7 +69,9 @@ function App() {
       {viewMode === 'player' ? (
         <PlayerMain courseData={courseData} />
       ) : (
-        <EditorMain courseData={courseData} onSave={handleSave} />
+        <Suspense fallback={<div className="flex items-center justify-center h-screen bg-slate-50 dark:bg-[#150a1f] text-slate-400">Loading Editor...</div>}>
+          <EditorMain courseData={courseData} onSave={handleSave} />
+        </Suspense>
       )}
 
     </div>

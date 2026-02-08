@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
-import {
-    Briefcase,
-    Layers,
-    Scale,
-    Users,
-    Search,
-    FileText,
-    TrendingUp,
-    Award
-} from 'lucide-react';
+import Briefcase from 'lucide-react/dist/esm/icons/briefcase';
+import Layers from 'lucide-react/dist/esm/icons/layers';
+import Scale from 'lucide-react/dist/esm/icons/scale';
+import Users from 'lucide-react/dist/esm/icons/users';
+import Search from 'lucide-react/dist/esm/icons/search';
+import FileText from 'lucide-react/dist/esm/icons/file-text';
+import TrendingUp from 'lucide-react/dist/esm/icons/trending-up';
+import Award from 'lucide-react/dist/esm/icons/award';
 
 // --- Imports from Components ---
 import SlideDefinition from './components/slides/Tema1/SlideDefinition';

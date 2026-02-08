@@ -1,4 +1,7 @@
 
+import type { ThemeColor } from '../../../types/course';
+export type { ThemeColor };
+
 export const AVAILABLE_ICONS = [
     'lightbulb', 'settings', 'rocket_launch', 'check_circle',
     'flag', 'star', 'schedule', 'build', 'visibility',
@@ -8,9 +11,20 @@ export const AVAILABLE_ICONS = [
     'call_split', 'timeline', 'psychology', 'group_add'
 ];
 
-export type ThemeColor = 'amber' | 'blue' | 'purple' | 'green' | 'red' | 'slate' | 'indigo';
+export interface TimelineTheme {
+    bg: string;
+    text: string;
+    iconBg: string;
+    border: string;
+    hoverBorder: string;
+    detail: {
+        border: string;
+        iconColor: string;
+        activeBorder: string;
+    };
+}
 
-export const STEP_THEMES: Record<ThemeColor, any> = {
+export const STEP_THEMES: Record<ThemeColor, TimelineTheme> = {
     amber: {
         bg: 'bg-amber-50', text: 'text-amber-900', iconBg: 'bg-amber-100 text-amber-500',
         border: 'border-amber-400', hoverBorder: 'hover:border-amber-200',

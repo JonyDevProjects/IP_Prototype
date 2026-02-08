@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Volume2, Square } from 'lucide-react';
+import Volume2 from 'lucide-react/dist/esm/icons/volume-2';
+import Square from 'lucide-react/dist/esm/icons/square';
 import { getBestSpanishVoice } from '../../utils/ttsUtils';
 
 interface TTSStep {

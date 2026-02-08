@@ -1,10 +1,8 @@
 import { useState } from 'react';
-import {
-    ListTree,
-    Link,
-    TrendingUp,
-    Gauge
-} from 'lucide-react';
+import ListTree from 'lucide-react/dist/esm/icons/list-tree';
+import Link from 'lucide-react/dist/esm/icons/link';
+import TrendingUp from 'lucide-react/dist/esm/icons/trending-up';
+import Gauge from 'lucide-react/dist/esm/icons/gauge';
 
 import SlideScope from './components/slides/Tema4/SlideScope';
 import SlideSequencing from './components/slides/Tema4/SlideSequencing';

@@ -5,7 +5,7 @@ import App from './App';
 describe('App', () => {
     it('renders without crashing', () => {
         render(<App />);
-        // Check for the main title or a known element
-        expect(screen.getByText(/Tema 1: Introducción/i)).toBeInTheDocument();
+        // Check for a known UI element that should always be present, e.g., the View Toggle
+        expect(screen.getByText(/Player View/i)).toBeInTheDocument();
     });
 });

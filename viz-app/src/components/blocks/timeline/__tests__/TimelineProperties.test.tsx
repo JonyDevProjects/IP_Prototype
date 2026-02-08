@@ -7,14 +7,15 @@ import type { ContentBlock } from '../../../../types/course';
 
 describe('TimelineProperties', () => {
     // Mock basic block data
-    const mockBlock: ContentBlock = {
+    const createMockBlock = (): ContentBlock => ({
         ...TimelineBlockDefinition.createBlock('test-id'),
         metadata: { activeStepIndex: 0 }
-    };
+    });
 
     it('should add a new card when Add button is clicked', () => {
         const onUpdate = vi.fn();
-        render(<TimelineProperties block={mockBlock} onUpdate={onUpdate} />);
+
+        render(<TimelineProperties block={createMockBlock()} onUpdate={onUpdate} />);
 
         // Find "Add Card" button
         const addCardBtn = screen.getByText('Add Card');
@@ -32,7 +33,8 @@ describe('TimelineProperties', () => {
 
     it('should remove a card when Delete button is clicked', () => {
         const onUpdate = vi.fn();
-        render(<TimelineProperties block={mockBlock} onUpdate={onUpdate} />);
+
+        render(<TimelineProperties block={createMockBlock()} onUpdate={onUpdate} />);
 
         // Find delete buttons (rendered as 'close' icon)
         const deleteButtons = screen.getAllByText('close');
@@ -49,7 +51,7 @@ describe('TimelineProperties', () => {
 
     it('should call onUpdate when title input is changed', () => {
         const onUpdate = vi.fn();
-        render(<TimelineProperties block={mockBlock} onUpdate={onUpdate} />);
+        render(<TimelineProperties block={createMockBlock()} onUpdate={onUpdate} />);
 
         // Find the first card title input
         // Note: The UI has labels "Title", we can query by that or simply find the input value
@@ -68,7 +70,7 @@ describe('TimelineProperties', () => {
 
     it('should call onUpdate when an icon is selected', () => {
         const onUpdate = vi.fn();
-        render(<TimelineProperties block={mockBlock} onUpdate={onUpdate} />);
+        render(<TimelineProperties block={createMockBlock()} onUpdate={onUpdate} />);
 
         // 1. Open Icon Picker for first card
         // The implementation uses a button with the current icon to toggle picker.

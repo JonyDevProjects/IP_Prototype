@@ -1,11 +1,9 @@
 
 import { useState, useEffect } from 'react';
-import {
-    BarChart2,
-    Activity,
-    Network,
-    PlayCircle
-} from 'lucide-react';
+import BarChart2 from 'lucide-react/dist/esm/icons/bar-chart-2';
+import Activity from 'lucide-react/dist/esm/icons/activity';
+import Network from 'lucide-react/dist/esm/icons/network';
+import PlayCircle from 'lucide-react/dist/esm/icons/play-circle';
 
 import SlideExecution from './components/slides/Tema3/SlideExecution';
 import SlideControl from './components/slides/Tema3/SlideControl';

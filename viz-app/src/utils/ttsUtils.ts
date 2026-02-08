@@ -1,4 +1,4 @@
-import type { ContentBlock, Unit } from '../types/course';
+import type { ContentBlock, Unit, AlertBlockContent } from '../types/course';
 import type { TimelineStep } from '../components/blocks/timeline/types';
 
 export interface TTSItem {
@@ -16,9 +16,10 @@ export const getBlockTTSItems = (block: ContentBlock): TTSItem[] => {
 
     switch (block.type) {
         case 'step':
+            // StepBlock content is still 'any' in course.ts for now, so we cast to specific type
             return getStepTTSItems(block.content as TimelineStep, block.id);
         case 'text':
-            return getTextTTSItems(block.content as string, block.id);
+            return getTextTTSItems(block.content, block.id);
         case 'alert':
             return getAlertTTSItems(block.content, block.id);
         // Add other block types here
@@ -93,7 +94,7 @@ const getTextTTSItems = (content: string, blockId: string): TTSItem[] => {
     }];
 };
 
-export const getAlertTTSItems = (content: any, blockId: string): TTSItem[] => {
+export const getAlertTTSItems = (content: AlertBlockContent, blockId: string): TTSItem[] => {
     return [{
         id: blockId,
         text: `${content.title}. ${content.text}`,

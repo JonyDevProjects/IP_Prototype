@@ -2,17 +2,99 @@
 
 export type ContentBlockType = 'text' | 'image' | 'quiz' | 'timeline' | 'step' | 'alert' | 'mermaid';
 
-export interface ContentBlock {
+export interface BaseBlock {
   id: string;
-  type: ContentBlockType;
-  content: any; // Puede ser string, objeto de quiz, etc.
-  ttsEnabled?: boolean; // Controls if this block is included in unit-level TTS
+  ttsEnabled?: boolean;
   metadata?: {
-    className?: string; // Para overrides de estilo
+    className?: string;
     interactive?: boolean;
-    [key: string]: any;
+    [key: string]: unknown;
   };
 }
+
+export interface TextBlockContent {
+  text: string;
+}
+
+export interface ImageBlockContent {
+  src: string;
+  alt?: string;
+  caption?: string;
+}
+
+export interface QuizBlockContent {
+  question: string;
+  options: string[];
+  correctIndex: number;
+}
+
+export interface AlertBlockContent {
+  title: string;
+  text: string;
+  type?: 'info' | 'warning' | 'error' | 'success';
+  icon?: string;
+}
+
+export type ThemeColor = 'amber' | 'blue' | 'purple' | 'green' | 'red' | 'slate' | 'indigo';
+
+export interface TimelineCard {
+  title: string;
+  text: string;
+  icon?: string;
+}
+
+export interface TimelineStep {
+  title: string;
+  summary?: string;
+  icon?: string;
+  theme?: ThemeColor;
+
+  // Detail View
+  detailTitle?: string;
+  detailSubtitle?: string;
+  detailIcon?: string;
+
+  // Dynamic Cards
+  cards?: TimelineCard[];
+
+  // Footer
+  footerTip?: string;
+  footerTipIcon?: string;
+}
+
+export interface TimelineMetadata {
+  activeStepIndex: number;
+  sequential?: boolean;
+  maxUnlockedIndex?: number;
+}
+
+export interface TimelineBlock extends BaseBlock {
+  type: 'timeline';
+  content: TimelineStep[];
+  metadata?: BaseBlock['metadata'] & TimelineMetadata;
+}
+
+export interface StepBlock extends BaseBlock {
+  type: 'step';
+  content: TimelineStep;
+}
+
+export interface TextBlock extends BaseBlock {
+  type: 'text';
+  content: string; // Text blocks often just have the string directly as content in this app's legacy structure
+}
+
+export interface AlertBlock extends BaseBlock {
+  type: 'alert';
+  content: AlertBlockContent;
+}
+
+export interface GenericBlock extends BaseBlock {
+  type: 'image' | 'quiz' | 'mermaid';
+  content: unknown;
+}
+
+export type ContentBlock = TimelineBlock | StepBlock | TextBlock | AlertBlock | GenericBlock;
 
 export interface Unit {
   id: string;

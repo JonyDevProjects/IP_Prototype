@@ -6,7 +6,8 @@ import type { ContentBlockType } from '../../../../types/course';
 import type { Course } from '../../../../types/course';
 import { ModuleSettingsPanel } from './ModuleSettingsPanel';
 import { Sidebar, SidebarBody, SidebarLink, useSidebar } from '@/components/ui/sidebar';
-import { LayoutDashboard, Cuboid } from 'lucide-react';
+import LayoutDashboard from 'lucide-react/dist/esm/icons/layout-dashboard';
+import Cuboid from 'lucide-react/dist/esm/icons/cuboid';
 import { cn } from '@/lib/utils';
 
 interface EditorSidebarProps {

@@ -1,18 +1,19 @@
 import React from 'react';
-import type { ContentBlock } from '../../../types/course';
+import type { ContentBlock, ThemeColor } from '../../../types/course';
 import { PropertySection } from '../../ui/PropertySection';
-import { type ThemeColor } from './constants';
 import { StepProperties } from './StepProperties';
 
 export const TimelineProperties: React.FC<{
     block: ContentBlock;
     onUpdate: (updates: Partial<ContentBlock>) => void;
 }> = ({ block, onUpdate }) => {
-    const activeIndex = (block.metadata as any)?.activeStepIndex ?? 0;
-    const steps = block.content as any[];
+    if (block.type !== 'timeline') return null;
+
+    const activeIndex = block.metadata?.activeStepIndex ?? 0;
+    const steps = block.content;
     const activeStep = steps[activeIndex];
 
-    const updateStep = (field: string, value: any) => {
+    const updateStep = (field: string, value: unknown) => {
         const newContent = [...steps];
 
         if (field.includes('.')) {
@@ -23,33 +24,38 @@ export const TimelineProperties: React.FC<{
                 const [parent, indexStr, child] = parts;
                 const index = parseInt(indexStr, 10);
 
-                // 1. Clone the parent array (e.g., cards)
-                const list = [...(newContent[activeIndex][parent] as any[])];
-
-                // 2. Clone the specific item (e.g., card object) and update its field
-                list[index] = {
-                    ...list[index],
-                    [child]: value
-                };
-
-                // 3. Update the step with the new list
-                newContent[activeIndex] = {
-                    ...newContent[activeIndex],
-                    [parent]: list
-                };
+                // Assuming parent is 'cards'
+                if (parent === 'cards' && newContent[activeIndex].cards) {
+                    const list = [...(newContent[activeIndex].cards || [])];
+                    if (list[index]) {
+                        list[index] = {
+                            ...list[index],
+                            [child]: value
+                        };
+                        newContent[activeIndex] = {
+                            ...newContent[activeIndex],
+                            cards: list
+                        };
+                    }
+                }
             } else {
                 // Case: detailTitle (legacy/simple nested) or fallback
                 const [parent, child] = parts;
-                newContent[activeIndex] = {
-                    ...newContent[activeIndex],
-                    [parent]: {
-                        ...newContent[activeIndex][parent],
-                        [child]: value
-                    }
-                };
+                // logic here is bit fragile if parent isn't an object, but fits existing pattern
+                const parentObj = newContent[activeIndex][parent as keyof typeof newContent[number]];
+                if (typeof parentObj === 'object' && parentObj !== null) {
+                    newContent[activeIndex] = {
+                        ...newContent[activeIndex],
+                        [parent]: {
+                            ...parentObj,
+                            [child]: value
+                        }
+                    };
+                }
             }
         } else {
-            newContent[activeIndex] = { ...newContent[activeIndex], [field]: value };
+            // direct property
+            (newContent[activeIndex] as unknown as Record<string, unknown>)[field] = value;
         }
         onUpdate({ content: newContent });
     };
@@ -145,7 +151,7 @@ export const TimelineProperties: React.FC<{
                         <div
                             className={`w-8 h-4 rounded-full p-0.5 cursor-pointer transition-colors ${block.metadata?.sequential ? 'bg-[#7f13ec]' : 'bg-slate-300 dark:bg-slate-600'}`}
                             onClick={() => {
-                                const isSequential = !(block.metadata as any)?.sequential;
+                                const isSequential = !block.metadata?.sequential;
                                 onUpdate({
                                     metadata: {
                                         ...block.metadata,
@@ -155,7 +161,7 @@ export const TimelineProperties: React.FC<{
                                 });
                             }}
                         >
-                            <div className={`w-3 h-3 bg-white rounded-full shadow-sm transition-transform ${(block.metadata as any)?.sequential ? 'translate-x-4' : ''}`} />
+                            <div className={`w-3 h-3 bg-white rounded-full shadow-sm transition-transform ${block.metadata?.sequential ? 'translate-x-4' : ''}`} />
                         </div>
                     </div>
                     <p className="text-[10px] text-slate-500 dark:text-slate-400">

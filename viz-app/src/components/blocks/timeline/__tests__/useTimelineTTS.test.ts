@@ -25,7 +25,7 @@ describe('useTimelineTTS', () => {
                 title: 'Step 2',
                 // No details
             }
-        ] as any,
+        ],
         metadata: {
             activeStepIndex: 0
         }

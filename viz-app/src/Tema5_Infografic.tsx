@@ -1,10 +1,8 @@
 import { useState } from 'react';
-import {
-    Layout,
-    DollarSign,
-    BarChart2,
-    Calculator
-} from 'lucide-react';
+import Layout from 'lucide-react/dist/esm/icons/layout';
+import DollarSign from 'lucide-react/dist/esm/icons/dollar-sign';
+import BarChart2 from 'lucide-react/dist/esm/icons/bar-chart-2';
+import Calculator from 'lucide-react/dist/esm/icons/calculator';
 
 import SlideTripleConstraint from './components/slides/Tema5/SlideTripleConstraint';
 import SlideBaseline from './components/slides/Tema5/SlideBaseline';

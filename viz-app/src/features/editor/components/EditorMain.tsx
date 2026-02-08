@@ -75,7 +75,7 @@ export const EditorMain: React.FC<EditorMainProps> = ({ courseData, onSave }) =>
     };
 
     const updateBlock = (blockId: string, updates: Partial<ContentBlock>) => {
-        setBlocks(prev => prev.map(b => b.id === blockId ? { ...b, ...updates } : b));
+        setBlocks(prev => prev.map(b => b.id === blockId ? { ...b, ...updates } as ContentBlock : b));
     };
 
     const deleteBlock = (blockId: string) => {
@@ -99,7 +99,7 @@ export const EditorMain: React.FC<EditorMainProps> = ({ courseData, onSave }) =>
                     setSelectedBlockId(null);
                 }}
                 onAddModule={(title) => {
-                    const newModule: any = { // Typed as any to avoid complex mock creation inline
+                    const newModule = {
                         id: `m-${Date.now()}`,
                         order: courseData.modules.length + 1,
                         title,
@@ -114,7 +114,7 @@ export const EditorMain: React.FC<EditorMainProps> = ({ courseData, onSave }) =>
                 onAddUnit={(mIdx, title) => {
                     const updatedModules = [...courseData.modules];
                     const module = updatedModules[mIdx];
-                    const newUnit: any = {
+                    const newUnit = {
                         id: `u-${Date.now()}`,
                         title,
                         durationMin: 0,

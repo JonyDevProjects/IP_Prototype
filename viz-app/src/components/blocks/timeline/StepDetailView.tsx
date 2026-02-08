@@ -1,8 +1,9 @@
 
 import React from 'react';
 import { InlineText } from '../../ui/InlineText';
-import { STEP_THEMES, type ThemeColor } from './constants';
-import type { TimelineStep } from './types';
+import { STEP_THEMES } from './constants';
+import type { TimelineStep, TimelineCard } from './types';
+import type { ThemeColor } from '../../../types/course';
 
 interface StepDetailViewProps {
     step: TimelineStep;
@@ -77,7 +78,7 @@ export const StepDetailView: React.FC<StepDetailViewProps> = ({
 
                 {/* Content Cards Grid */}
                 <div className="space-y-4 mb-10">
-                    {((step.cards) || []).map((card: any, idx: number) => {
+                    {((step.cards) || []).map((card: TimelineCard, idx: number) => {
                         return (
                             <div
                                 key={idx}

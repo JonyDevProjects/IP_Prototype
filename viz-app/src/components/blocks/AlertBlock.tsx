@@ -1,30 +1,30 @@
-import React from 'react';
-import type { ContentBlock } from '../../types/course';
+import { useEffect, useRef, type MouseEvent, type FC } from 'react';
+import type { ContentBlock, AlertBlockContent } from '../../types/course';
 import type { BlockDefinition } from './types';
 import { PropertySection } from '../ui/PropertySection';
 
-const AlertComponent: React.FC<{
+const AlertComponent: FC<{
     block: ContentBlock;
     isSelected: boolean;
-    onClick: (e: React.MouseEvent) => void;
+    onClick: (e: MouseEvent) => void;
     playMode?: 'auto' | 'manual';
     onTTSComplete?: () => void;
     rate?: number;
     volume?: number;
 }> = ({ block, isSelected, onClick, playMode, onTTSComplete, rate = 1, volume = 1 }) => {
-    const data = block.content as any;
+    const data = block.content as AlertBlockContent;
     const synth = window.speechSynthesis;
-    const mountedRef = React.useRef(true);
-    const lastCharIndexRef = React.useRef(0);
+    const mountedRef = useRef(true);
+    const lastCharIndexRef = useRef(0);
 
     // Mount tracking
-    React.useEffect(() => {
+    useEffect(() => {
         mountedRef.current = true;
         return () => { mountedRef.current = false; };
     }, []);
 
     // Full TTS Effect (Resume-supported)
-    React.useEffect(() => {
+    useEffect(() => {
         if (playMode === 'auto') {
             const textToRead = `${data.title}. ${data.text}`;
             if (textToRead.trim()) {
@@ -96,12 +96,12 @@ const AlertComponent: React.FC<{
     );
 };
 
-const AlertProperties: React.FC<{
+const AlertProperties: FC<{
     block: ContentBlock;
     onUpdate: (updates: Partial<ContentBlock>) => void;
 }> = ({ block, onUpdate }) => {
-    const data = block.content as any;
-    const updateData = (updates: any) => onUpdate({ content: { ...data, ...updates } });
+    const data = block.content as AlertBlockContent;
+    const updateData = (updates: Partial<AlertBlockContent>) => onUpdate({ content: { ...data, ...updates } });
 
     return (
         <PropertySection title="Content" isOpen>

@@ -7,7 +7,7 @@ import type { TimelineStep } from './types';
 interface StepPropertiesProps {
     step: TimelineStep;
     index: number;
-    onChange: (field: string, value: any) => void;
+    onChange: (field: string, value: unknown) => void;
 }
 
 export const StepProperties: React.FC<StepPropertiesProps> = ({ step, index, onChange }) => {
@@ -63,7 +63,7 @@ export const StepProperties: React.FC<StepPropertiesProps> = ({ step, index, onC
                     <div>
                         <label className="block text-xs text-slate-500 mb-1.5">Theme Color</label>
                         <div className="flex gap-2">
-                            {Object.keys(STEP_THEMES).map((themeKey) => {
+                            {(Object.keys(STEP_THEMES) as ThemeColor[]).map((themeKey) => {
                                 const theme = STEP_THEMES[themeKey as ThemeColor];
                                 const isActive = step.theme === themeKey;
                                 return (
@@ -113,8 +113,8 @@ export const StepProperties: React.FC<StepPropertiesProps> = ({ step, index, onC
                                 <button
                                     className="text-[10px] text-blue-600 hover:text-blue-800 font-medium flex items-center gap-1"
                                     onClick={() => {
-                                        const currentCards = (step.cards as any[]) || [];
-                                        onChange('cards', [...currentCards, { title: 'New Card', text: 'Card description', icon: 'check_circle' }] as any);
+                                        const currentCards = step.cards || [];
+                                        onChange('cards', [...currentCards, { title: 'New Card', text: 'Card description', icon: 'check_circle' }]);
                                     }}
                                 >
                                     <span className="material-symbols-outlined text-[14px]">add_circle</span> Add Card
@@ -122,17 +122,18 @@ export const StepProperties: React.FC<StepPropertiesProps> = ({ step, index, onC
                             </div>
 
                             <div className="space-y-4">
-                                {((step.cards as any[]) || []).map((card: any, idx: number) => (
+                                {(step.cards || []).map((card, idx) => (
                                     <div key={idx} className="p-2 rounded bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 relative group">
                                         {/* Delete Button */}
                                         <button
                                             className="absolute top-2 right-2 text-slate-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
                                             onClick={() => {
-                                                const currentCards = [...((step.cards as any[]) || [])];
+                                                const currentCards = [...(step.cards || [])];
                                                 currentCards.splice(idx, 1);
-                                                onChange('cards', currentCards as any);
+                                                onChange('cards', currentCards);
                                             }}
                                         >
+
                                             <span className="material-symbols-outlined text-[16px]">close</span>
                                         </button>
 

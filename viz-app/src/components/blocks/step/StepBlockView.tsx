@@ -2,7 +2,6 @@
 import React from 'react';
 import type { ContentBlock } from '../../../types/course';
 import { StepDetailView } from '../timeline/StepDetailView';
-import type { TimelineStep } from '../timeline/types';
 import TextToSpeechButton from '../../shared/TextToSpeechButton';
 import { useStepTTS } from './hooks/useStepTTS';
 
@@ -20,7 +19,8 @@ export const StepBlockView: React.FC<{
     volume?: number;
 }> = ({ block, highlightItemId, playMode, isActiveBlock, onTTSComplete, isEditable = true, onClick, onUpdate, rate, volume }) => {
 
-    const step = block.content as unknown as TimelineStep;
+    if (block.type !== 'step') return null;
+    const step = block.content;
 
     const { ttsSteps, activeReadingId, handleTTSStepChange } = useStepTTS({
         step,
@@ -66,11 +66,14 @@ export const StepBlockView: React.FC<{
                 const [_, indexStr, child] = parts;
                 const index = parseInt(indexStr, 10);
                 const cards = [...(newStep.cards || [])];
-                cards[index] = { ...cards[index], [child]: val };
+                const card = cards[index];
+                if (card) {
+                    cards[index] = { ...card, [child]: val } as any; // TimelineCard doesn't have index signature, simpler to use any here for the spread
+                }
                 newStep.cards = cards;
             }
         } else {
-            (newStep as any)[field] = val;
+            (newStep as unknown as Record<string, unknown>)[field] = val;
         }
 
         onUpdate({ content: newStep });

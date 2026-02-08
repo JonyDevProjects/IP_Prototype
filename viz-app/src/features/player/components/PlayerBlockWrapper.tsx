@@ -26,7 +26,7 @@ export const PlayerBlockWrapper: React.FC<PlayerBlockWrapperProps> = ({ block: i
     }
 
     const handleUpdate = (updates: Partial<ContentBlock>) => {
-        setBlock(prev => ({ ...prev, ...updates }));
+        setBlock(prev => ({ ...prev, ...updates } as ContentBlock));
     };
 
     // We pass `isSelected={false}` since we are in Player mode.
