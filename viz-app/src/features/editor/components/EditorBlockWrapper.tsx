@@ -19,6 +19,7 @@ export const EditorBlockWrapper = ({ block, isSelected, onClick, onDelete, onUpd
                 : 'hover:ring-1 hover:ring-slate-300 dark:hover:ring-white/20'
                 }`}
             onClick={onClick}
+            onMouseDown={(e) => e.stopPropagation()}
         >
             {/* --- Premium Contextual Toolbar --- */}
             <div className={`absolute -top-12 right-0 flex items-center gap-1 p-1 rounded-full bg-white/90 dark:bg-[#2d2235]/90 backdrop-blur-md shadow-xl border border-slate-200 dark:border-white/10 transition-all duration-200 origin-bottom ${isSelected || 'group-hover:opacity-100 opacity-0 translate-y-2 group-hover:translate-y-0'} z-50`}>

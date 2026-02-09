@@ -19,8 +19,10 @@ export const TimelineBlockDefinition: BlockDefinition = {
                     { title: 'Detonantes', text: 'Obsolescencia técnica, competencia, ideas de empleados u oportunidades de ahorro.', icon: 'check_circle' },
                     { title: 'Acción Clave', text: 'Valorar si la idea se alinea con la estrategia y si es financieramente viable.', icon: 'check_circle' }
                 ],
-                footerTip: 'Tip de PMP: Este proceso culmina con el Project Charter. Sin él, no debes iniciar la planificación detallada.',
-                footerTipIcon: 'help'
+                images: [
+                    'https://assets.aceternity.com/templates/startup-1.webp',
+                    'https://assets.aceternity.com/templates/startup-2.webp'
+                ]
             },
             {
                 title: 'Solución Conceptual', summary: '¿Cómo lo vamos a resolver?', icon: 'settings', theme: 'blue',
@@ -30,8 +32,9 @@ export const TimelineBlockDefinition: BlockDefinition = {
                     { title: 'Análisis de Alternativas', text: '¿Comprar software (COTS)? ¿Desarrollo a medida? ¿Adaptar sistema actual? ¿Externalizar?', icon: 'check_circle' },
                     { title: 'Criterios', text: 'Decidir basándose en Tiempo, Coste, Riesgo y Conocimiento del equipo.', icon: 'check_circle' }
                 ],
-                footerTip: '',
-                footerTipIcon: ''
+                images: [
+                    'https://assets.aceternity.com/templates/startup-3.webp'
+                ]
             },
             {
                 title: 'Estudio de Negocio', summary: 'Justificando la inversión (Business Case)', icon: 'description', theme: 'indigo',
@@ -41,8 +44,9 @@ export const TimelineBlockDefinition: BlockDefinition = {
                     { title: 'Propósito', text: 'Convencer a la Alta Dirección para aprobar el presupuesto.', icon: 'check_circle' },
                     { title: 'Componentes', text: 'Visión estratégica, análisis financiero (ROI/VAN), análisis competitivo y riesgos iniciales.', icon: 'check_circle' }
                 ],
-                footerTip: '',
-                footerTipIcon: ''
+                images: [
+                    'https://assets.aceternity.com/templates/startup-4.webp'
+                ]
             },
             {
                 title: 'Alcance Preliminar', summary: 'Dibujando la cancha', icon: 'track_changes', theme: 'red',
@@ -52,8 +56,7 @@ export const TimelineBlockDefinition: BlockDefinition = {
                     { title: 'Límites', text: 'Definir claramente qué está DENTRO y qué está FUERA del proyecto.', icon: 'check_circle' },
                     { title: 'Datos Clave', text: 'Criterios de aceptación, EDT inicial (WBS), Hitos principales y Costes ROM (Orden de Magnitud).', icon: 'check_circle' }
                 ],
-                footerTip: '',
-                footerTipIcon: ''
+                images: []
             },
             {
                 title: 'Interesados (Stakeholders)', summary: '¿A quién afecta?', icon: 'groups', theme: 'green',
@@ -63,8 +66,7 @@ export const TimelineBlockDefinition: BlockDefinition = {
                     { title: 'Mapeo', text: 'Identificar a todos los actores relevantes desde el inicio.', icon: 'check_circle' },
                     { title: 'Preguntas', text: '¿Quién recibe el beneficio? ¿Quién provee los datos? ¿Quién lo supervisa? ¿Quién sufre las repercusiones?', icon: 'check_circle' }
                 ],
-                footerTip: '',
-                footerTipIcon: ''
+                images: []
             },
             {
                 title: 'Lanzamiento (Project Charter)', summary: 'Luz verde oficial', icon: 'rocket_launch', theme: 'purple',
@@ -75,8 +77,9 @@ export const TimelineBlockDefinition: BlockDefinition = {
                     { title: 'Equipo', text: 'Nombrar al Project Manager (PM) y formar el equipo núcleo.', icon: 'check_circle' },
                     { title: 'Kick-off', text: 'Reunión de lanzamiento para alinear expectativas.', icon: 'check_circle' }
                 ],
-                footerTip: 'Tip de PMP: Este proceso culmina con el Project Charter. Sin él, no debes iniciar la planificación detallada.',
-                footerTipIcon: 'help'
+                images: [
+                    'https://assets.aceternity.com/templates/startup-1.webp'
+                ]
             }
         ],
         metadata: { activeStepIndex: 0 }

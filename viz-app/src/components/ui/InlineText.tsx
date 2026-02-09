@@ -8,6 +8,7 @@ interface InlineTextProps {
     placeholder?: string;
     multiline?: boolean;
     disabled?: boolean;
+    onStartEdit?: () => void;
 }
 
 export const InlineText: React.FC<InlineTextProps> = ({
@@ -17,7 +18,8 @@ export const InlineText: React.FC<InlineTextProps> = ({
     className = '',
     placeholder = 'Type here...',
     multiline = false,
-    disabled = false
+    disabled = false,
+    onStartEdit
 }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [editValue, setEditValue] = useState(value);
@@ -95,6 +97,7 @@ export const InlineText: React.FC<InlineTextProps> = ({
             onClick={!disabled ? (e: React.MouseEvent) => {
                 e.stopPropagation(); // Prevent block selection
                 setIsEditing(true);
+                onStartEdit?.();
             } : undefined}
             title={!disabled ? "Click to edit" : undefined}
         >

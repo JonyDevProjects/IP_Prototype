@@ -179,27 +179,50 @@ export const StepProperties: React.FC<StepPropertiesProps> = ({ step, index, onC
                             </div>
                         </div>
 
-                        {/* Footer */}
+                        {/* Images Management */}
                         <div className="space-y-3 pt-2 border-t border-slate-100 dark:border-white/5">
                             <div className="flex items-center justify-between">
-                                <label className="text-xs font-bold text-slate-700 dark:text-slate-300">Footer Tip</label>
-                                <button className="text-[10px] text-blue-600 hover:underline flex items-center gap-1" onClick={() => setActiveIconPicker(activeIconPicker === 'footerTip' ? null : 'footerTip')}>
-                                    <span className="material-symbols-outlined text-[14px]">{step.footerTipIcon || 'help'}</span> Icon
+                                <label className="text-xs font-bold text-slate-700 dark:text-slate-300">Images</label>
+                                <button
+                                    className="text-[10px] text-blue-600 hover:text-blue-800 font-medium flex items-center gap-1"
+                                    onClick={() => {
+                                        const currentImages = step.images || [];
+                                        onChange('images', [...currentImages, 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2426&auto=format&fit=crop']);
+                                    }}
+                                >
+                                    <span className="material-symbols-outlined text-[14px]">add_a_photo</span> Add Image
                                 </button>
                             </div>
-                            {activeIconPicker === 'footerTip' && (
-                                <div className="grid grid-cols-6 gap-1 p-2 border border-slate-200 dark:border-white/10 rounded-lg bg-white dark:bg-[#1f1629] shadow-sm mb-2">
-                                    {AVAILABLE_ICONS.map(iconName => (
-                                        <button key={iconName} className="w-6 h-6 flex items-center justify-center rounded hover:bg-slate-100 dark:hover:bg-white/10 text-slate-600 dark:text-slate-400 hover:text-[#7f13ec]"
-                                            onClick={() => { onChange('footerTipIcon', iconName); setActiveIconPicker(null); }}
+                            <div className="space-y-4">
+                                {(step.images || []).map((img, idx) => (
+                                    <div key={idx} className="p-2 rounded bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 relative group">
+                                        <button
+                                            className="absolute top-2 right-2 text-slate-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity z-10"
+                                            onClick={() => {
+                                                const currentImages = [...(step.images || [])];
+                                                currentImages.splice(idx, 1);
+                                                onChange('images', currentImages);
+                                            }}
                                         >
-                                            <span className="material-symbols-outlined text-sm">{iconName}</span>
+                                            <span className="material-symbols-outlined text-[16px]">close</span>
                                         </button>
-                                    ))}
-                                </div>
-                            )}
-                            <textarea className="w-full h-12 px-2 py-1.5 rounded bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-xs focus:border-[#7f13ec] outline-none resize-none"
-                                value={step.footerTip || ''} onChange={(e) => onChange('footerTip', e.target.value)} />
+                                        <div className="space-y-2">
+                                            <img src={img} alt="preview" className="w-full h-20 object-cover rounded border border-slate-200" />
+                                            <input
+                                                type="text"
+                                                className="w-full px-2 py-1 rounded bg-white dark:bg-black/20 border border-slate-200 dark:border-white/10 text-[10px] outline-none"
+                                                value={img}
+                                                onChange={(e) => {
+                                                    const currentImages = [...(step.images || [])];
+                                                    currentImages[idx] = e.target.value;
+                                                    onChange('images', currentImages);
+                                                }}
+                                                placeholder="Image URL"
+                                            />
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -25,20 +25,44 @@ export const EditorPropertiesSidebar: React.FC<EditorPropertiesSidebarProps> = (
     onDeleteBlock
 }) => {
     const [open, setOpen] = React.useState(false);
+    const sidebarRef = React.useRef<HTMLElement>(null);
+
+    React.useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (sidebarRef.current && !sidebarRef.current.contains(event.target as Node)) {
+                setOpen(false);
+            }
+        };
+
+        if (open) {
+            document.addEventListener('mousedown', handleClickOutside);
+        }
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [open]);
+
+    // Auto-open when a block is selected (optional but good UX)
+    React.useEffect(() => {
+        if (selectedBlockId) {
+            setOpen(true);
+        }
+    }, [selectedBlockId, (selectedBlock?.metadata as any)?.activeStepIndex, (selectedBlock?.metadata as any)?.lastInteraction]);
 
     return (
         <motion.aside
-            className="bg-white dark:bg-[#1f1629] border-l border-slate-200 dark:border-white/10 shrink-0 flex flex-col z-20 h-full overflow-hidden"
+            ref={sidebarRef}
+            className="bg-white dark:bg-[#1f1629] border-l border-slate-200 dark:border-white/10 shrink-0 flex flex-col z-20 h-full overflow-hidden shadow-xl"
             initial={{ width: "60px" }}
             animate={{ width: open ? "300px" : "60px" }}
             transition={{ duration: 0.3, ease: "easeInOut" }}
             onMouseEnter={() => setOpen(true)}
-            onMouseLeave={() => setOpen(false)}
         >
-            <div className="flex-1 flex flex-col min-w-[300px]"> {/* Container fixes width to prevent layout shift during collapse */}
+            <div className="flex-1 flex flex-col min-w-[300px] min-h-0"> {/* Container fixes width to prevent layout shift during collapse */}
                 {selectedBlockId ? (
                     <>
-                        <div className="p-4 border-b border-slate-200 dark:border-white/10 flex items-center justify-between h-[60px]">
+                        <div className="p-4 border-b border-slate-200 dark:border-white/10 flex items-center justify-between h-[60px] shrink-0">
                             <div className="flex items-center gap-3 overflow-hidden">
                                 <div className="shrink-0 w-8 h-8 flex items-center justify-center rounded-md bg-slate-100 dark:bg-white/5 text-[#7f13ec]">
                                     <span className="material-symbols-outlined text-lg">
@@ -52,16 +76,16 @@ export const EditorPropertiesSidebar: React.FC<EditorPropertiesSidebarProps> = (
                             </div>
                             {open && (
                                 <button
-                                    onClick={onClose}
+                                    onClick={() => setOpen(false)}
                                     className="p-1.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-white/5 rounded-lg transition-colors"
-                                    title="Close Sidebar"
+                                    title="Collapse Sidebar"
                                 >
-                                    <span className="material-symbols-outlined text-lg">close</span>
+                                    <span className="material-symbols-outlined text-lg">chevron_right</span>
                                 </button>
                             )}
                         </div>
 
-                        <div className={`flex-1 overflow-y-auto transition-opacity duration-200 ${open ? 'opacity-100' : 'opacity-0'}`}>
+                        <div className={`flex-1 overflow-y-auto min-h-0 transition-opacity duration-200 ${open ? 'opacity-100' : 'opacity-0'}`}>
 
                             {/* Header Properties */}
                             {selectedBlockId === 'header' && (
@@ -102,7 +126,7 @@ export const EditorPropertiesSidebar: React.FC<EditorPropertiesSidebarProps> = (
                         </div>
 
                         {selectedBlock && (
-                            <div className={`p-4 border-t border-slate-200 dark:border-white/10 transition-opacity duration-200 ${open ? 'opacity-100' : 'opacity-0'}`}>
+                            <div className={`p-4 border-t border-slate-200 dark:border-white/10 shrink-0 transition-opacity duration-200 ${open ? 'opacity-100' : 'opacity-0'}`}>
                                 <button
                                     className="w-full flex justify-center items-center gap-2 py-2 px-4 border border-red-200 dark:border-red-900/50 text-red-600 dark:text-red-400 rounded-md text-sm font-medium hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
                                     onClick={() => onDeleteBlock(selectedBlock.id)}

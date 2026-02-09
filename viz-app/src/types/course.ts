@@ -60,6 +60,9 @@ export interface TimelineStep {
   // Footer
   footerTip?: string;
   footerTipIcon?: string;
+
+  // Images
+  images?: string[];
 }
 
 export interface TimelineMetadata {

@@ -194,11 +194,6 @@ export const useStepTTS = ({ step, stepIndex = 0, stepId, autoPlay = false, isAc
         synth.cancel();
     };
 
-    // TTS Handler for manual interaction override
-    const handleTTSStepChange = (stepId: string | null) => {
-        setActiveReadingId(stepId);
-    };
-
     const getHighlightClass = (targetId: string) => {
         if (!activeReadingId) return "";
         return activeReadingId === targetId
@@ -209,7 +204,6 @@ export const useStepTTS = ({ step, stepIndex = 0, stepId, autoPlay = false, isAc
     return {
         ttsSteps,
         activeReadingId,
-        handleTTSStepChange,
         getHighlightClass
     };
 };

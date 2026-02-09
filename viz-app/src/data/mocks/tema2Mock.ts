@@ -73,6 +73,62 @@ export const tema2CourseData: Course = {
                 footerTip: '',
                 footerTipIcon: ''
               }
+            },
+            {
+              id: 'b-timeline-main',
+              type: 'timeline',
+              content: [
+                {
+                  title: 'Génesis y Valoración',
+                  summary: '¿De dónde surge la necesidad?',
+                  icon: 'lightbulb',
+                  theme: 'amber',
+                  detailTitle: 'Génesis y Valoración',
+                  detailSubtitle: '¿De dónde surge la necesidad?',
+                  detailIcon: 'lightbulb',
+                  cards: [
+                    { title: 'Detonantes', text: 'Obsolescencia técnica, competencia, ideas de empleados u oportunidades de ahorro.', icon: 'check_circle' },
+                    { title: 'Acción Clave', text: 'Valorar si la idea se alinea con la estrategia y si es financieramente viable.', icon: 'check_circle' }
+                  ],
+                  images: [
+                    'https://assets.aceternity.com/templates/startup-1.webp',
+                    'https://assets.aceternity.com/templates/startup-2.webp'
+                  ]
+                },
+                {
+                  title: 'Solución Conceptual',
+                  summary: '¿Cómo lo vamos a resolver?',
+                  icon: 'settings',
+                  theme: 'blue',
+                  detailTitle: 'Solución Conceptual',
+                  detailSubtitle: '¿Cómo lo vamos a resolver?',
+                  detailIcon: 'settings',
+                  cards: [
+                    { title: 'Análisis de Alternativas', text: '¿Comprar software (COTS)? ¿Desarrollo a medida? ¿Adaptar sistema actual? ¿Externalizar?', icon: 'check_circle' },
+                    { title: 'Criterios', text: 'Decidir basándose en Tiempo, Coste, Riesgo y Conocimiento del equipo.', icon: 'check_circle' }
+                  ],
+                  images: [
+                    'https://assets.aceternity.com/templates/startup-3.webp'
+                  ]
+                },
+                {
+                  title: 'Estudio de Negocio',
+                  summary: 'Justificando la inversión (Business Case)',
+                  icon: 'description',
+                  theme: 'indigo',
+                  detailTitle: 'Estudio de Negocio',
+                  detailSubtitle: 'Justificando la inversión (Business Case)',
+                  detailIcon: 'description',
+                  cards: [
+                    { title: 'Propósito', text: 'Convencer a la Alta Dirección para aprobar el presupuesto.', icon: 'check_circle' },
+                    { title: 'Componentes', text: 'Visión estratégica, análisis financiero (ROI/VAN), análisis competitivo y riesgos iniciales.', icon: 'check_circle' }
+                  ],
+                  images: [
+                    'https://assets.aceternity.com/templates/startup-4.webp'
+                  ]
+                }
+              ],
+              metadata: { activeStepIndex: 0 }
             }
           ]
         },

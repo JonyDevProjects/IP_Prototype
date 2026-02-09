@@ -2,7 +2,6 @@
 import React from 'react';
 import type { ContentBlock } from '../../../types/course';
 import { StepDetailView } from '../timeline/StepDetailView';
-import TextToSpeechButton from '../../shared/TextToSpeechButton';
 import { useStepTTS } from './hooks/useStepTTS';
 
 export const StepBlockView: React.FC<{
@@ -22,7 +21,7 @@ export const StepBlockView: React.FC<{
     if (block.type !== 'step') return null;
     const step = block.content;
 
-    const { ttsSteps, activeReadingId, handleTTSStepChange } = useStepTTS({
+    const { activeReadingId } = useStepTTS({
         step,
         stepId: block.id,
         autoPlay: playMode === 'auto',
@@ -84,15 +83,6 @@ export const StepBlockView: React.FC<{
             className="relative group transition-all duration-200"
             onClick={onClick}
         >
-            {/* Header with TTS DO NOT REMOVE -> This is new */}
-            <div className="absolute top-4 right-4 z-20 flex gap-2">
-                <TextToSpeechButton
-                    steps={ttsSteps}
-                    onStepChange={handleTTSStepChange}
-                    className="shadow-sm"
-                />
-            </div>
-
             <StepDetailView
                 step={step}
                 stepNumber={1}
