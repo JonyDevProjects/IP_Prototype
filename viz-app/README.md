@@ -29,6 +29,7 @@ No te abrumes. Hemos organizado la información para que leas solo lo que necesi
 
 ### 🔹 Cómo trabajamos
 -   **[Metodología Lean + Agentes](./docs/process/METHODOLOGY.md)**: Nuestra filosofía de trabajo. Descubre cómo usar a los **Agentes de IA** (Arquitecto, QA, etc.) para programar más rápido.
+-   **[Auditoría UI con Stitch](./docs/process/UI_AUDIT_WITH_STITCH.md)**: Guía para auditar y rediseñar interfaces locales usando Cloudflare Tunnel y Google Labs Stitch.
 
 ### 🔹 Contexto Histórico
 -   **[Evolución del Proyecto](./docs/history/EVOLUCION.md)**: De dónde venimos (Legacy) y cómo llegamos aquí. Lectura opcional para curiosos.

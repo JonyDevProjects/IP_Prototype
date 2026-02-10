@@ -11,6 +11,13 @@ export const AVAILABLE_ICONS = [
     'call_split', 'timeline', 'psychology', 'group_add'
 ];
 
+export const TIMELINE_CONSTANTS = {
+    SCROLL_OFFSET: ["start 10%", "end 50%"] as any,
+    DEFAULT_OPACITY_TRANSFORM: [0, 0.1],
+    VAR_GRADIENT: "var(--tw-gradient-stops)",
+    MASK_IMAGE: "linear-gradient(to_bottom,transparent_0%,black_10%,black_90%,transparent_100%)"
+};
+
 export interface TimelineTheme {
     bg: string;
     text: string;

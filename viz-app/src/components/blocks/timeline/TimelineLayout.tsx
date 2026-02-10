@@ -7,6 +7,9 @@ import { useEffect, useRef, useState } from "react";
 import type { TimelineStep } from "./types";
 import { StepDetailView } from "./StepDetailView";
 import { InlineText } from "../../ui/InlineText";
+import { useTimelineUpdates } from "./hooks/useTimelineUpdates";
+import { TimelineStepHeader } from "./TimelineStepHeader";
+import { TIMELINE_CONSTANTS } from "./constants";
 
 interface TimelineLayoutProps {
     data: TimelineStep[];
@@ -21,6 +24,8 @@ export const TimelineLayout = ({ data, onUpdate, isEditable = true, onStepClick,
     const containerRef = useRef<HTMLDivElement>(null);
     const [height, setHeight] = useState(0);
 
+    const { updateActiveStep } = useTimelineUpdates(data, onUpdate);
+
     useEffect(() => {
         if (ref.current) {
             const rect = ref.current.getBoundingClientRect();
@@ -30,29 +35,11 @@ export const TimelineLayout = ({ data, onUpdate, isEditable = true, onStepClick,
 
     const { scrollYProgress } = useScroll({
         target: containerRef,
-        offset: ["start 10%", "end 50%"],
+        offset: TIMELINE_CONSTANTS.SCROLL_OFFSET,
     });
 
     const heightTransform = useTransform(scrollYProgress, [0, 1], [0, height]);
-    const opacityTransform = useTransform(scrollYProgress, [0, 0.1], [0, 1]);
-
-    const updateActiveStep = (stepIndex: number, field: string, val: string) => {
-        const newContent = [...data];
-        if (field.includes('.')) {
-            const [p, c] = field.split('.') as [string, string];
-            if (p === 'cards') return; // Cards are handled via StepDetailView internal logic if needed, but here we construct the path
-
-            if (newContent[stepIndex]) {
-                const parent = newContent[stepIndex][p as keyof TimelineStep];
-                if (typeof parent === 'object' && parent !== null) {
-                    (parent as unknown as Record<string, unknown>)[c] = val;
-                }
-            }
-        } else {
-            (newContent[stepIndex] as unknown as Record<string, unknown>)[field] = val;
-        }
-        onUpdate({ content: newContent });
-    };
+    const opacityTransform = useTransform(scrollYProgress, TIMELINE_CONSTANTS.DEFAULT_OPACITY_TRANSFORM, [0, 1]);
 
     return (
         <div
@@ -82,24 +69,13 @@ export const TimelineLayout = ({ data, onUpdate, isEditable = true, onStepClick,
                                 if (isEditable) e.stopPropagation();
                             }}
                         >
-                            <div className="sticky flex flex-col md:flex-row z-40 items-center top-40 self-start w-16 md:w-1/4">
-                                <div className={`h-10 absolute left-3 md:left-3 w-10 rounded-full bg-white dark:bg-black flex items-center justify-center shadow-[0_0_10px_rgba(0,0,0,0.1)] dark:shadow-[0_0_15px_rgba(255,255,255,0.05)] transition-all duration-500 
-                                    ${isActive ? 'scale-125 ring-2 ring-purple-500/30' : 'group-hover:scale-115 group-hover:ring-2 group-hover:ring-purple-500/10'}`}>
-                                    <div className={`h-4 w-4 rounded-full border p-2 transition-all duration-500 
-                                        ${isActive ? 'bg-purple-500 border-purple-400 scale-110 shadow-[0_0_15px_rgba(168,85,247,0.5)]' : 'bg-neutral-200 dark:bg-neutral-800 border-neutral-300 dark:border-neutral-700 group-hover:bg-purple-500/40 group-hover:border-purple-400/50 group-hover:scale-110'}`} />
-                                </div>
-                                <div className="hidden md:block md:pl-20">
-                                    <InlineText
-                                        tagName="h3"
-                                        className={`text-xl md:text-3xl font-bold transition-all duration-500 
-                                            ${isActive ? 'text-neutral-900 dark:text-neutral-100' : 'text-neutral-300 dark:text-neutral-800 group-hover:text-neutral-500 dark:group-hover:text-neutral-400'}`}
-                                        value={item.title}
-                                        disabled={!isEditable}
-                                        onChange={(val) => updateActiveStep(index, 'title', val)}
-                                        onStartEdit={() => onStepClick?.(index)}
-                                    />
-                                </div>
-                            </div>
+                            <TimelineStepHeader
+                                title={item.title}
+                                isActive={isActive}
+                                isEditable={isEditable}
+                                onUpdateTitle={(val) => updateActiveStep(index, 'title', val)}
+                                onStepClick={() => onStepClick?.(index)}
+                            />
 
                             <div className="relative pl-4 pr-4 md:pl-8 flex-1 md:w-3/4">
                                 <div className="md:hidden block mb-4">
@@ -132,7 +108,7 @@ export const TimelineLayout = ({ data, onUpdate, isEditable = true, onStepClick,
                     style={{
                         height: height + "px",
                     }}
-                    className="absolute md:left-8 left-8 top-0 overflow-hidden w-[2px] bg-[linear-gradient(to_bottom,var(--tw-gradient-stops))] from-transparent from-[0%] via-neutral-200 dark:via-neutral-700 to-transparent to-[99%]  [mask-image:linear-gradient(to_bottom,transparent_0%,black_10%,black_90%,transparent_100%)] "
+                    className={`absolute md:left-8 left-8 top-0 overflow-hidden w-[2px] bg-[linear-gradient(to_bottom,${TIMELINE_CONSTANTS.VAR_GRADIENT})] from-transparent from-[0%] via-neutral-200 dark:via-neutral-700 to-transparent to-[99%] [mask-image:${TIMELINE_CONSTANTS.MASK_IMAGE}]`}
                 >
                     <motion.div
                         style={{

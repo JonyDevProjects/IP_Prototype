@@ -15,4 +15,13 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: './src/test/setup.ts',
   },
+  /* 
+   * SECURITY WARNING: 
+   * allowedHosts: true is required for Cloudflare Tunnels (Auditing).
+   * DO NOT ENABLE THIS IN PRODUCTION builds if exposing to public internet directly.
+   */
+  server: {
+    allowedHosts: true,
+    host: true,
+  },
 } as any);
