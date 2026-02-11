@@ -52,7 +52,6 @@ export interface TimelineStep {
   // Detail View
   detailTitle?: string;
   detailSubtitle?: string;
-  detailIcon?: string;
 
   // Dynamic Cards
   cards?: TimelineCard[];

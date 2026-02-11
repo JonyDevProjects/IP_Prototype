@@ -10,7 +10,6 @@ src/
 ├── assets/           # Recursos estáticos (imágenes, fuentes, iconos globales)
 ├── components/       # Componentes REUTILIZABLES y GENÉRICOS (UI Library)
 │   ├── ui/           # Átomos y Moléculas (Botones, Inputs, InlineText, Cards)
-│   ├── layout/       # (Vacío) - Los layouts ahora son parte de las Features
 │   └── blocks/       # Definiciones de bloques (Plugins)
 │       ├── registry.ts # Registro central
 │       └── timeline/   # Ejemplo de Bloque Modular (View + Properties + Types)
@@ -23,7 +22,6 @@ src/
 │   └── player/       # Feature: Modo de Consumo (Estudiante)
 │       └── components/ # PlayerMain, PlayerSidebar, ProgressBar
 ├── hooks/            # Custom hooks globales
-├── services/         # Capa de servicios (API, Fetching, Mock Services)
 ├── types/            # Definiciones de tipos TypeScript e Interfaces (El Contrato)
 │   └── course.ts     # Tipos core: Course, Module, Unit, Block
 ├── App.tsx           # Orquestador principal y router de vistas

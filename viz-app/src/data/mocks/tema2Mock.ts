@@ -41,8 +41,7 @@ export const tema2CourseData: Course = {
                 icon: 'format_list_bulleted',
                 theme: 'amber',
                 detailTitle: 'Propósitos Principales',
-                detailSubtitle: '',
-                detailIcon: 'format_list_bulleted',
+                detailSubtitle: 'Los 4 pilares fundamentales para el éxito del proyecto',
                 cards: [
                   {
                     title: 'DEFINICIÓN DEL TRABAJO',
@@ -79,13 +78,12 @@ export const tema2CourseData: Course = {
               type: 'timeline',
               content: [
                 {
-                  title: 'Génesis y Valoración',
+                  title: '01',
                   summary: '¿De dónde surge la necesidad?',
                   icon: 'lightbulb',
                   theme: 'amber',
                   detailTitle: 'Génesis y Valoración',
-                  detailSubtitle: '¿De dónde surge la necesidad?',
-                  detailIcon: 'lightbulb',
+                  detailSubtitle: 'Generación de ideas y primer acercamiento',
                   cards: [
                     { title: 'Detonantes', text: 'Obsolescencia técnica, competencia, ideas de empleados u oportunidades de ahorro.', icon: 'check_circle' },
                     { title: 'Acción Clave', text: 'Valorar si la idea se alinea con la estrategia y si es financieramente viable.', icon: 'check_circle' }
@@ -96,13 +94,12 @@ export const tema2CourseData: Course = {
                   ]
                 },
                 {
-                  title: 'Solución Conceptual',
+                  title: '02',
                   summary: '¿Cómo lo vamos a resolver?',
                   icon: 'settings',
                   theme: 'blue',
                   detailTitle: 'Solución Conceptual',
-                  detailSubtitle: '¿Cómo lo vamos a resolver?',
-                  detailIcon: 'settings',
+                  detailSubtitle: 'Análisis de viabilidad y riesgos',
                   cards: [
                     { title: 'Análisis de Alternativas', text: '¿Comprar software (COTS)? ¿Desarrollo a medida? ¿Adaptar sistema actual? ¿Externalizar?', icon: 'check_circle' },
                     { title: 'Criterios', text: 'Decidir basándose en Tiempo, Coste, Riesgo y Conocimiento del equipo.', icon: 'check_circle' }
@@ -112,13 +109,12 @@ export const tema2CourseData: Course = {
                   ]
                 },
                 {
-                  title: 'Estudio de Negocio',
+                  title: '03',
                   summary: 'Justificando la inversión (Business Case)',
                   icon: 'description',
                   theme: 'indigo',
                   detailTitle: 'Estudio de Negocio',
-                  detailSubtitle: 'Justificando la inversión (Business Case)',
-                  detailIcon: 'description',
+                  detailSubtitle: 'Formalización de requisitos',
                   cards: [
                     { title: 'Propósito', text: 'Convencer a la Alta Dirección para aprobar el presupuesto.', icon: 'check_circle' },
                     { title: 'Componentes', text: 'Visión estratégica, análisis financiero (ROI/VAN), análisis competitivo y riesgos iniciales.', icon: 'check_circle' }
@@ -141,15 +137,15 @@ export const tema2CourseData: Course = {
             {
               id: 'b3',
               type: 'text',
-              content: 'El Ciclo de Génesis\nEste ciclo transforma una necesidad en un proyecto autorizado.'
+              content: 'Este ciclo transforma una necesidad en un proyecto autorizado.'
             },
             {
               id: 'b-gen-1',
               type: 'step',
               content: {
                 title: 'Génesis y Valoración', summary: '¿De dónde surge la necesidad?', icon: 'lightbulb', theme: 'amber',
-                detailTitle: 'Génesis y Valoración', detailSubtitle: '¿De dónde surge la necesidad?',
-                detailIcon: 'lightbulb',
+                detailTitle: 'Génesis y Valoración',
+                detailSubtitle: 'Definición de arquitectura y tecnologías',
                 cards: [
                   { title: 'Detonantes', text: 'Obsolescencia técnica, competencia, ideas de empleados u oportunidades de ahorro.', icon: 'check_circle' },
                   { title: 'Acción Clave', text: 'Valorar si la idea se alinea con la estrategia y si es financieramente viable.', icon: 'check_circle' }
@@ -163,8 +159,8 @@ export const tema2CourseData: Course = {
               type: 'step',
               content: {
                 title: 'Solución Conceptual', summary: '¿Cómo lo vamos a resolver?', icon: 'settings', theme: 'blue',
-                detailTitle: 'Solución Conceptual', detailSubtitle: '¿Cómo lo vamos a resolver?',
-                detailIcon: 'settings',
+                detailTitle: 'Solución Conceptual',
+                detailSubtitle: 'Planificación de sprints y equipo',
                 cards: [
                   { title: 'Análisis de Alternativas', text: '¿Comprar software (COTS)? ¿Desarrollo a medida? ¿Adaptar sistema actual? ¿Externalizar?', icon: 'check_circle' },
                   { title: 'Criterios', text: 'Decidir basándose en Tiempo, Coste, Riesgo y Conocimiento del equipo.', icon: 'check_circle' }
@@ -178,8 +174,8 @@ export const tema2CourseData: Course = {
               type: 'step',
               content: {
                 title: 'Estudio de Negocio', summary: 'Justificando la inversión (Business Case)', icon: 'description', theme: 'indigo',
-                detailTitle: 'Estudio de Negocio', detailSubtitle: 'Justificando la inversión (Business Case)',
-                detailIcon: 'description',
+                detailTitle: 'Estudio de Negocio',
+                detailSubtitle: 'Documentación técnica y funcional',
                 cards: [
                   { title: 'Propósito', text: 'Convencer a la Alta Dirección para aprobar el presupuesto.', icon: 'check_circle' },
                   { title: 'Componentes', text: 'Visión estratégica, análisis financiero (ROI/VAN), análisis competitivo y riesgos iniciales.', icon: 'check_circle' }
@@ -193,8 +189,8 @@ export const tema2CourseData: Course = {
               type: 'step',
               content: {
                 title: 'Alcance Preliminar', summary: 'Dibujando la cancha', icon: 'track_changes', theme: 'red',
-                detailTitle: 'Alcance Preliminar', detailSubtitle: 'Dibujando la cancha',
-                detailIcon: 'track_changes',
+                detailTitle: 'Alcance Preliminar',
+                detailSubtitle: 'Métricas y KPIs del proyecto',
                 cards: [
                   { title: 'Límites', text: 'Definir claramente qué está DENTRO y qué está FUERA del proyecto.', icon: 'check_circle' },
                   { title: 'Datos Clave', text: 'Criterios de aceptación, EDT inicial (WBS), Hitos principales y Costes ROM (Orden de Magnitud).', icon: 'check_circle' }
@@ -208,8 +204,8 @@ export const tema2CourseData: Course = {
               type: 'step',
               content: {
                 title: 'Interesados (Stakeholders)', summary: '¿A quién afecta?', icon: 'groups', theme: 'green',
-                detailTitle: 'Interesados (Stakeholders)', detailSubtitle: '¿A quién afecta?',
-                detailIcon: 'groups',
+                detailTitle: 'Interesados (Stakeholders)',
+                detailSubtitle: 'Roles y responsabilidades',
                 cards: [
                   { title: 'Mapeo', text: 'Identificar a todos los actores relevantes desde el inicio.', icon: 'check_circle' },
                   { title: 'Preguntas', text: '¿Quién recibe el beneficio? ¿Quién provee los datos? ¿Quién lo supervisa? ¿Quién sufre las repercusiones?', icon: 'check_circle' }
@@ -231,8 +227,8 @@ export const tema2CourseData: Course = {
               type: 'step',
               content: {
                 title: 'Lanzamiento (Project Charter)', summary: 'Luz verde oficial', icon: 'rocket_launch', theme: 'purple',
-                detailTitle: 'Lanzamiento (Project Charter)', detailSubtitle: 'Luz verde oficial',
-                detailIcon: 'rocket_launch',
+                detailTitle: 'Lanzamiento (Project Charter)',
+                detailSubtitle: 'Estrategia de lanzamiento y go-to-market',
                 cards: [
                   { title: 'Oficialización', text: 'Firma del Acta de Constitución (Project Charter).', icon: 'check_circle' },
                   { title: 'Equipo', text: 'Nombrar al Project Manager (PM) y formar el equipo núcleo.', icon: 'check_circle' },

@@ -19,7 +19,7 @@ export const EditorPropertiesSidebar: React.FC<EditorPropertiesSidebarProps> = (
     selectedBlockId,
     selectedBlock,
     headerInfo,
-    onClose,
+    onClose: _onClose, // Prefixed with underscore to indicate intentionally unused
     onUpdateHeader,
     onUpdateBlock,
     onDeleteBlock
@@ -139,9 +139,7 @@ export const EditorPropertiesSidebar: React.FC<EditorPropertiesSidebarProps> = (
                     </>
                 ) : (
                     <div className="flex-1 flex flex-col items-center pt-8">
-                        <div className="w-[60px] h-[60px] flex items-center justify-center">
-                            <span className="material-symbols-outlined text-2xl text-slate-400 opacity-50">touch_app</span>
-                        </div>
+
                         <div className={`px-8 text-center text-slate-400 transition-opacity duration-200 ${open ? 'opacity-100' : 'opacity-0'}`}>
                             <p className="text-sm">Select an element on the canvas to edit its properties.</p>
                         </div>

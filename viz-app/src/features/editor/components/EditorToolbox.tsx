@@ -31,15 +31,7 @@ export const EditorToolbox: React.FC<EditorToolboxProps> = ({ onDragStart, onDra
 
             <ToolButton icon="smart_button" label="Buttons" />
 
-            <div className="mt-auto flex flex-col gap-4">
-                <button className="w-10 h-10 rounded-lg flex items-center justify-center text-slate-500 hover:bg-slate-100 dark:hover:bg-white/5 transition-colors">
-                    <span className="material-symbols-outlined">settings</span>
-                </button>
-                <button className="w-10 h-10 rounded-lg flex items-center justify-center text-slate-500 hover:bg-slate-100 dark:hover:bg-white/5 transition-colors"
-                    title="Navigate Units">
-                    <span className="material-symbols-outlined">menu_open</span>
-                </button>
-            </div>
+
         </aside>
     );
 };

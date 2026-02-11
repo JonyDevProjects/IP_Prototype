@@ -11,14 +11,13 @@ export const StepBlockDefinition: BlockDefinition = {
         type: 'step',
         content: {
             title: 'New Step',
-            icon: 'lightbulb',
+            icon: undefined,
             theme: 'amber',
             detailTitle: 'Step Details',
             detailSubtitle: 'Explain the details here',
-            detailIcon: 'lightbulb',
             cards: [
-                { title: 'Point 1', text: 'Description of point 1', icon: 'check_circle' },
-                { title: 'Point 2', text: 'Description of point 2', icon: 'check_circle' }
+                { title: 'Point 1', text: 'Description of point 1', icon: undefined },
+                { title: 'Point 2', text: 'Description of point 2', icon: undefined }
             ],
             footerTip: 'Pro tip: Add helpful context here.',
             footerTipIcon: 'help'

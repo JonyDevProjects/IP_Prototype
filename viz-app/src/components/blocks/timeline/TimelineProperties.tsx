@@ -90,14 +90,13 @@ export const TimelineProperties: React.FC<{
                                     const newStep = {
                                         title: `Step ${nextIndex + 1}`,
                                         summary: 'New Summary',
-                                        icon: 'circle',
+                                        icon: undefined,
                                         theme: nextTheme,
                                         detailTitle: `New Step ${nextIndex + 1}`,
                                         detailSubtitle: 'Subtitle',
-                                        detailIcon: 'circle',
                                         cards: [
-                                            { title: 'Card 1', text: 'Text for card 1', icon: 'check_circle' },
-                                            { title: 'Card 2', text: 'Text for card 2', icon: 'check_circle' }
+                                            { title: 'Card 1', text: 'Text for card 1', icon: undefined },
+                                            { title: 'Card 2', text: 'Text for card 2', icon: undefined }
                                         ],
                                         footerTip: 'Tip text',
                                         footerTipIcon: 'help'

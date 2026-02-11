@@ -1,14 +1,22 @@
 import React, { useEffect } from 'react';
 import type { ContentBlock } from '../../../types/course';
 import { TimelineLayout } from './TimelineLayout';
+import { useTimelineTTS } from './hooks/useTimelineTTS';
+import { useTextSequence } from '../../../features/player/hooks/useTextSequence';
 
 export const TimelineComponent: React.FC<{
     block: ContentBlock;
     isSelected: boolean;
     isEditable?: boolean;
+    highlightItemId?: string | null;
+    playMode?: 'auto' | 'manual';
+    isActiveBlock?: boolean;
+    onTTSComplete?: () => void;
     onClick: (e: React.MouseEvent) => void;
     onUpdate: (updates: Partial<ContentBlock>) => void;
-}> = ({ block, onUpdate, isEditable = true }) => {
+    rate?: number;
+    volume?: number;
+}> = ({ block, onUpdate, isEditable = true, highlightItemId, playMode, isActiveBlock, onTTSComplete, rate, volume }) => {
 
     // Type Guard / Narrowing
     if (block.type !== 'timeline') {
@@ -26,6 +34,46 @@ export const TimelineComponent: React.FC<{
     // but updates should be local to avoid the "persisting across views" annoyance.
     useEffect(() => { setActiveStepIndex(block.metadata?.activeStepIndex || 0); }, [block.id]);
 
+    // TTS Integration
+    const { ttsSteps, activeReadingId, handleTTSStepChange } = useTimelineTTS({
+        block,
+        onUpdate
+    });
+
+    // Auto-play TTS sequencing (similar to PlayerMain.tsx pattern)
+    const { activeItemId: activeTTSItemId } = useTextSequence({
+        items: ttsSteps,
+        autoPlay: playMode === 'auto' && isActiveBlock === true,
+        onComplete: onTTSComplete,
+        rate,
+        volume
+    });
+
+    // Sync TTS step changes with timeline
+    useEffect(() => {
+        handleTTSStepChange(activeTTSItemId);
+    }, [activeTTSItemId, handleTTSStepChange]);
+
+    // Auto-scroll to active item during TTS playback
+    useEffect(() => {
+        if (playMode === 'auto' && activeReadingId) {
+            const el = document.getElementById(activeReadingId);
+            if (el) {
+                el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+    }, [playMode, activeReadingId]);
+
+    // Use global highlight if provided, otherwise local TTS (similar to StepBlockView pattern)
+    const activeHighlightId = highlightItemId || activeReadingId;
+
+    const getEffectiveHighlightClass = (targetId: string) => {
+        if (!activeHighlightId) return "";
+        return activeHighlightId === targetId
+            ? "ring-2 ring-indigo-400 scale-[1.01] shadow-lg z-20 bg-white dark:bg-black/20 relative transition-all duration-300"
+            : "opacity-30 blur-[1px] grayscale transition-all duration-300";
+    };
+
     return (
         <TimelineLayout
             data={block.content}
@@ -38,6 +86,8 @@ export const TimelineComponent: React.FC<{
                 // But the user specifically asked for it NOT to persist in a confusing way. 
                 // Local state is the safest bet for "session" view behavior.
             }}
+            getHighlightClass={getEffectiveHighlightClass}
+            stepIdPrefix="step"
         />
     );
 };

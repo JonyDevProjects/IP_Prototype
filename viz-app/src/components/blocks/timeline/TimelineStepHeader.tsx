@@ -2,6 +2,7 @@ import { InlineText } from "../../ui/InlineText";
 
 interface TimelineStepHeaderProps {
     title: string;
+    icon?: string;
     isActive: boolean;
     isEditable: boolean;
     onUpdateTitle: (newTitle: string) => void;
@@ -25,7 +26,7 @@ export const TimelineStepHeader = ({
             <div className="hidden md:block md:pl-20">
                 <InlineText
                     tagName="h3"
-                    className={`text-xl md:text-3xl font-bold transition-all duration-500 
+                    className={`text-xl md:text-2xl font-bold transition-all duration-500 
                         ${isActive ? 'text-neutral-900 dark:text-neutral-100' : 'text-neutral-300 dark:text-neutral-800 group-hover:text-neutral-500 dark:group-hover:text-neutral-400'}`}
                     value={title}
                     disabled={!isEditable}

@@ -40,6 +40,11 @@ export const StepDetailView: React.FC<StepDetailViewProps> = ({
                     id={`${currentStepId}-title`}
                     className={`flex items-center gap-3 mb-2 ${getHighlightClass(`${currentStepId}-title`)}`}
                 >
+                    {step.icon && (
+                        <span className={`material-symbols-outlined text-3xl md:text-4xl ${theme.text} opacity-90`}>
+                            {step.icon}
+                        </span>
+                    )}
                     <InlineText
                         tagName="h3"
                         className={`text-2xl md:text-4xl font-bold ${theme.text} leading-tight`}
@@ -75,7 +80,11 @@ export const StepDetailView: React.FC<StepDetailViewProps> = ({
                             id={`${currentStepId}-card-${idx}`}
                             className={`flex gap-4 items-start text-neutral-700 dark:text-neutral-300 ${getHighlightClass(`${currentStepId}-card-${idx}`)} transition-all duration-300`}
                         >
-                            <span className={`material-symbols-outlined text-xl mt-0.5 shrink-0 ${theme.detail.iconColor.replace('text-', 'text-')} opacity-80`}>{card.icon || 'check_circle'}</span>
+                            {card.icon && (
+                                <span className={`material-symbols-outlined text-xl mt-0.5 shrink-0 ${theme.detail.iconColor.replace('text-', 'text-')} opacity-80`}>
+                                    {card.icon}
+                                </span>
+                            )}
                             <div className="flex-1">
                                 <div className="flex flex-col sm:flex-row sm:gap-2 sm:items-baseline">
                                     <InlineText

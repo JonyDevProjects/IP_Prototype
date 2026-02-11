@@ -18,46 +18,7 @@ export const StepProperties: React.FC<StepPropertiesProps> = ({ step, index, onC
             <PropertySection title={`Step ${index + 1} Appearance`} isOpen>
                 <div className="space-y-4">
                     {/* Icon Picker (Main Block/Step Icon) */}
-                    <div>
-                        <label className="block text-xs text-slate-500 mb-1.5">Icon / Style</label>
-                        <div className="space-y-2">
-                            <div className="flex items-center gap-3 p-2 border border-slate-200 dark:border-white/10 rounded-lg bg-slate-50 dark:bg-white/5">
-                                {(() => {
-                                    const theme = STEP_THEMES[(step.theme as ThemeColor) || 'amber'];
-                                    return (
-                                        <>
-                                            <div className={`w-8 h-8 rounded ${theme.iconBg} flex items-center justify-center`}>
-                                                <span className="material-symbols-outlined text-lg">{step.icon || 'circle'}</span>
-                                            </div>
-                                            <button
-                                                className="text-xs font-medium text-blue-600 dark:text-blue-400 hover:underline"
-                                                onClick={() => setActiveIconPicker(activeIconPicker === 'main' ? null : 'main')}
-                                            >
-                                                Change Icon
-                                            </button>
-                                        </>
-                                    );
-                                })()}
-                            </div>
-                            {activeIconPicker === 'main' && (
-                                <div className="grid grid-cols-5 gap-2 p-2 border border-slate-200 dark:border-white/10 rounded-lg bg-white dark:bg-[#1f1629] shadow-sm">
-                                    {AVAILABLE_ICONS.map(iconName => (
-                                        <button
-                                            key={iconName}
-                                            className="w-8 h-8 flex items-center justify-center rounded hover:bg-slate-100 dark:hover:bg-white/10 text-slate-600 dark:text-slate-400 hover:text-[#7f13ec]"
-                                            onClick={() => {
-                                                onChange('icon', iconName);
-                                                onChange('detailIcon', iconName);
-                                                setActiveIconPicker(null);
-                                            }}
-                                        >
-                                            <span className="material-symbols-outlined text-xl">{iconName}</span>
-                                        </button>
-                                    ))}
-                                </div>
-                            )}
-                        </div>
-                    </div>
+                    {/* Icon Picker moved to Content -> Header Info */}
 
                     {/* Theme Color */}
                     <div>
@@ -87,13 +48,62 @@ export const StepProperties: React.FC<StepPropertiesProps> = ({ step, index, onC
                         <div className="space-y-3">
                             <label className="text-xs font-bold text-slate-700 dark:text-slate-300">Header Info</label>
                             <div>
-                                <label className="block text-[10px] text-slate-500 mb-1">Detailed Title</label>
-                                <input
-                                    type="text"
-                                    className="w-full px-2 py-1.5 rounded bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-xs focus:border-[#7f13ec] outline-none"
-                                    value={step.detailTitle || step.title}
-                                    onChange={(e) => onChange('detailTitle', e.target.value)}
-                                />
+                                <label className="block text-[10px] text-slate-500 mb-1">Detailed Title & Icon</label>
+                                <div className="flex gap-2">
+                                    {/* Icon Trigger */}
+                                    <div className="relative">
+                                        <button
+                                            className="w-8 h-8 flex items-center justify-center rounded bg-white border border-slate-200 text-slate-500 hover:text-[#7f13ec]"
+                                            onClick={() => setActiveIconPicker(activeIconPicker === 'main_header' ? null : 'main_header')}
+                                            title={step.icon ? "Change Icon" : "Add Icon"}
+                                        >
+                                            {step.icon ? (
+                                                <span className="material-symbols-outlined text-[18px]">{step.icon}</span>
+                                            ) : (
+                                                <span className="text-[10px] uppercase font-bold text-slate-300">None</span>
+                                            )}
+                                        </button>
+
+                                        {/* Icon Picker Dropdown */}
+                                        {activeIconPicker === 'main_header' && (
+                                            <div className="absolute top-full left-0 mt-1 z-20 w-64 p-2 border border-slate-200 dark:border-white/10 rounded-lg bg-white dark:bg-[#1f1629] shadow-xl">
+                                                <button
+                                                    className="w-full flex items-center justify-center gap-2 py-1.5 text-xs text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded mb-2 border border-red-100 dark:border-red-900/30"
+                                                    onClick={() => {
+                                                        onChange('icon', '');
+                                                        setActiveIconPicker(null);
+                                                    }}
+                                                >
+                                                    <span className="material-symbols-outlined text-sm">block</span>
+                                                    Remove Icon
+                                                </button>
+                                                <div className="grid grid-cols-6 gap-1">
+                                                    {AVAILABLE_ICONS.map(iconName => (
+                                                        <button
+                                                            key={iconName}
+                                                            className="w-8 h-8 flex items-center justify-center rounded hover:bg-slate-100 dark:hover:bg-white/10 text-slate-600 dark:text-slate-400 hover:text-[#7f13ec]"
+                                                            onClick={() => {
+                                                                onChange('icon', iconName);
+                                                                setActiveIconPicker(null);
+                                                            }}
+                                                        >
+                                                            <span className="material-symbols-outlined text-xl">{iconName}</span>
+                                                        </button>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    {/* Title Input */}
+                                    <input
+                                        type="text"
+                                        className="flex-1 px-2 py-1.5 rounded bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-xs focus:border-[#7f13ec] outline-none"
+                                        value={step.detailTitle || step.title}
+                                        onChange={(e) => onChange('detailTitle', e.target.value)}
+                                        placeholder="Step Title"
+                                    />
+                                </div>
                             </div>
                             <div>
                                 <label className="block text-[10px] text-slate-500 mb-1">Subtitle</label>
@@ -114,7 +124,7 @@ export const StepProperties: React.FC<StepPropertiesProps> = ({ step, index, onC
                                     className="text-[10px] text-blue-600 hover:text-blue-800 font-medium flex items-center gap-1"
                                     onClick={() => {
                                         const currentCards = step.cards || [];
-                                        onChange('cards', [...currentCards, { title: 'New Card', text: 'Card description', icon: 'check_circle' }]);
+                                        onChange('cards', [...currentCards, { title: 'New Card', text: 'Card description', icon: undefined }]);
                                     }}
                                 >
                                     <span className="material-symbols-outlined text-[14px]">add_circle</span> Add Card
@@ -141,8 +151,13 @@ export const StepProperties: React.FC<StepPropertiesProps> = ({ step, index, onC
                                             <button
                                                 className="w-8 h-8 flex items-center justify-center rounded bg-white border border-slate-200 text-slate-500 hover:text-[#7f13ec]"
                                                 onClick={() => setActiveIconPicker(activeIconPicker === `card_${idx}` ? null : `card_${idx}`)}
+                                                title={card.icon ? "Change Icon" : "Add Icon"}
                                             >
-                                                <span className="material-symbols-outlined text-[18px]">{card.icon || 'check_circle'}</span>
+                                                {card.icon ? (
+                                                    <span className="material-symbols-outlined text-[18px]">{card.icon}</span>
+                                                ) : (
+                                                    <span className="text-[10px] uppercase font-bold text-slate-300">None</span>
+                                                )}
                                             </button>
                                             <div className="flex-1">
                                                 <label className="block text-[9px] text-slate-400 uppercase font-bold">Title</label>
@@ -157,6 +172,13 @@ export const StepProperties: React.FC<StepPropertiesProps> = ({ step, index, onC
 
                                         {activeIconPicker === `card_${idx}` && (
                                             <div className="grid grid-cols-6 gap-1 p-2 border border-slate-200 dark:border-white/10 rounded-lg bg-white dark:bg-[#1f1629] shadow-sm mb-2 z-10 relative">
+                                                <button
+                                                    className="col-span-6 flex items-center justify-center gap-2 py-1 text-[10px] text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded mb-1"
+                                                    onClick={() => { onChange(`cards.${idx}.icon`, ''); setActiveIconPicker(null); }}
+                                                >
+                                                    <span className="material-symbols-outlined text-[12px]">block</span>
+                                                    No Icon
+                                                </button>
                                                 {AVAILABLE_ICONS.map(iconName => (
                                                     <button key={iconName} className="w-6 h-6 flex items-center justify-center rounded hover:bg-slate-100 dark:hover:bg-white/10 text-slate-600 dark:text-slate-400 hover:text-[#7f13ec]"
                                                         onClick={() => { onChange(`cards.${idx}.icon`, iconName); setActiveIconPicker(null); }}
