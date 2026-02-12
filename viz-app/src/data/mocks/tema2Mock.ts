@@ -124,7 +124,7 @@ export const tema2CourseData: Course = {
                   ]
                 }
               ],
-              metadata: { activeStepIndex: 0 }
+              metadata: {}
             }
           ]
         },

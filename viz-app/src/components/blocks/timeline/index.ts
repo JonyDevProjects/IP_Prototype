@@ -82,7 +82,7 @@ export const TimelineBlockDefinition: BlockDefinition = {
                 ]
             }
         ],
-        metadata: { activeStepIndex: 0 }
+        metadata: {}
     }),
     Component: TimelineComponent,
     Properties: TimelineProperties

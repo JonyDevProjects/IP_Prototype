@@ -4,6 +4,7 @@ import { TextBlockDefinition } from './TextBlock';
 import { ImageBlockDefinition } from './ImageBlock';
 import { AlertBlockDefinition } from './AlertBlock';
 import { StepBlockDefinition } from './step';
+import { CarouselBlockDefinition } from './carousel';
 
 // Registry Map
 const BLOCK_REGISTRY: Record<string, BlockDefinition> = {
@@ -12,6 +13,7 @@ const BLOCK_REGISTRY: Record<string, BlockDefinition> = {
     [TextBlockDefinition.type]: TextBlockDefinition,
     [ImageBlockDefinition.type]: ImageBlockDefinition,
     [AlertBlockDefinition.type]: AlertBlockDefinition,
+    [CarouselBlockDefinition.type]: CarouselBlockDefinition,
 };
 
 // Helpers

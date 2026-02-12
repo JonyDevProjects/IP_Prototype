@@ -1,6 +1,6 @@
 // Definición de la estructura de datos para el LMS (ExpertPath)
 
-export type ContentBlockType = 'text' | 'image' | 'quiz' | 'timeline' | 'step' | 'alert' | 'mermaid';
+export type ContentBlockType = 'text' | 'image' | 'quiz' | 'timeline' | 'step' | 'alert' | 'mermaid' | 'carousel';
 
 export interface BaseBlock {
   id: string;
@@ -65,7 +65,7 @@ export interface TimelineStep {
 }
 
 export interface TimelineMetadata {
-  activeStepIndex: number;
+  activeStepIndex?: number;
   sequential?: boolean;
   maxUnlockedIndex?: number;
 }
@@ -96,7 +96,23 @@ export interface GenericBlock extends BaseBlock {
   content: unknown;
 }
 
-export type ContentBlock = TimelineBlock | StepBlock | TextBlock | AlertBlock | GenericBlock;
+export interface CarouselSlide {
+  id: string;
+  title?: string;
+  blocks: ContentBlock[];
+}
+
+export interface CarouselBlock extends BaseBlock {
+  type: 'carousel';
+  content: CarouselSlide[];
+  metadata?: BaseBlock['metadata'] & {
+    activeIndex?: number; // Index of the currently visible slide
+    showArrows?: boolean;
+    showDots?: boolean;
+  };
+}
+
+export type ContentBlock = TimelineBlock | StepBlock | TextBlock | AlertBlock | CarouselBlock | GenericBlock;
 
 export interface Unit {
   id: string;

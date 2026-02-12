@@ -10,7 +10,7 @@ interface TimelineLayoutProps {
     data: TimelineStep[];
     onUpdate: (updates: any) => void;
     isEditable?: boolean;
-    onStepClick?: (index: number) => void;
+    onStepClick?: (index: number, e?: React.MouseEvent) => void;
     activeStepIndex?: number;
     getHighlightClass?: (id: string) => string;
     stepIdPrefix?: string;
@@ -50,8 +50,10 @@ export const TimelineLayout = ({ data, onUpdate, isEditable = true, onStepClick,
                             `}
                             onClick={(e) => {
                                 if (!isEditable) return;
-                                e.stopPropagation(); // prevent drag or parent selection
-                                onStepClick?.(index);
+                                // We stop propagation to handle selection manually via the callback.
+                                // This allows us to select BOTH the block and the specific step.
+                                e.stopPropagation();
+                                onStepClick?.(index, e);
                             }}
                             onMouseDown={(e) => {
                                 if (isEditable) e.stopPropagation();
