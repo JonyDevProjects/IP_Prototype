@@ -124,6 +124,29 @@ export const StepDetailView: React.FC<StepDetailViewProps> = ({
                     ))}
                 </div>
             )}
+
+            {/* Footer Tip */}
+            {step.footerTip && (
+                <div
+                    id={`${currentStepId}-footer`}
+                    className={`mt-8 p-4 bg-slate-50 dark:bg-white/5 rounded-r-lg flex gap-3 items-start ${getHighlightClass(`${currentStepId}-footer`)} transition-all duration-300`}
+                >
+                    <span className="material-symbols-outlined text-slate-400 shrink-0 mt-0.5">
+                        {step.footerTipIcon || 'lightbulb'}
+                    </span>
+                    <div className="flex-1">
+                        <span className="text-xs font-bold text-slate-400 uppercase block mb-1">Nota</span>
+                        <InlineText
+                            tagName="p"
+                            className="text-sm text-slate-600 dark:text-slate-300 italic"
+                            value={step.footerTip}
+                            disabled={!isEditable}
+                            onChange={(val) => onUpdate('footerTip', val)}
+                            placeholder="Tip text"
+                        />
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

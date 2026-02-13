@@ -12,7 +12,10 @@ export const useTimelineTTS = ({ block, onUpdate }: UseTimelineTTSProps) => {
 
     // Default empty if wrong type, though View should handle it
     const activeIndex = block.type === 'timeline' ? (block.metadata?.activeStepIndex ?? 0) : 0;
-    const steps = block.type === 'timeline' ? block.content : [];
+
+    const steps = useMemo(() => {
+        return block.type === 'timeline' ? block.content : [];
+    }, [block]);
 
     // Generate TTS Steps
     const ttsSteps = useMemo(() => {
@@ -47,7 +50,7 @@ export const useTimelineTTS = ({ block, onUpdate }: UseTimelineTTSProps) => {
             });
 
             // Footer
-            if (step.footerTip) {
+            if (step.footerTip && step.footerTip.trim().length > 0) {
                 stepItems.push({
                     id: `${stepPrefix}-footer`,
                     text: `Nota: ${step.footerTip}`

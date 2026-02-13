@@ -73,3 +73,12 @@ const BLOCK_REGISTRY = {
 -   Reload the Editor.
 -   The new tool should automatically appear in the Sidebar (Toolbox).
 -   Drag and drop it to test.
+
+## Complex Blocks Strategy
+If you are creating a block that contains other blocks (e.g., Carousel, Timeline, Accordion):
+1.  **Start Simple:** Use a generic `content: []` array.
+2.  **Prototype:** Allow Drag & Drop of existing blocks into it.
+3.  **Consolidate:** Once the structure is defined, refer to the [Complex Block Consolidation Skill](../complex_block_consolidation/SKILL.md) to:
+    -   Lock the structure.
+    -   Create a unified Properties panel.
+    -   Remove prototyping UI.

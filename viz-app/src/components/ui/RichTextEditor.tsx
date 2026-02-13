@@ -152,7 +152,7 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
             <div
                 ref={editorRef}
                 contentEditable={!readOnly}
-                className={`outline-none min-h-[1em] prose dark:prose-invert max-w-none 
+                className={`outline-none min-h-[1em] prose dark:prose-invert max-w-none break-words
                     ${content ? '' : 'before:content-[attr(data-placeholder)] before:text-slate-400 before:absolute'} 
                     /* Custom Prose Tweaks via arbitrary values if plugin defaults aren't enough */
                     prose-p:my-2 prose-p:leading-relaxed

@@ -158,7 +158,7 @@ A diferencia de implementaciones previas con textos estáticos, el audio para el
 - **Interfaz Limpia**: El control de audio se ubicó en la cabecera del bloque, respetando el diseño minimalista de la plataforma.
 
 
-## 9. Refinamiento de UX y Robustez TTS (Febrero 2026 - Sesión Actual)
+## 9. Refinamiento de UX y Robustez TTS (semana 6 de Febrero 2026)
 
 Se realizó una sesión intensiva de "Hardening" (Endurecimiento) del sistema de reproducción de audio y navegación, abordando casos borde críticos para la experiencia de usuario.
 
@@ -183,3 +183,37 @@ Se demostró la eficacia del **Sub-Agente de Navegador** para detectar:
 *   **Gestión de Estado**: No confiar en variables derivadas (`playMode === 'auto'`) para estados críticos de ciclo de vida. Es preferible pasar props de estado explícitas (`isActiveBlock`).
 *   **Verificación en Capas**: Los tests unitarios pasaban, pero la integración fallaba. La verificación visual/navegador es indispensable para componentes dependientes de APIs del navegador (`window.speechSynthesis`).
 
+
+
+## 10. Consolidación de Bloques Complejos: El Caso del Carousel (semana 13 de Febrero 2026)
+
+Esta fase marcó un punto de inflexión en la filosofía de diseño del Editor: pasar de "Bloques Genéricos" a "Experiencias Consolidadas".
+
+### A. El Problema del Prototipado Flexible
+Inicialmente, el bloque **Carousel** se diseñó como un contenedor vacío donde el usuario podía arrastrar y soltar cualquier otro bloque (Texto, Imagen, Video).
+*   **Ventaja**: Flexibilidad total.
+*   **Problema (UX)**:
+    *   **Fricción**: El usuario tenía que construir manualmente cada diapositiva (Arrastrar slide -> Arrastrar imagen -> Arrastrar texto).
+    *   **Confusión Visual**: El área de edición estaba llena de bordes discontinuos, zonas de "drop" y botones de eliminar redundantes.
+    *   **Estado Desincronizado**: Navegar por las flechas del carousel en la vista *no* actualizaba el panel de propiedades, dejando al usuario editando la diapositiva equivocada.
+
+### B. La Solución: El Patrón de Consolidación
+Se decidió restringir la libertad estructural a cambio de una UX superior. Se definió el "Patrón de Consolidación de Bloques Complejos":
+
+1.  **Estructura Predefinida (The Factory)**:
+    *   Al crear un Carousel, ya no está vacío. Nace con 3 diapositivas, cada una con un bloque de Imagen y de Texto pre-configurados.
+2.  **Interfaz Unificada (The Facade)**:
+    *   El panel de propiedades ya no pide "Seleccionar bloque interno". Muestra directamente inputs para "Imagen de Diapositiva" y "Descripción".
+    *   **Toggle Inteligente**: Se implementó un switch "Show Description" que añade o elimina dinámicamente el bloque de texto interno, sin que el usuario tenga que gestionar bloques manualmente.
+3.  **Sincronización Bidireccional**:
+    *   **Vista -> Propiedades**: Al hacer clic en "Siguiente" en el canvas, el panel lateral cambia automáticamente a la diapositiva activa.
+    *   **Propiedades -> Vista**: Al seleccionar un número de diapositiva en el lateral, el canvas salta inmediatamente a esa diapositiva.
+
+### C. Madurez del Ecosistema de Agentes
+Para evitar que este aprendizaje se pierda, se formalizó en el sistema:
+*   **`SYSTEM_MAP.md`**: Un mapa maestro que conecta Agentes con sus Skills y Reglas.
+*   **Skill `complex_block_consolidation`**: Una guía paso a paso para que futuros agentes sepan cuándo y cómo transformar un prototipo en un bloque consolidado.
+*   **Skill `create_block` actualizada**: Ahora incluye referencias cruzadas para advertir al desarrollador sobre la estrategia de bloques complejos desde el inicio.
+
+### D. Lección Aprendida
+**"La flexibilidad estructural del Editor no debe trasladarse como complejidad cognitiva al Usuario Final."** Es mejor ofrecer componentes opinados y pulidos (Consolidados) que herramientas genéricas de construcción.

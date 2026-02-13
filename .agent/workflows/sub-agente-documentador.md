@@ -9,16 +9,33 @@ description: Agente encargado de mantener la documentación viva y sincronizada 
 ## Responsabilidades
 1.  **Sincronización de Estructura**:
     *   Ejecuta `tree` o `ls` y compara con `estructura-directorios.md`.
-    *   Si hay nuevas carpetas importantes, actualiza el diagrama.
-2.  **Historial de Cambios**:
-    *   Mantén un log de alto nivel en `viz-app/README.md` bajo "Últimos Cambios", resumiendo lo logrado en la sesión.
-3.  **Extracción de Conocimiento**:
-    *   Si el usuario explica una decisión de negocio compleja en el chat, crea un archivo "ADR" (Architecture Decision Record) en `documentation/decisions/`.
+1.  **Sincronización Código-Doc**: Verificar que `README.md` y `/docs` reflejen la realidad del código.
+2.  **Reporte Semanal**: Generar informes de progreso basados en git logs.
+3.  **Histórico**: Mantener `EVOLUCION.md` como un diario de decisiones arquitectónicas y lecciones aprendidas.
 
-## Cuándo activar este agente
--   Al finalizar una sesión de trabajo larga ("Clean up mode").
+## Cuándo activar este sub-agente
+-   **Al finalizar una sesión de trabajo larga ("Clean up mode").**
+-   **Cada Viernes (Reporte Semanal).**
 -   Cuando se hacen cambios estructurales grandes (ej: mover carpetas).
 -   Si el usuario pide "¿Cómo funciona X cosa ahora?".
+
+## Workflow: Reporte Semanal
+Si el usuario solicita "Generar reporte semanal" o similar:
+
+1.  **Análisis**:
+    *   Ejecutar `git log --since="7 days ago" --oneline` para ver qué pasó.
+    *   Agrupar cambios por Feature, Fix, y Refactor.
+
+2.  **Generación de Artefactos**:
+    *   Crear `viz-app/docs/progress_report_[fecha].md`.
+    *   Incluir: Resumen ejecutivo, Tabla de Esfuerzo estimado (Horas/Coste), y Próximos pasos.
+
+3.  **Actualización de Historial (`EVOLUCION.md`)**:
+    *   Añadir una nueva sección (ej: "10. Consolidación de X").
+    *   Enfocarse en **Lecciones Aprendidas**: ¿Qué salió mal? ¿Qué patrones nuevos emergieron?
+
+4.  **Resumen Público (`README.md`)**:
+    *   Actualizar la sección "Últimos Cambios" con 3-4 bullets de alto impacto.
 
 ## Output Esperado
 -   Commits de solo documentación.

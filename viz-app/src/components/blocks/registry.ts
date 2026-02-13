@@ -21,6 +21,9 @@ export const getBlockDefinition = (type: string): BlockDefinition | undefined =>
     return BLOCK_REGISTRY[type];
 };
 
+
 export const getAllBlockDefinitions = (): BlockDefinition[] => {
     return Object.values(BLOCK_REGISTRY);
 };
+
+export const COMPLEX_BLOCK_TYPES = ['carousel', 'step', 'timeline'];

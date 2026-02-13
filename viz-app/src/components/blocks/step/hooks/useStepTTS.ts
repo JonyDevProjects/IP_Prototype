@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect, useRef } from 'react';
+import { useMemo, useState, useEffect, useRef, useCallback } from 'react';
 import type { TimelineStep } from '../../timeline/types';
 import { getBestSpanishVoice } from '../../../../utils/ttsUtils';
 
@@ -88,7 +88,7 @@ export const useStepTTS = ({ step, stepIndex = 0, stepId, autoPlay = false, isAc
         });
 
         // Footer
-        if (step.footerTip) {
+        if (step.footerTip && step.footerTip.trim().length > 0) {
             stepItems.push({
                 id: `${stepPrefix}-footer`,
                 text: `Nota: ${step.footerTip}`
@@ -96,7 +96,7 @@ export const useStepTTS = ({ step, stepIndex = 0, stepId, autoPlay = false, isAc
         }
 
         return stepItems;
-    }, [step, stepIndex]);
+    }, [step, stepIndex, stepId]);
 
     // Internal Play Logic (Simplified version of TextToSpeechButton component logic but localized here for auto-sequencing)
     // NOTE: In a real distributed system, we might want to expose a start() method or rely on the TextToSpeechButton ref.
@@ -190,9 +190,22 @@ export const useStepTTS = ({ step, stepIndex = 0, stepId, autoPlay = false, isAc
         synth.speak(utterance);
     };
 
-    const cancel = () => {
+    const cancel = useCallback(() => {
         synth.cancel();
-    };
+    }, [synth]);
+
+    // Reset state when block is no longer active (Stopped or switched away)
+    useEffect(() => {
+        if (!isActive) {
+            currentIndexRef.current = 0;
+            lastCharIndexRef.current = 0;
+            setActiveReadingId(null);
+            cancel();
+        }
+    }, [isActive, cancel]);
+
+    // ... (rest of the file)
+
 
     const getHighlightClass = (targetId: string) => {
         if (!activeReadingId) return "";

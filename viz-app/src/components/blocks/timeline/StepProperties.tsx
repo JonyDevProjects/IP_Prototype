@@ -249,6 +249,50 @@ export const StepProperties: React.FC<StepPropertiesProps> = ({ step, index, onC
                     </div>
                 </div>
             </PropertySection>
+
+            <PropertySection title={`Step ${index + 1} Footer`} isOpen>
+                <div className="space-y-4">
+                    <div>
+                        <label className="block text-xs text-slate-500 mb-1.5">Pro Tip / Note</label>
+                        <div className="flex gap-2">
+                            <div className="relative">
+                                <button
+                                    className="w-8 h-8 flex items-center justify-center rounded bg-slate-50 border border-slate-200 text-slate-500 hover:text-[#7f13ec]"
+                                    onClick={() => setActiveIconPicker(activeIconPicker === 'footer' ? null : 'footer')}
+                                    title={step.footerTipIcon ? "Change Icon" : "Add Icon"}
+                                >
+                                    <span className="material-symbols-outlined text-[18px]">{step.footerTipIcon || 'lightbulb'}</span>
+                                </button>
+                                {activeIconPicker === 'footer' && (
+                                    <div className="absolute bottom-full left-0 mb-1 z-20 w-64 p-2 border border-slate-200 dark:border-white/10 rounded-lg bg-white dark:bg-[#1f1629] shadow-xl">
+                                        <div className="grid grid-cols-6 gap-1">
+                                            {AVAILABLE_ICONS.map(iconName => (
+                                                <button
+                                                    key={iconName}
+                                                    className="w-8 h-8 flex items-center justify-center rounded hover:bg-slate-100 dark:hover:bg-white/10 text-slate-600 dark:text-slate-400 hover:text-[#7f13ec]"
+                                                    onClick={() => {
+                                                        onChange('footerTipIcon', iconName);
+                                                        setActiveIconPicker(null);
+                                                    }}
+                                                >
+                                                    <span className="material-symbols-outlined text-xl">{iconName}</span>
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                            <input
+                                type="text"
+                                className="flex-1 px-2 py-1.5 rounded bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-xs focus:border-[#7f13ec] outline-none"
+                                value={step.footerTip || ''}
+                                onChange={(e) => onChange('footerTip', e.target.value)}
+                                placeholder="Add a helpful tip or note..."
+                            />
+                        </div>
+                    </div>
+                </div>
+            </PropertySection>
         </>
     );
 };

@@ -40,9 +40,15 @@ No te abrumes. Hemos organizado la información para que leas solo lo que necesi
 Este proyecto utiliza Inteligencia Artificial para el desarrollo.
 Consulta `.agent/workflows/` para ver los "Prompt Engineers" disponibles.
 
-## 🔄 Últimos Cambios (06 Feb 2026)
+## Cambios semana (06 Feb 2026)
 *   **Audio Controls**: Implementado control de velocidad/volumen global con **Resume-on-Change** (no reinicia el audio).
 *   **TTS Parity**: Features extendidas a `TextBlock`, `StepBlock`, y `AlertBlock`.
 *   **Robustness**: Tests unitarios "blindados" contra errores de entorno en Vitest.
 *   **Standards**: Nuevas reglas de oro para integridad de features y testing.
+
+## Cambios semana (13 Feb 2026)
+*   **Carousel Block**: Implementación completa "Consolidada". Soporta diapositivas con Imagen + Texto opcional, navegación sincronizada y edición intuitiva.
+*   **Agent Ecosystem**: Mapeo completo del ecosistema en `.agent/SYSTEM_MAP.md`. Nuevas Skills de "Consolidación de Bloques".
+*   **Timeline Block**: Persistencia de pasos y mejoras en la gestión de estado.
+*   **Architecture**: Definición del patrón "Complex Block Consolidation" para componentes anidados.
 

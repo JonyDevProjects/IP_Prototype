@@ -8,7 +8,9 @@ const ImageComponent: React.FC<{
     isSelected: boolean;
     onClick: (e: React.MouseEvent) => void;
 }> = ({ block, isSelected, onClick }) => {
-    const src = block.content as string;
+    const src = typeof block.content === 'object' && block.content !== null
+        ? (block.content as { src: string }).src
+        : block.content as string;
     return (
         <div
             className={`rounded-lg overflow-hidden border transition-all duration-200 ${isSelected ? 'border-[#7f13ec] ring-2 ring-[#7f13ec]/20 shadow-md' : 'border-transparent hover:border-slate-300'}`}
@@ -37,8 +39,15 @@ const ImageProperties: React.FC<{
                     <input
                         type="text"
                         className="w-full px-3 py-2 rounded-lg bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-xs focus:border-[#7f13ec] outline-none"
-                        value={typeof block.content === 'string' ? block.content : ''}
-                        onChange={(e) => onUpdate({ content: e.target.value })}
+                        value={typeof block.content === 'object' && block.content !== null ? (block.content as { src: string }).src : block.content}
+                        onChange={(e) => {
+                            const newValue = e.target.value;
+                            if (typeof block.content === 'object' && block.content !== null) {
+                                onUpdate({ content: { ...block.content, src: newValue } });
+                            } else {
+                                onUpdate({ content: newValue });
+                            }
+                        }}
                         placeholder="https://..."
                     />
                 </div>
